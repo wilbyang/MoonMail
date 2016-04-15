@@ -1,9 +1,10 @@
 # MoonMail
 
 **Send and monitor email campaigns the cost efficient way.**
- ## Features:
- * Create and store recipient lists
- * Compile and send email campaigns
+
+## Features:
+* Create and store recipient lists
+* Compile and send email campaigns
 
 
 ### Running
