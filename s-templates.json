@@ -1,0 +1,59 @@
+{
+  "logsStatementTemplate": {
+    "Effect": "Allow",
+    "Action": [
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents"
+    ],
+    "Resource": "arn:aws:logs:${region}:*:*"
+  },
+  "sqsStatementTemplate": {
+    "Effect": "Allow",
+    "Action": [
+      "sqs:ChangeMessageVisibility",
+      "sqs:ChangeMessageVisibilityBatch",
+      "sqs:DeleteMessage",
+      "sqs:DeleteMessageBatch",
+      "sqs:GetQueueAttributes",
+      "sqs:GetQueueUrl",
+      "sqs:ReceiveMessage",
+      "sqs:CreateQueue",
+      "sqs:SendMessage"
+    ],
+    "Resource": "arn:aws:sqs:${region}:*:*"
+  },
+  "sesStatementTemplate": {
+    "Effect": "Allow",
+    "Action": [
+      "ses:SendEmail",
+      "ses:SendRawEmail"
+    ],
+    "Resource": "*"
+  },
+  "lambdaStatementTemplate": {
+    "Effect": "Allow",
+    "Action": [
+      "lambda:InvokeAsync",
+      "lambda:InvokeFunction",
+      "dynamodb:BatchGetItem",
+      "dynamodb:BatchWriteItem",
+      "dynamodb:DeleteItem",
+      "dynamodb:GetItem",
+      "dynamodb:GetRecords",
+      "dynamodb:PutItem",
+      "dynamodb:Query",
+      "dynamodb:Scan",
+      "dynamodb:UpdateItem",
+      "sns:Publish",
+      "cloudwatch:PutMetricAlarm"
+    ],
+    "Resource": [
+      "*"
+    ]
+  },
+  "sendEmailsTopic": "${project}-${stage}-sendEmails",
+  "precompileEmailTopic": "${project}-${stage}-precompileEmail",
+  "sendCampaignTopic": "${project}-${stage}-sendCampaign",
+  "linksTable": "${project}-${stage}-links"
+}

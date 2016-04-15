@@ -1,0 +1,45 @@
+{
+  "name": "parseLinks",
+  "runtime": "babel",
+  "description": "Serverless Lambda function for project: MoonMail-v2",
+  "customName": "${project}-links-parseLinks",
+  "customRole": false,
+  "handler": "links/parseLinks/handler.default",
+  "timeout": 60,
+  "memorySize": 1024,
+  "authorizer": {},
+  "custom": {
+    "runtime": {
+      "babel": {
+        "presets": ["es2015"]
+      },
+      "handlerExt": "js",
+      "ignore": ["aws-sdk"],
+      "minify": true
+    }
+  },
+  "endpoints": [],
+  "events": [
+    {
+      "name": "sendCampaignSns",
+      "type": "sns",
+      "config": {
+        "topicName": "$${sendCampaignTopic}"
+      }
+    }
+  ],
+  "environment": {
+    "SERVERLESS_PROJECT": "${project}",
+    "SERVERLESS_STAGE": "${stage}",
+    "SERVERLESS_REGION": "${region}",
+    "LINKS_TABLE": "$${linksTable}",
+    "SEND_CAMPAIGN_TOPIC": "$${sendCampaignTopic}",
+    "SEND_CAMPAIGN_TOPIC_ARN": "${sendCampaignTopicARN}",
+    "API_HOST": "${apiHost}",
+    "DEBUG": "true"
+  },
+  "vpc": {
+    "securityGroupIds": [],
+    "subnetIds": []
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "name": "MoonMail-v2",
+  "version": "0.0.1",
+  "description": "A Serverless Project and its Serverless Plugin dependencies.",
+  "author": "me",
+  "license": "MIT",
+  "private": false,
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/"
+  },
+  "dependencies": {
+    "babelify": "^7.2.0",
+    "serverless-runtime-babel": "github:serverless/serverless-runtime-babel"
+  },
+  "devDependencies": {
+    "babel-eslint": "^5.0.0",
+    "babel-polyfill": "^6.7.4",
+    "babel-preset-es2015": "^6.5.0",
+    "eslint": "^2.2.0",
+    "eslint-config-airbnb": "^6.0.2",
+    "eslint-config-react": "^1.1.1",
+    "eslint-plugin-react": "^4.1.0"
+  }
+}

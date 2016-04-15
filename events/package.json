@@ -1,0 +1,43 @@
+{
+  "name": "",
+  "version": "0.0.1",
+  "description": "Serverless module dependencies",
+  "author": "me",
+  "license": "MIT",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/"
+  },
+  "scripts": {
+    "test": "mocha --require babel-register $(find . -name '*.test.js' -not -path './node_modules/*')"
+  },
+  "keywords": [],
+  "devDependencies": {
+    "aws-sdk": "^2.2.35",
+    "aws-sdk-mock": "^1.0.9",
+    "babel": "^6.5.2",
+    "babel-plugin-transform-object-assign": "^6.5.0",
+    "babel-polyfill": "^6.6.1",
+    "babel-register": "^6.6.0",
+    "babelify": "^7.2.0",
+    "chai": "^3.5.0",
+    "chai-as-promised": "^5.2.0",
+    "chai-cheerio": "^1.0.0",
+    "chai-things": "^0.2.0",
+    "mocha": "^2.4.5",
+    "sinon": "^1.17.3",
+    "sinon-as-promised": "^4.0.0",
+    "sinon-chai": "^2.8.0"
+  },
+  "dependencies": {
+    "async": "^1.5.2",
+    "aws-sdk-promise": "0.0.2",
+    "babel-polyfill": "^6.7.4",
+    "cheerio": "^0.20.0",
+    "liquid-node": "^2.6.1",
+    "saws": "^0.1.0",
+    "serverless-helpers-js": "~0.1.0",
+    "uuid": "^2.0.2"
+  }
+}

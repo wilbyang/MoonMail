@@ -1,0 +1,23 @@
+{
+  "userId": "some_user_id",
+  "sender": {
+    "region": "us-east-1",
+    "apiKey": "aws_ses_api_key",
+    "apiSecret": "aws_ses_api_key",
+    "ratePerSecond": "14",
+    "emailAddress": "david.garcia@microapps.com",
+    "fromName": "David García"
+  },
+  "campaign": {
+    "id": "some_campaign_id",
+    "body": "Hi {{ name }}, this is the body of the email",
+    "subject": "Hi {{ name }} {{ surname }}"
+  },
+  "recipient": {
+    "email": "success@simulator.amazonses.com",
+    "metadata": {
+      "name": "John",
+      "surname": "Doe"
+    }
+  }
+}

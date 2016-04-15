@@ -1,0 +1,155 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "The AWS CloudFormation template for this Serverless application's resources outside of Lambdas and Api Gateway",
+  "Resources": {
+    "IamRoleLambda": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "lambda.amazonaws.com"
+                ]
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            }
+          ]
+        },
+        "Path": "/"
+      }
+    },
+    "IamPolicyLambda": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "${stage}-${project}-lambda",
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:PutLogEvents"
+              ],
+              "Resource": "arn:aws:logs:${region}:*:*"
+            },
+            "$${logsStatementTemplate}",
+            "$${lambdaStatementTemplate}",
+            "$${sqsStatementTemplate}",
+            "$${sesStatementTemplate}"
+          ]
+        },
+        "Roles": [
+          {
+            "Ref": "IamRoleLambda"
+          }
+        ]
+      }
+    },
+    "SendEmailsTopic": {
+      "Type": "AWS::SNS::Topic",
+      "Properties": {
+        "TopicName": "$${sendEmailsTopic}"
+      }
+    },
+    "SendCampaignTopic": {
+      "Type": "AWS::SNS::Topic",
+      "Properties": {
+        "TopicName": "$${sendCampaignTopic}"
+      }
+    },
+    "PrecompileEmailTopic": {
+      "Type": "AWS::SNS::Topic",
+      "Properties": {
+        "TopicName": "$${precompileEmailTopic}"
+      }
+    },
+    "FreeUsersSendEmailQueue": {
+      "Type": "AWS::SQS::Queue",
+      "Properties": {
+        "QueueName": "${project}-${stage}-FreeUsersSendEmail"
+      }
+    },
+    "FreeUsersQueuePopulatedAlarm": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "AlarmDescription": "Alarm if free users queue is not empty",
+        "Namespace": "AWS/SQS",
+        "MetricName": "ApproximateNumberOfMessagesVisible",
+        "Dimensions": [{
+          "Name": "QueueName",
+          "Value" : { "Fn::GetAtt" : ["FreeUsersSendEmailQueue", "QueueName"] }
+        }],
+        "Statistic": "Average",
+        "Period": "60",
+        "EvaluationPeriods": "1",
+        "Threshold": "1",
+        "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+        "AlarmActions": [{
+          "Ref": "SendEmailsTopic"
+        }]
+      }
+    },
+    "LinksTable": {
+      "Type": "AWS::DynamoDB::Table",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "id",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "id",
+            "KeyType": "HASH"
+          }
+        ],
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": 3,
+          "WriteCapacityUnits": 5
+        },
+        "TableName": "$${linksTable}"
+      }
+    }
+  },
+  "Outputs": {
+    "IamRoleArnLambda": {
+      "Description": "ARN of the lambda IAM role",
+      "Value": {
+        "Fn::GetAtt": [
+          "IamRoleLambda",
+          "Arn"
+        ]
+      }
+    },
+    "QueueURL" : {
+      "Description" : "URL of newly created SQS Queue",
+      "Value" : { "Ref" : "FreeUsersSendEmailQueue" }
+    },
+    "QueueARN" : {
+      "Description" : "ARN of newly created SQS Queue",
+      "Value" : { "Fn::GetAtt" : ["FreeUsersSendEmailQueue", "Arn"]}
+    },
+    "QueueName" : {
+      "Description" : "Name newly created SQS Queue",
+      "Value" : { "Fn::GetAtt" : ["FreeUsersSendEmailQueue", "QueueName"]}
+    },
+    "SendCampaignTopicARN" : {
+      "Description" : "ARN of the SendCampaign SNS topic",
+      "Value" : { "Ref" : "SendCampaignTopic"}
+    },
+    "SendEmailsTopicARN" : {
+      "Description" : "ARN of the SendEmails SNS topic",
+      "Value" : { "Ref" : "SendEmailsTopic"}
+    }
+  }
+}
