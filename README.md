@@ -7,15 +7,26 @@
 * Compile and send email campaigns
 
 
-### Running
-An installed [serverless](https://github.com/serverless/serverless) of version 0.5.2 or higher is required to run MoonMail API
-```
-sls project init
-sls resources deploy
-sls function deploy
-sls event deploy
-sls endpoint deploy
-```
+### Getting Started
+An installed [serverless](https://github.com/serverless/serverless) of version 0.5.2 or higher is required to run MoonMail API.
+
+Initialize the Serverless project:
+    sls project init
+Create all the needed resources in your AWS account:
+
+    sls resources deploy
+
+Deploy all the Lambda functions:
+
+    sls function deploy
+    
+Deploy MoonMail events:
+
+    sls event deploy
+
+Create the API Gateway endpoints:
+
+    sls endpoint deploy
 
 ### Technology backing this project:
 
