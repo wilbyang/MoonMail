@@ -59,5 +59,6 @@ Contributions are always welcome!
 ### Credits
 Developed by [microapps] (http://microapps.com/)
 
-
-
+--
+## License
+MoonMail is available under the MIT license. See the LICENSE file for more info.
