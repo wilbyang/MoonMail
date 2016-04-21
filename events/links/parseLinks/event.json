@@ -6,7 +6,7 @@
       "Sns": {
         "Type": "Notification",
         "Subject": "SomeSubject",
-        "Message": "{\"userId\":\"some_user_id\",\"sender\":{\"region\":\"us-east-1\",\"apiKey\":\"aws_ses_api_key\",\"apiSecret\":\"aws_ses_api_key\",\"ratePerSecond\":\"14\",\"emailAddress\":\"david.garcia@microapps.com\",\"fromName\":\"David García\"},\"campaign\":{\"id\":\"some_campaign_id\",\"body\":\"Hi {{ name }}, <a href=\\\"http://example.com\\\">this</a> is the <a href=\\\"http://example2.com\\\">body</a> of the email\",\"subject\":\"Hi {{ name }} {{ surname }}\",\"precompiled\":false},\"recipient\":{\"email\":\"success@simulator.amazonses.com\",\"metadata\":{\"name\":\"John\",\"surname\":\"Doe\"}},\"recipientsCount\":\"300\"}"
+        "Message": "{\"userId\":\"some_user_id\",\"sender\":{\"region\":\"us-east-1\",\"apiKey\":\"aws_ses_api_key\",\"apiSecret\":\"aws_ses_api_key\",\"ratePerSecond\":\"14\",\"emailAddress\":\"david.garcia@microapps.com\",\"fromName\":\"David García\"},\"campaign\":{\"id\":\"some_campaign_id\",\"body\":\"\",\"subject\":\"Hi {{ name }} {{ surname }}\",\"precompiled\":false},\"recipient\":{\"email\":\"success@simulator.amazonses.com\",\"metadata\":{\"name\":\"John\",\"surname\":\"Doe\"}},\"recipientsCount\":\"300\"}"
       }
     }
   ]

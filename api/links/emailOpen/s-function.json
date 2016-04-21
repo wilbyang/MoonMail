@@ -46,7 +46,9 @@
   "environment": {
     "SERVERLESS_PROJECT": "${project}",
     "SERVERLESS_STAGE": "${stage}",
-    "SERVERLESS_REGION": "${region}"
+    "SERVERLESS_REGION": "${region}",
+    "DEBUG": "true",
+    "OPENS_STREAM_NAME": "${opensStreamName}"
   },
   "vpc": {
     "securityGroupIds": [],
