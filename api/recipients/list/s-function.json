@@ -1,0 +1,58 @@
+{
+  "name": "listRecipients",
+  "runtime": "babel",
+  "description": "Serverless Lambda function for project: MoonMail-v2",
+  "customName": "${project}-recipients-list",
+  "customRole": false,
+  "handler": "recipients/list/handler.default",
+  "timeout": 6,
+  "memorySize": 256,
+  "authorizer": {},
+  "custom": {
+    "excludePatterns": [],
+    "runtime": {
+      "babel": {
+        "presets": ["es2015"]
+      },
+      "handlerExt": "js",
+      "requires": [],
+      "plugins": [],
+      "transforms": [],
+      "exclude": [],
+      "ignore": [
+        "aws-sdk"
+      ],
+      "extensions": [],
+      "minify": true
+    }
+  },
+  "endpoints": [
+    {
+      "path": "lists/{list_id}/recipients",
+      "method": "GET",
+      "type": "AWS",
+      "authorizationType": "none",
+      "authorizerFunction": false,
+      "apiKeyRequired": false,
+      "requestParameters": {},
+      "requestTemplates": {
+        "application/json": {
+          "list_id": "$util.escapeJavaScript($input.params('list_id'))",
+          "query": "{#foreach($param in $input.params().querystring.keySet())\"$param\":\"$util.escapeJavaScript($input.params().querystring.get($param))\"#if($foreach.hasNext),#end#end}"
+        }
+      },
+      "responses": "$${responses}"
+
+    }
+  ],
+  "events": [],
+  "environment": {
+    "SERVERLESS_PROJECT": "${project}",
+    "SERVERLESS_STAGE": "${stage}",
+    "SERVERLESS_REGION": "${region}"
+  },
+  "vpc": {
+    "securityGroupIds": [],
+    "subnetIds": []
+  }
+}

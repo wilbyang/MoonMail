@@ -1,0 +1,29 @@
+{
+  "name": "importRecipients",
+  "runtime": "babel",
+  "customName": false,
+  "customRole": false,
+  "handler": "recipients/import/handler.default",
+  "timeout": 6,
+  "memorySize": 1024,
+  "custom": {
+    "excludePatterns": [],
+    "envVars": []
+  },
+  "endpoints": [],
+  "events": [
+    {
+      "name": "s3",
+      "type": "s3",
+      "config": {
+        "bucket": "${recipientsImportBucket}",
+        "bucketEvents": ["s3:ObjectCreated:*"]
+      }
+    }
+  ],
+  "environment": {
+    "SERVERLESS_PROJECT": "${project}",
+    "SERVERLESS_STAGE": "${stage}",
+    "SERVERLESS_REGION": "${region}"
+  }
+}
