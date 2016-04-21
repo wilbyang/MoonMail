@@ -34,7 +34,11 @@
   "kinesisStatementTemplate": {
     "Effect": "Allow",
     "Action": [
-      "kinesis:PutRecord"
+      "kinesis:PutRecord",
+      "kinesis:GetRecords",
+      "kinesis:GetShardIterator",
+      "kinesis:DescribeStream",
+      "kinesis:ListStreams"
     ],
     "Resource": "*"
   },
