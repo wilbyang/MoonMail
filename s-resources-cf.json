@@ -119,6 +119,12 @@
         },
         "TableName": "$${linksTable}"
       }
+    },
+    "OpensStream": {
+       "Type" : "AWS::Kinesis::Stream",
+       "Properties" : {
+          "ShardCount" : 1
+       }
     }
   },
   "Outputs": {
@@ -150,6 +156,14 @@
     "SendEmailsTopicARN" : {
       "Description" : "ARN of the SendEmails SNS topic",
       "Value" : { "Ref" : "SendEmailsTopic"}
+    },
+    "OpensStreamName" : {
+      "Description" : "Name of the Opens Kinesis Stream",
+      "Value" : { "Ref" : "OpensStream"}
+    },
+    "OpensStreamARN" : {
+      "Description" : "Name of the Opens Kinesis Stream",
+      "Value" : { "Fn::GetAtt" : ["OpensStream", "Arn"]}
     }
   }
 }
