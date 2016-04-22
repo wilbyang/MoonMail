@@ -32,6 +32,23 @@ class Link {
     return this._client('batchWrite', itemsParams);
   }
 
+  static incrementOpens(campaignId, count = 1) {
+    debug('= Link.update', campaignId, count);
+    const addParams = {
+      Key: {
+        id: campaignId
+      },
+      TableName: TABLE_NAME,
+      AttributeUpdates: {
+        opensCount: {
+          Action: 'ADD',
+          Value: count
+        }
+      }
+    };
+    return this._client('update', addParams);
+  }
+
   static _client(method, params) {
     return new Promise((resolve, reject) => {
       debug('Link._client', JSON.stringify(params));
