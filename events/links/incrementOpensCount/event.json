@@ -1,1 +1,1604 @@
-{}
+{
+  "Records": [
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "1234",
+        "sequenceNumber": "49561248805737405226755593691918241865509837490266046466",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.271
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691918241865509837490266046466",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691919450791329452119440752642",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.376
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691919450791329452119440752642",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "1234",
+        "sequenceNumber": "49561248805737405226755593691920659717149066748615458818",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.401
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691920659717149066748615458818",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691921868642968681377790164994",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.428
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691921868642968681377790164994",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691923077568788296006964871170",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.521
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691923077568788296006964871170",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691924286494607910704859054082",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.533
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691924286494607910704859054082",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691925495420427525265314283522",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.536
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691925495420427525265314283522",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691926704346247139963208466434",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.541
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691926704346247139963208466434",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "1234",
+        "sequenceNumber": "49561248805737405226755593691927913272066754523663695874",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.541
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691927913272066754523663695874",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691929122197886369221557878786",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.542
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691929122197886369221557878786",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691930331123705983782013108226",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.545
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691930331123705983782013108226",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691931540049525598411187814402",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.549
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691931540049525598411187814402",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691932748975345213109081997314",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.551
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691932748975345213109081997314",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691933957901164827738256703490",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.551
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691933957901164827738256703490",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691935166826984442367431409666",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.553
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691935166826984442367431409666",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691936375752804056927886639106",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.555
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691936375752804056927886639106",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691937584678623671557061345282",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.556
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691937584678623671557061345282",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691938793604443286186236051458",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.557
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691938793604443286186236051458",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691940002530262900815410757634",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.558
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691940002530262900815410757634",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691941211456082515444585463810",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.559
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691941211456082515444585463810",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691942420381902130073760169986",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.559
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691942420381902130073760169986",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691943629307721744702934876162",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.561
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691943629307721744702934876162",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "09755",
+        "sequenceNumber": "49561248805737405226755593691944838233541359332109582338",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.561
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691944838233541359332109582338",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691946047159360974030003765250",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.562
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691946047159360974030003765250",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691947256085180588659178471426",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.564
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691947256085180588659178471426",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691948465011000203288353177602",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.564
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691948465011000203288353177602",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691949673936819817917527883778",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.564
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691949673936819817917527883778",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691950882862639432477983113218",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.564
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691950882862639432477983113218",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691952091788459047175877296130",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.566
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691952091788459047175877296130",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691953300714278661736332525570",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.567
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691953300714278661736332525570",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691954509640098276365507231746",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.569
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691954509640098276365507231746",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691955718565917890994681937922",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.569
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691955718565917890994681937922",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691956927491737505692576120834",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.569
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691956927491737505692576120834",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691958136417557120253031350274",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.569
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691958136417557120253031350274",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691959345343376734950925533186",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.571
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691959345343376734950925533186",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691960554269196349511380762626",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.571
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691960554269196349511380762626",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691961763195015964209274945538",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.573
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691961763195015964209274945538",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691962972120835578838449651714",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.574
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691962972120835578838449651714",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691964181046655193467624357890",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.575
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691964181046655193467624357890",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691965389972474808096799064066",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.576
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691965389972474808096799064066",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691966598898294422657254293506",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.576
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691966598898294422657254293506",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691967807824114037355148476418",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.576
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691967807824114037355148476418",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691969016749933651984323182594",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.576
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691969016749933651984323182594",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691970225675753266613497888770",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.578
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691970225675753266613497888770",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691971434601572881242672594946",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.578
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691971434601572881242672594946",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691972643527392495871847301122",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.578
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691972643527392495871847301122",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691973852453212110501022007298",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.579
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691973852453212110501022007298",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691975061379031725130196713474",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.579
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691975061379031725130196713474",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691976270304851339759371419650",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.579
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691976270304851339759371419650",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691977479230670954388546125826",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.579
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691977479230670954388546125826",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691978688156490569017720832002",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.579
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691978688156490569017720832002",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691979897082310183646895538178",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.579
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691979897082310183646895538178",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691981106008129798207350767618",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.581
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691981106008129798207350767618",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691982314933949412905244950530",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.581
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691982314933949412905244950530",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691983523859769027534419656706",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.581
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691983523859769027534419656706",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691984732785588642094874886146",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.582
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691984732785588642094874886146",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691985941711408256792769069058",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.583
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691985941711408256792769069058",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691987150637227871353224298498",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.585
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691987150637227871353224298498",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691988359563047486051118481410",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.585
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691988359563047486051118481410",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691989568488867100680293187586",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.585
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691989568488867100680293187586",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691990777414686715240748417026",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.587
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691990777414686715240748417026",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691991986340506329938642599938",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.587
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691991986340506329938642599938",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691993195266325944567817306114",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.587
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691993195266325944567817306114",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691994404192145559196992012290",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.589
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691994404192145559196992012290",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691995613117965173757447241730",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.592
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691995613117965173757447241730",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691996822043784788386621947906",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.592
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691996822043784788386621947906",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691998030969604403015796654082",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.592
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691998030969604403015796654082",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593691999239895424017713690836994",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.594
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691999239895424017713690836994",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593692000448821243632342865543170",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.594
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593692000448821243632342865543170",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593692001657747063246903320772610",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.594
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593692001657747063246903320772610",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593692002866672882861601214955522",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.594
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593692002866672882861601214955522",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593692004075598702476161670184962",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.594
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593692004075598702476161670184962",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593692005284524522090859564367874",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.596
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593692005284524522090859564367874",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593692006493450341705420019597314",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.597
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593692006493450341705420019597314",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593692007702376161320049194303490",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.597
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593692007702376161320049194303490",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593692008911301980934747088486402",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.597
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593692008911301980934747088486402",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593692010120227800549376263192578",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.597
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593692010120227800549376263192578",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593692011329153620164005437898754",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.597
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593692011329153620164005437898754",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593692012538079439778634612604930",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.599
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593692012538079439778634612604930",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593692013747005259393263787311106",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.599
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593692013747005259393263787311106",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593692014955931079007892962017282",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.599
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593692014955931079007892962017282",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593692016164856898622522136723458",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.601
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593692016164856898622522136723458",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593692017373782718237082591952898",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.601
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593692017373782718237082591952898",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593692018582708537851711766659074",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.602
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593692018582708537851711766659074",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593692019791634357466340941365250",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.602
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593692019791634357466340941365250",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593692021000560177080970116071426",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.603
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593692021000560177080970116071426",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593692022209485996695668010254338",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.603
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593692022209485996695668010254338",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593692023418411816310228465483778",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.604
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593692023418411816310228465483778",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593692024627337635924926359666690",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.604
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593692024627337635924926359666690",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593692025836263455539555534372866",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.605
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593692025836263455539555534372866",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593692027045189275154115989602306",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.605
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593692027045189275154115989602306",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593692028254115094768813883785218",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.605
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593692028254115094768813883785218",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593692029463040914383443058491394",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.606
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593692029463040914383443058491394",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593692030671966733998003513720834",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.607
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593692030671966733998003513720834",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593692031880892553612701407903746",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.607
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593692031880892553612701407903746",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593692033089818373227330582609922",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.608
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593692033089818373227330582609922",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593692034298744192841891037839362",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.609
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593692034298744192841891037839362",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593692035507670012456520212545538",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.609
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593692035507670012456520212545538",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593692036716595832071149387251714",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.61
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593692036716595832071149387251714",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "69696969696",
+        "sequenceNumber": "49561248805737405226755593692037925521651685778561957890",
+        "data": "eyJjYW1wYWlnbklkIjoiNjk2OTY5Njk2OTYifQ==",
+        "approximateArrivalTimestamp": 1461254626.611
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593692037925521651685778561957890",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-dev-r-IamRoleLambda-1MGCXZJIK4H3C",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/MoonMail-v2-dev-r-OpensStream-1A08PS825L73C"
+    }
+  ]
+}
