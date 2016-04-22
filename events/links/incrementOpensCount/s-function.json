@@ -2,9 +2,9 @@
   "name": "incrementOpensCount",
   "runtime": "babel",
   "description": "Serverless Lambda function for project: MoonMail-v2",
-  "customName": false,
+  "customName": "${project}-links-incrementOpensCount",
   "customRole": false,
-  "handler": "handler.default",
+  "handler": "links/incrementOpensCount/handler.default",
   "timeout": 6,
   "memorySize": 1024,
   "authorizer": {},
@@ -25,6 +25,7 @@
     "SERVERLESS_PROJECT": "${project}",
     "SERVERLESS_STAGE": "${stage}",
     "SERVERLESS_REGION": "${region}",
+    "LINKS_TABLE": "$${linksTable}",
     "DEBUG": "true"
   },
   "vpc": {
