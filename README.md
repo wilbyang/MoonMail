@@ -16,12 +16,13 @@ With MoonMail you can: create lists of recipients, store recipients (email addre
 
 ## Live Features
 
-* Create and store recipient lists
-* Compile and send email campaigns
+* [Create and store recipient lists](https://github.com/microapps/MoonMail/wiki/Lists-&-recipients)
+* [Compile and send email campaigns](https://github.com/microapps/MoonMail/wiki/Sender)
 
 ## Upcoming Features
 
-* Parse (track) clicked links within an email
+* [Create, edit and delete campaigns](https://github.com/microapps/MoonMail/wiki/Campaigns)
+* [Parse (track) clicked links within an email](https://github.com/microapps/MoonMail/wiki/Links)
 * Download the full package as a node module
 * One click upload to S3 of a recipient list + html email and shoot it using your Terminal
 
