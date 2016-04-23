@@ -1,24 +1,31 @@
-# MoonMail by microapps
+# MoonMail
 
-MoonMail, powerful email marketing tool, built on Serverless Framework allows you to deliver campaigns over Amazon’s cloud network. 
+Send email marketing campaigns with Amazon SES. Let Amazon Lambda compose email by email and literaly scale it to infinite. 
 
-With this tool you can create different type of lists and send emails to targeted customers based on specific traits. Once your email is sent you can monitor and track the performance instantly. 
+Create lists of recipients, store recipients (email addresses) within a DynamoDB, send the email marketing campaign and track opens and clicks.
 
-Use MoonMail open source project to store emails inside your own AWS infrastructure and if you need additional customisation contact [microapps team] (mailto:hi@microapps.com).
+[See the wiki for detailed specs and infrastructure graphs.] (https://github.com/microapps/MoonMail/wiki)
 
 --
 
-### Features:
+###Live Features
 * Create and store recipient lists
 * Compile and send email campaigns
+
+###Upcoming Features
+* Parse (track) clicked links within an email
+* Download the full package as a node module
+* One click upload to S3 of a recipient list + html email and shoot it using your Terminal
 
 --
 
 ### Getting Started
-An installed [serverless](https://github.com/serverless/serverless) of version 0.5.2 or higher is required to run MoonMail API.
+You need to have installed the [Serverless Framework](https://github.com/serverless/serverless) (version 0.5.2 or higher is required to run the MoonMail API.)
 
 Initialize the Serverless project:
+    
     sls project init
+    
 Create all the needed resources in your AWS account:
 
     sls resources deploy
@@ -37,27 +44,7 @@ Create the API Gateway endpoints:
 
 --
 
-### Technology backing this project:
-
- * [serverless](https://github.com/serverless/serverless) _is the application framework for building web, mobile and IoT applications exclusively on Amazon Web Services' Lambda and API Gateway._
-
---
- 
-### [Architecture Prototype] (https://github.com/microapps/MoonMail/wiki)
-<img src="https://cdn.microapps.com/assets/img/mmv2/mmv2-architecture.png"width="800">
-
-
-#### [Why we decided to use Serverless Framework] (http://microapps.com/blog/serverless-framework/)
-
---
-
-### Contributing
-Contributions are always welcome!
-
---
-
-### Credits
-Developed by [microapps] (http://microapps.com/)
+ * [Proudly powered by Serverless Framework](https://github.com/serverless/serverless)
 
 --
 ## License
