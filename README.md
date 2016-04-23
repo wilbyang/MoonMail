@@ -1,13 +1,15 @@
 # MoonMail (BETA)
-=================================
+
 [![serverless](http://public.serverless.com/badges/v3.svg)](http://www.serverless.com)
 [![Twitter](https://img.shields.io/twitter/url/https/github.com/microapps/MoonMail.svg?style=social)](https://twitter.com/intent/tweet?text=Wow:&url=%5Bobject%20Object%5D)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/microapps/MoonMail/master/LICENSE)
 
 
-Send email marketing campaigns with Amazon SES. Let Amazon Lambda compose email by email and literaly scale it to infinite. 
+Send email marketing campaigns with [Amazon SES](https://aws.amazon.com/ses/). Let [Amazon Lambda](https://aws.amazon.com/lambda/) compose email by email and literaly scale it to infinite. 
 
-With MoonMail you can: create lists of recipients, store recipients (email addresses) within a DynamoDB, send email marketing campaigns and track opens and clicks.
+With MoonMail you can: create lists of recipients, store recipients (email addresses) within a [DynamoDB](https://aws.amazon.com/dynamodb/), send email marketing campaigns and track opens and clicks.
+
+**The biggest magic of MoonMail: SEND BILLIONS OF EMAILS WITH NO SERVERS!**
 
 [See the wiki for detailed specs and infrastructure graphs.] (https://github.com/microapps/MoonMail/wiki)
 
