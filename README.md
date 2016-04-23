@@ -4,7 +4,7 @@ MoonMail, powerful email marketing tool, built on Serverless Framework allows yo
 
 With this tool you can create different type of lists and send emails to targeted customers based on specific traits. Once your email is sent you can monitor and track the performance instantly. 
 
-Use MoonMail open source project to store emails inside your own AWS infrastructure and if you need additional customisation contact [microapps team] (hi@microapps.com).
+Use MoonMail open source project to store emails inside your own AWS infrastructure and if you need additional customisation contact [microapps team] (mailto:hi@microapps.com).
 
 --
 
