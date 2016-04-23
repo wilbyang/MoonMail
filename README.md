@@ -2,7 +2,7 @@
 
 Send email marketing campaigns with Amazon SES. Let Amazon Lambda compose email by email and literaly scale it to infinite. 
 
-Create lists of recipients, store recipients (email addresses) within a DynamoDB, send the email marketing campaign and track opens and clicks.
+With MoonMail you can: create lists of recipients, store recipients (email addresses) within a DynamoDB, send email marketing campaigns and track opens and clicks.
 
 [See the wiki for detailed specs and infrastructure graphs.] (https://github.com/microapps/MoonMail/wiki)
 
@@ -20,7 +20,7 @@ Create lists of recipients, store recipients (email addresses) within a DynamoDB
 --
 
 ### Getting Started
-You need to have installed the [Serverless Framework](https://github.com/serverless/serverless) (version 0.5.2 or higher is required to run the MoonMail API.)
+You need to have installed the [Serverless Framework](https://github.com/serverless/serverless) (version 0.5.2 or higher is required to run the MoonMail API).
 
 Initialize the Serverless project:
     
@@ -41,10 +41,6 @@ Deploy MoonMail events:
 Create the API Gateway endpoints:
 
     sls endpoint deploy
-
---
-
- * [Proudly powered by Serverless Framework](https://github.com/serverless/serverless)
 
 --
 ## License
