@@ -7,7 +7,7 @@
 
 Send email marketing campaigns with [Amazon SES](https://aws.amazon.com/ses/). Let [Amazon Lambda](https://aws.amazon.com/lambda/) compose email by email and literaly scale it to infinite. 
 
-With MoonMail you can: create & edit lists of recipients (email addresses) and store them within a [DynamoDB](https://aws.amazon.com/dynamodb/), create & edit html email marketing campaigns send them and track their opens and clicks.
+With MoonMail you can: create & edit lists of recipients (email addresses) and store them within a [DynamoDB](https://aws.amazon.com/dynamodb/). Create & edit html email marketing campaigns, send them and track their opens and clicks.
 
 **The biggest magic of MoonMail: SEND BILLIONS OF EMAILS WITH NO SERVERS!**
 
