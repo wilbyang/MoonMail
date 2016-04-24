@@ -7,7 +7,7 @@
 
 Send email marketing campaigns with [Amazon SES](https://aws.amazon.com/ses/). Let [Amazon Lambda](https://aws.amazon.com/lambda/) compose email by email and literaly scale it to infinite. 
 
-With MoonMail you can: create lists of recipients, store recipients (email addresses) within a [DynamoDB](https://aws.amazon.com/dynamodb/), send email marketing campaigns and track opens and clicks.
+With MoonMail you can: create & edit lists of recipients (email addresses) and store them within a [DynamoDB](https://aws.amazon.com/dynamodb/), create & edit html email marketing campaigns send them and track their opens and clicks.
 
 **The biggest magic of MoonMail: SEND BILLIONS OF EMAILS WITH NO SERVERS!**
 
@@ -16,13 +16,14 @@ With MoonMail you can: create lists of recipients, store recipients (email addre
 
 ## Live Features
 
-* [Create and store recipient lists](https://github.com/microapps/MoonMail/wiki/Lists-&-recipients)
+* [Create and store recipients in lists](https://github.com/microapps/MoonMail/wiki/Lists-&-recipients)
 * [Compile and send email campaigns](https://github.com/microapps/MoonMail/wiki/Sender)
 
 ## Upcoming Features
 
 * [Create, edit and delete campaigns](https://github.com/microapps/MoonMail/wiki/Campaigns)
 * [Parse (track) clicked links within an email](https://github.com/microapps/MoonMail/wiki/Links)
+* Update the recipient status with any of the following: Unsubscribed, Bounced, Complaint-Spam, Suppresion-list
 * Download the full package as a node module
 * One click upload to S3 of a recipient list + html email and shoot it using your Terminal
 
