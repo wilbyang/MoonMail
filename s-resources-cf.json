@@ -144,6 +144,12 @@
           "ShardCount" : 1
        }
     },
+    "ClicksStream": {
+       "Type" : "AWS::Kinesis::Stream",
+       "Properties" : {
+          "ShardCount" : 1
+       }
+    },
     "RecipientsTable": {
       "Type": "AWS::DynamoDB::Table",
       "DeletionPolicy": "Retain",
@@ -288,6 +294,14 @@
     "OpensStreamARN" : {
       "Description" : "Name of the Opens Kinesis Stream",
       "Value" : { "Fn::GetAtt" : ["OpensStream", "Arn"]}
+    },
+    "ClicksStreamName" : {
+      "Description" : "Name of the Clicks Kinesis Stream",
+      "Value" : { "Ref" : "ClicksStream"}
+    },
+    "ClicksStreamARN" : {
+      "Description" : "Name of the Clicks Kinesis Stream",
+      "Value" : { "Fn::GetAtt" : ["ClicksStream", "Arn"]}
     }
   }
 }
