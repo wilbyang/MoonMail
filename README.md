@@ -22,10 +22,10 @@ With MoonMail you can: create & edit lists of recipients (email addresses) and s
 ## Upcoming Features
 
 * [Create, edit and delete campaigns](https://github.com/microapps/MoonMail/wiki/Campaigns)
-* [Parse (track) clicked links within an email](https://github.com/microapps/MoonMail/wiki/Links)
+* [Parse (track) opened emails + clicked links within an email](https://github.com/microapps/MoonMail/wiki/Links)
 * Update the recipient status with any of the following: Unsubscribed, Bounced, Complaint-Spam, Suppresion-list
-* Download the full package as a node module
-* One click upload to S3 of a recipient list + html email and shoot it using your Terminal
+* Download the full Serverless project as a Node.js® module
+* Basic front / UI to manage lists and to send campaigns 
 
 
 ## Getting Started
