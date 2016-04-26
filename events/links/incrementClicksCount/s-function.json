@@ -1,10 +1,10 @@
 {
-  "name": "incrementOpensCount",
+  "name": "incrementClicksCount",
   "runtime": "babel",
   "description": "Serverless Lambda function for project: MoonMail-v2",
-  "customName": "${project}-links-incrementOpensCount",
+  "customName": "${project}-links-incrementClicksCount",
   "customRole": false,
-  "handler": "links/incrementOpensCount/handler.default",
+  "handler": "links/incrementClicksCount/handler.default",
   "timeout": 60,
   "memorySize": 1024,
   "authorizer": {},
@@ -14,10 +14,10 @@
   "endpoints": [],
   "events": [
     {
-      "name": "${opensStreamName}",
+      "name": "${clicksStreamName}",
       "type": "kinesisstream",
       "config": {
-        "streamArn": "${opensStreamARN}"
+        "streamArn": "${clicksStreamARN}"
       }
     }
   ],

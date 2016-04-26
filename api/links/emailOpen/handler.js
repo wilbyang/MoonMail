@@ -22,7 +22,7 @@ export default (event, context) => {
     } else {
       DEBUG('= emailOpen.handler', 'Message successfully pushed to buffer');
     }
-     return context.done(err, data);
+    return context.done(err, data);
   });
-}
+};
 

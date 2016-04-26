@@ -33,7 +33,7 @@ class Link {
   }
 
   static incrementOpens(campaignId, count = 1) {
-    debug('= Link.update', campaignId, count);
+    debug('= Link.incrementOpens', campaignId, count);
     const addParams = {
       Key: {
         id: campaignId
@@ -44,6 +44,26 @@ class Link {
           Action: 'ADD',
           Value: count
         }
+      }
+    };
+    return this._client('update', addParams);
+  }
+
+  static incrementClicks(campaignId, linkId, count = 1) {
+    debug('= Link.incrementClicks', campaignId, linkId, count);
+    const addParams = {
+      Key: {
+        id: campaignId
+      },
+      TableName: TABLE_NAME,
+      UpdateExpression: 'ADD #linksList.#linkId.#attrName :clicksCount',
+      ExpressionAttributeNames: {
+        '#linksList': 'links',
+        '#linkId': linkId,
+        '#attrName': 'clicksCount'
+      },
+      ExpressionAttributeValues: {
+        ':clicksCount': count
       }
     };
     return this._client('update', addParams);
