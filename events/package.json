@@ -24,6 +24,7 @@
     "chai": "^3.5.0",
     "chai-as-promised": "^5.2.0",
     "chai-cheerio": "^1.0.0",
+    "chai-fuzzy": "^1.6.1",
     "chai-things": "^0.2.0",
     "mocha": "^2.4.5",
     "sinon": "^1.17.3",

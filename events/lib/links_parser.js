@@ -40,7 +40,7 @@ class LinksParser {
       const $ = cheerio.load(body);
       let campaignLinks = {
         id: this.campaignId,
-        links: []
+        links: {}
       };
       $('a').each((i, link) => {
         let linkUrl = $(link).attr('href');
@@ -48,7 +48,7 @@ class LinksParser {
         let linkId = uuid.v1();
         let clickTrackUrl = this.clicksTrackUrl(linkId, linkUrl);
         $(link).attr('href', clickTrackUrl);
-        campaignLinks.links.push({id: linkId, url: linkUrl, text: linkText});
+        campaignLinks.links[linkId] = {url: linkUrl, text: linkText};
       });
       const result = {
         parsedBody: $.html(),
