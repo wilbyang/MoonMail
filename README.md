@@ -23,6 +23,9 @@ With MoonMail you can: create & edit lists of recipients (email addresses) and s
 
 * [Create, edit and delete campaigns](https://github.com/microapps/MoonMail/wiki/Campaigns)
 * [Parse (track) opened emails + clicked links within an email](https://github.com/microapps/MoonMail/wiki/Links)
+* Create and edit autoresponders
+* Extend the recipient fields with liquid tags (extra values like: gender, country...)
+* Apply [liquid](https://shopify.github.io/liquid/) syntax within the campaigns
 * Update the recipient status with any of the following: Unsubscribed, Bounced, Complaint-Spam, Suppresion-list
 * Download the full Serverless project as a Node.js® module
 * Basic front / UI to manage lists and to send campaigns 
