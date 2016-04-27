@@ -38,7 +38,7 @@ describe('SendEmailService', () => {
       });
 
       before(() => {
-        senderService = new SendEmailService(queue, sesClient);
+        senderService = new SendEmailService(queue);
       });
 
       it('returns the sent emails message handles', (done) => {
@@ -63,7 +63,8 @@ describe('SendEmailService', () => {
     });
 
     it('sends the email', (done) => {
-      const senderService = new SendEmailService(queue, sesClient);
+      const senderService = new SendEmailService(queue);
+      senderService.setEmailClient(email);
       expect(senderService.deliver(email)).to.eventually.have.keys('MessageId').notify(done);
     });
   });

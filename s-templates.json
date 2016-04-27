@@ -31,6 +31,17 @@
     ],
     "Resource": "*"
   },
+  "kinesisStatementTemplate": {
+    "Effect": "Allow",
+    "Action": [
+      "kinesis:PutRecord",
+      "kinesis:GetRecords",
+      "kinesis:GetShardIterator",
+      "kinesis:DescribeStream",
+      "kinesis:ListStreams"
+    ],
+    "Resource": "*"
+  },
   "lambdaStatementTemplate": {
     "Effect": "Allow",
     "Action": [

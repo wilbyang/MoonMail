@@ -3,7 +3,7 @@
 import { debug } from './index';
 import * as url from 'url';
 import * as cheerio from 'cheerio';
-import uuid from 'uuid';
+import cuid from 'cuid';
 
 class LinksParser {
   constructor({ campaignId, apiHost } = {}) {
@@ -40,15 +40,15 @@ class LinksParser {
       const $ = cheerio.load(body);
       let campaignLinks = {
         id: this.campaignId,
-        links: []
+        links: {}
       };
       $('a').each((i, link) => {
         let linkUrl = $(link).attr('href');
-        let linkText = $(link).text();
-        let linkId = uuid.v1();
+        let linkText = $(link).text() || '-';
+        let linkId = cuid();
         let clickTrackUrl = this.clicksTrackUrl(linkId, linkUrl);
         $(link).attr('href', clickTrackUrl);
-        campaignLinks.links.push({id: linkId, url: linkUrl, text: linkText});
+        campaignLinks.links[linkId] = {url: linkUrl, text: linkText};
       });
       const result = {
         parsedBody: $.html(),
