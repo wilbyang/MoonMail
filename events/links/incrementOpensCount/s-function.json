@@ -17,7 +17,8 @@
       "name": "${opensStreamName}",
       "type": "kinesisstream",
       "config": {
-        "streamArn": "${opensStreamARN}"
+        "streamArn": "${opensStreamARN}",
+        "enabled": true
       }
     }
   ],

@@ -44,7 +44,7 @@ class LinksParser {
       };
       $('a').each((i, link) => {
         let linkUrl = $(link).attr('href');
-        let linkText = $(link).text();
+        let linkText = $(link).text() || '-';
         let linkId = uuid.v1();
         let clickTrackUrl = this.clicksTrackUrl(linkId, linkUrl);
         $(link).attr('href', clickTrackUrl);
