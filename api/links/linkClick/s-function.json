@@ -23,7 +23,8 @@
       "requestTemplates": {
         "application/json": {
           "campaignId": "$input.params('campaignId')",
-          "linkId": "$input.params('linkId')"
+          "linkId": "$input.params('linkId')",
+          "linkUrl": "$input.params('url')"
         }
       },
       "responses": {
@@ -31,8 +32,10 @@
           "statusCode": "400"
         },
         "default": {
-          "statusCode": "200",
-          "responseParameters": {},
+          "statusCode": "302",
+          "responseParameters": {
+            "method.response.header.location" : "integration.response.body.url"
+          },
           "responseModels": {
             "application/json;charset=UTF-8": "Empty"
           },

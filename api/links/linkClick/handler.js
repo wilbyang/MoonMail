@@ -22,7 +22,6 @@ export default (event, context) => {
     } else {
       DEBUG('= linkClick.handler', 'Message successfully pushed to buffer');
     }
-     return context.done(err, data);
+    return context.done(null, {url: event.linkUrl});
   });
-}
-
+};
