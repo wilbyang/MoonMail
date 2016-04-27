@@ -16,8 +16,8 @@ class IncrementClicksService {
           .then(() => {
             cb();
           })
-          .catch((err) => {
-            cb(err);
+          .catch(() => {
+            cb();
           });
       }, err => {
         if (err) {
