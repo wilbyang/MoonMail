@@ -11,9 +11,9 @@ class IncrementClicksService {
 
   incrementAll() {
     return new Promise((resolve, reject) => {
-      async.forEachOf(this.opensByCampaign, (count, cid, cb) => {
-        this.incrementCount(cid, count)
-          .then((data) => {
+      async.forEachOf(this.clicksByLink, (data, lid, cb) => {
+        this.incrementCount(data.campaignId, lid, data.count)
+          .then(() => {
             cb();
           })
           .catch((err) => {
@@ -31,9 +31,9 @@ class IncrementClicksService {
     });
   }
 
-  incrementCount(campaignId, count = 1) {
+  incrementCount(campaignId, linkId, count = 1) {
     debug('= IncrementClicksService.incrementCount', 'Campaign ID:', campaignId, 'Count:', count);
-    return Link.incrementOpens(campaignId, count);
+    return Link.incrementClicks(campaignId, linkId, count);
   }
 
   get clicksByLink() {

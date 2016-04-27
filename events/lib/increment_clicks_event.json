@@ -5,7 +5,7 @@
         "kinesisSchemaVersion": "1.0",
         "partitionKey": "some_campaign_id",
         "sequenceNumber": "49561248805737405226755593691918241865509837490266046466",
-        "data": "eyJjYW1wYWlnbklkIjogInNvbWVfY2FtcGFpZ25faWQiLCAibGlua0lkIjogInNvbWVfbGlua19pZCJ9",
+        "data": "eyJjYW1wYWlnbklkIjogInNvbWVfY2FtcGFpZ25faWQiLCAibGlua0lkIjogImxpbmtfd2l0aF8yX29jY3VyZW5jZXMifQ==",
         "approximateArrivalTimestamp": 1461254626.271
       },
       "eventSource": "aws:kinesis",
@@ -21,7 +21,7 @@
         "kinesisSchemaVersion": "1.0",
         "partitionKey": "some_campaign_id",
         "sequenceNumber": "49561248805737405226755593691919450791329452119440752642",
-        "data": "eyJjYW1wYWlnbklkIjogInNvbWVfY2FtcGFpZ25faWQiLCAibGlua0lkIjogInNvbWVfbGlua19pZCJ9",
+        "data": "eyJjYW1wYWlnbklkIjogInNvbWVfY2FtcGFpZ25faWQiLCAibGlua0lkIjogImxpbmtfd2l0aF8yX29jY3VyZW5jZXMifQ==",
         "approximateArrivalTimestamp": 1461254626.376
       },
       "eventSource": "aws:kinesis",
@@ -37,7 +37,7 @@
         "kinesisSchemaVersion": "1.0",
         "partitionKey": "some_campaign_id",
         "sequenceNumber": "49561248805737405226755593691920659717149066748615458818",
-        "data": "eyJjYW1wYWlnbklkIjogInNvbWVfY2FtcGFpZ25faWQiLCAibGlua0lkIjogInNvbWVfbGlua19pZCJ9",
+        "data": "eyJjYW1wYWlnbklkIjogInNvbWVfY2FtcGFpZ25faWQiLCAibGlua0lkIjogImxpbmtfd2l0aF8xX29jY3VyZW5jZSJ9",
         "approximateArrivalTimestamp": 1461254626.401
       },
       "eventSource": "aws:kinesis",
