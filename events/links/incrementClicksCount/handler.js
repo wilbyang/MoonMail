@@ -1,7 +1,9 @@
-export default (event, context) => {
-  // must return a promise, a JSON.stringify compatible data, null or nothing.
-  return {
-    message: 'Go Serverless! Your Lambda function executed successfully!'
-  }
-}
+'use strict';
 
+import * as action from './action';
+
+export default (event, context) => {
+  action.respond(event, (error, response) => {
+    return context.done(error, response);
+  });
+};

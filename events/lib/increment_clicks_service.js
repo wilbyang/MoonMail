@@ -21,11 +21,11 @@ class IncrementClicksService {
           });
       }, err => {
         if (err) {
-          debug('= IncrementClicksService.incrementAll', 'Error incrementing opens', err);
+          debug('= IncrementClicksService.incrementAll', 'Error incrementing clicks', err);
           reject(err);
         } else {
-          debug('= IncrementClicksService.incrementAll', 'Successfully incremented opens');
-          resolve();
+          debug('= IncrementClicksService.incrementAll', 'Successfully incremented clicks');
+          resolve('ok');
         }
       });
     });
