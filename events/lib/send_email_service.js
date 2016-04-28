@@ -2,12 +2,13 @@
 
 import { debug } from './index';
 import * as async from 'async';
+import { SES } from 'aws-sdk';
 
 class SendEmailService {
 
-  constructor(queue, emailClient, lambdaClient, lambdaName) {
+  constructor(queue, lambdaClient, lambdaName) {
     this.queue = queue;
-    this.emailClient = emailClient;
+    this.emailClient = null;
     this.lambdaClient = lambdaClient;
     this.lambdaName = lambdaName;
   }
@@ -46,6 +47,7 @@ class SendEmailService {
       this.queue.retrieveMessages()
         .then((enqueuedEmails) => {
           debug('= SendEmailService.sendBatch', 'Got', enqueuedEmails.length, 'messages');
+          this.setEmailClient(enqueuedEmails[0]);
           async.each(enqueuedEmails, (email, callback) => {
             this.deliver(email)
               .then(() => {
@@ -79,6 +81,24 @@ class SendEmailService {
         }
       });
     });
+  }
+
+  setEmailClient(enqueuedEmail) {
+    debug('= SendEmailService.setEmailClient', 'Getting client');
+    if (!this.emailClient) {
+      debug('= SendEmailService.setEmailClient', 'Non existing client. Building one...');
+      this.emailClient = new SES(this._sesClientParams(enqueuedEmail));
+      return this.emailClient;
+    }
+  }
+
+  _sesClientParams(enqueuedEmail) {
+    debug('= SendEmailService._sesClientParams', JSON.stringify(enqueuedEmail.message.sender));
+    return {
+      accessKeyId: enqueuedEmail.message.sender.apiKey,
+      secretAccessKey: enqueuedEmail.message.sender.apiSecret,
+      region: enqueuedEmail.message.sender.region
+    }
   }
 }
 

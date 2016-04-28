@@ -9,9 +9,13 @@
     "type": "git",
     "url": "git://github.com/"
   },
+  "scripts": {
+    "test": "mocha --require babel-register $(find . -name '*.test.js' -not -path './node_modules/*')"
+  },
   "keywords": [],
-  "devDependencies": {},
+  "devDependencies": {
+    "aws-sdk": "^2.2.35"
+  },
   "dependencies": {
-    "serverless-helpers-js": "~0.1.0"
   }
 }

@@ -31,6 +31,17 @@
     ],
     "Resource": "*"
   },
+  "kinesisStatementTemplate": {
+    "Effect": "Allow",
+    "Action": [
+      "kinesis:PutRecord",
+      "kinesis:GetRecords",
+      "kinesis:GetShardIterator",
+      "kinesis:DescribeStream",
+      "kinesis:ListStreams"
+    ],
+    "Resource": "*"
+  },
   "lambdaStatementTemplate": {
     "Effect": "Allow",
     "Action": [
@@ -55,5 +66,72 @@
   "sendEmailsTopic": "${project}-${stage}-sendEmails",
   "precompileEmailTopic": "${project}-${stage}-precompileEmail",
   "sendCampaignTopic": "${project}-${stage}-sendCampaign",
-  "linksTable": "${project}-${stage}-links"
+  "linksTable": "${project}-${stage}-links",
+  "responses": {
+    "400": {
+      "statusCode": "400",
+      "selectionPattern": ".*\"status\":400.*",
+      "responseParameters": {},
+      "responseTemplates": {
+        "application/json": "$input.path('$.errorMessage')"
+      }
+    },
+    "401": {
+      "statusCode": "401",
+      "selectionPattern": ".*\"status\":401.*",
+      "responseParameters": {},
+      "responseTemplates": {
+        "application/json": "$input.path('$.errorMessage')"
+      }
+    },
+    "403": {
+      "statusCode": "403",
+      "selectionPattern": ".*\"status\":403.*",
+      "responseParameters": {},
+      "responseTemplates": {
+        "application/json": "$input.path('$.errorMessage')"
+      }
+    },
+    "404": {
+      "statusCode": "404",
+      "selectionPattern": ".*\"status\":404.*",
+      "responseParameters": {},
+      "responseTemplates": {
+        "application/json": "$input.path('$.errorMessage')"
+      }
+    },
+    "409": {
+      "statusCode": "409",
+      "selectionPattern": ".*\"status\":409.*",
+      "responseParameters": {},
+      "responseTemplates": {
+        "application/json": "$input.path('$.errorMessage')"
+      }
+    },
+    "500": {
+      "statusCode": "500",
+      "selectionPattern": ".*\"status\":500.*",
+      "responseParameters": {},
+      "responseTemplates": {
+        "application/json": "$input.path('$.errorMessage')"
+      }
+    },
+    "503": {
+      "statusCode": "503",
+      "selectionPattern": ".*\"status\":503.*",
+      "responseParameters": {},
+      "responseTemplates": {
+        "application/json": "$input.path('$.errorMessage')"
+      }
+    },
+    "default": {
+      "statusCode": "200",
+      "responseModels": {
+        "application/json": "Empty"
+      },
+      "responseTemplates": {
+        "application/json": ""
+      }
+    }
+  }
 }

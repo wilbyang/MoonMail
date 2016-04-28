@@ -3,10 +3,12 @@
 import * as chai from 'chai';
 const chaiCheerio = require('chai-cheerio');
 const chaiAsPromised = require('chai-as-promised');
+const chaiFuzzy = require('chai-fuzzy');
 import { expect } from 'chai';
 import { LinksParser } from './links_parser';
 import * as cheerio from 'cheerio';
 
+chai.use(chaiFuzzy);
 chai.use(chaiAsPromised);
 chai.use(chaiCheerio);
 
@@ -67,11 +69,8 @@ describe('LinksParser', () => {
       links.parseLinks(htmlBody).then((result) => {
         expect(result.campaignLinks).to.have.property('id', links.campaignId);
         const linksData = result.campaignLinks.links;
-        for (let i = 0; i < linksData.length; i++) {
-          expect(linksData[i]).to.have.property('id');
-          expect(linksData[i]).to.have.property('url', linkUrls[i]);
-          expect(linksData[i]).to.have.property('text', linksText[i]);
-        }
+        expect(linksData).to.containOneLike({url: linkUrls[0], text: linksText[0]});
+        expect(linksData).to.containOneLike({url: linkUrls[1], text: linksText[1]});
         done();
       });
     });

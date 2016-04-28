@@ -43,7 +43,25 @@
             "$${logsStatementTemplate}",
             "$${lambdaStatementTemplate}",
             "$${sqsStatementTemplate}",
-            "$${sesStatementTemplate}"
+            "$${sesStatementTemplate}",
+            "$${kinesisStatementTemplate}",
+            {
+              "Effect": "Allow",
+              "Action": [
+                "s3:GetObject"
+              ],
+              "Resource": "arn:aws:s3:::${recipientsImportBucket}/*"
+            },
+            {
+              "Effect": "Allow",
+              "Action": "dynamodb:*",
+              "Resource": "arn:aws:dynamodb:${region}:${account-id}:table/*"
+            },
+            {
+              "Effect": "Allow",
+              "Action": "dynamodb:*",
+              "Resource": "arn:aws:dynamodb:${region}:${account-id}:table/*/index/*"
+            }
           ]
         },
         "Roles": [
@@ -119,6 +137,124 @@
         },
         "TableName": "$${linksTable}"
       }
+    },
+    "OpensStream": {
+       "Type" : "AWS::Kinesis::Stream",
+       "Properties" : {
+          "ShardCount" : 1
+       }
+    },
+    "ClicksStream": {
+       "Type" : "AWS::Kinesis::Stream",
+       "Properties" : {
+          "ShardCount" : 1
+       }
+    },
+    "RecipientsTable": {
+      "Type": "AWS::DynamoDB::Table",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "id",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "listId",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "recipientStatus",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "id",
+            "KeyType": "HASH"
+          }
+        ],
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": 3,
+          "WriteCapacityUnits": 5
+        },
+        "GlobalSecondaryIndexes": [
+          {
+            "IndexName": "ListRecipientsIndex",
+            "KeySchema": [
+              {
+                "AttributeName": "listId",
+                "KeyType": "HASH"
+              },
+              {
+                "AttributeName": "recipientStatus",
+                "KeyType": "RANGE"
+              }
+            ],
+            "Projection": {
+              "ProjectionType": "ALL"
+            },
+            "ProvisionedThroughput": {
+              "ReadCapacityUnits": 5,
+              "WriteCapacityUnits": 5
+            }
+          }
+        ],
+        "TableName": "${project}-recipients-${stage}"
+      }
+    },
+    "ListsTable": {
+      "Type": "AWS::DynamoDB::Table",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "id",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "userId",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "isDeleted",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "id",
+            "KeyType": "HASH"
+          }
+        ],
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": 3,
+          "WriteCapacityUnits": 5
+        },
+        "GlobalSecondaryIndexes": [
+          {
+            "IndexName": "UserListsIndex",
+            "KeySchema": [
+              {
+                "AttributeName": "userId",
+                "KeyType": "HASH"
+              },
+              {
+                "AttributeName": "isDeleted",
+                "KeyType": "RANGE"
+              }
+            ],
+            "Projection": {
+              "ProjectionType": "ALL"
+            },
+            "ProvisionedThroughput": {
+              "ReadCapacityUnits": 5,
+              "WriteCapacityUnits": 5
+            }
+          }
+        ],
+        "TableName": "${project}-lists-${stage}"
+      }
     }
   },
   "Outputs": {
@@ -150,6 +286,22 @@
     "SendEmailsTopicARN" : {
       "Description" : "ARN of the SendEmails SNS topic",
       "Value" : { "Ref" : "SendEmailsTopic"}
+    },
+    "OpensStreamName" : {
+      "Description" : "Name of the Opens Kinesis Stream",
+      "Value" : { "Ref" : "OpensStream"}
+    },
+    "OpensStreamARN" : {
+      "Description" : "Name of the Opens Kinesis Stream",
+      "Value" : { "Fn::GetAtt" : ["OpensStream", "Arn"]}
+    },
+    "ClicksStreamName" : {
+      "Description" : "Name of the Clicks Kinesis Stream",
+      "Value" : { "Ref" : "ClicksStream"}
+    },
+    "ClicksStreamARN" : {
+      "Description" : "Name of the Clicks Kinesis Stream",
+      "Value" : { "Fn::GetAtt" : ["ClicksStream", "Arn"]}
     }
   }
 }
