@@ -150,6 +150,29 @@
         "TableName": "$${linksTable}"
       }
     },
+    "CampaignsTable": {
+      "Type": "AWS::DynamoDB::Table",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "id",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "id",
+            "KeyType": "HASH"
+          }
+        ],
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": 3,
+          "WriteCapacityUnits": 5
+        },
+        "TableName": "$${campaignsTable}"
+      }
+    },
     "OpensStream": {
        "Type" : "AWS::Kinesis::Stream",
        "Properties" : {

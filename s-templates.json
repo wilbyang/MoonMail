@@ -68,6 +68,7 @@
   "precompileEmailTopic": "${project}-${stage}-precompileEmail",
   "sendCampaignTopic": "${project}-${stage}-sendCampaign",
   "linksTable": "${project}-${stage}-links",
+  "campaignsTable": "${project}-${stage}-campaigns",
   "attachRecipientsTopic": "${project}-${stage}-attachRecipients",
   "responses": {
     "400": {
