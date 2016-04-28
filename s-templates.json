@@ -64,9 +64,11 @@
     ]
   },
   "sendEmailsTopic": "${project}-${stage}-sendEmails",
+  "precompileCampaignTopic": "${project}-${stage}-precompileCampaign",
   "precompileEmailTopic": "${project}-${stage}-precompileEmail",
   "sendCampaignTopic": "${project}-${stage}-sendCampaign",
   "linksTable": "${project}-${stage}-links",
+  "attachRecipientsTopic": "${project}-${stage}-attachRecipients",
   "responses": {
     "400": {
       "statusCode": "400",

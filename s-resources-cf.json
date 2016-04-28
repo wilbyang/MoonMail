@@ -83,10 +83,22 @@
         "TopicName": "$${sendCampaignTopic}"
       }
     },
+    "PrecompileCampaignTopic": {
+      "Type": "AWS::SNS::Topic",
+      "Properties": {
+        "TopicName": "$${precompileCampaignTopic}"
+      }
+    },
     "PrecompileEmailTopic": {
       "Type": "AWS::SNS::Topic",
       "Properties": {
         "TopicName": "$${precompileEmailTopic}"
+      }
+    },
+    "AttachRecipientsTopic": {
+      "Type": "AWS::SNS::Topic",
+      "Properties": {
+        "TopicName": "$${attachRecipientsTopic}"
       }
     },
     "FreeUsersSendEmailQueue": {
@@ -279,6 +291,10 @@
       "Description" : "Name newly created SQS Queue",
       "Value" : { "Fn::GetAtt" : ["FreeUsersSendEmailQueue", "QueueName"]}
     },
+    "PrecompileCampaignTopicARN" : {
+      "Description" : "ARN of the PrecompileCampaign SNS topic",
+      "Value" : { "Ref" : "PrecompileCampaignTopic"}
+    },
     "SendCampaignTopicARN" : {
       "Description" : "ARN of the SendCampaign SNS topic",
       "Value" : { "Ref" : "SendCampaignTopic"}
@@ -286,6 +302,10 @@
     "SendEmailsTopicARN" : {
       "Description" : "ARN of the SendEmails SNS topic",
       "Value" : { "Ref" : "SendEmailsTopic"}
+    },
+    "AttachRecipientsTopicARN" : {
+      "Description" : "ARN of the SendEmails SNS topic",
+      "Value" : { "Ref" : "AttachRecipientsTopic"}
     },
     "OpensStreamName" : {
       "Description" : "Name of the Opens Kinesis Stream",
