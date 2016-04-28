@@ -60,6 +60,16 @@ Deploy MoonMail events:
 Create the API Gateway endpoints:
 
     sls endpoint deploy
+    
+## Contributing Guidelines
+Contributions are always welcome! If you'd like to collaborate with us, take into account that:
+
+* We use [ES2015](https://babeljs.io/docs/learn-es2015/) and love OOP.
+* We test with [mocha](https://github.com/mochajs/mocha) + [chai](https://github.com/chaijs/chai) + [sinon](https://github.com/sinonjs/sinon).
+* We submit a PR to the `develop` branch whenever we want to upload new code.
+
+Feel free to <a href="mailto:hi@microapps.com">contact us</a> if you have any question!
+
 
 ## License
 
