@@ -10,7 +10,7 @@ class ParseLinksService {
     this.campaignParams = campaignParams;
     this.parsedBody = null;
     this.apiHost = process.env.API_HOST;
-    this.sendCampaignTopicArn = process.env.SEND_CAMPAIGN_TOPIC_ARN;
+    this.sendCampaignTopicArn = process.env.ATTACH_RECIPIENTS_TOPIC_ARN;
     this.snsClient = snsClient;
   }
 

@@ -1,0 +1,36 @@
+{
+  "name": "incrementOpensCount",
+  "runtime": "babel",
+  "description": "Serverless Lambda function for project: MoonMail-v2",
+  "customName": "${project}-links-incrementOpensCount",
+  "customRole": false,
+  "handler": "links/incrementOpensCount/handler.default",
+  "timeout": 60,
+  "memorySize": 1024,
+  "authorizer": {},
+  "custom": {
+    "excludePatterns": []
+  },
+  "endpoints": [],
+  "events": [
+    {
+      "name": "${opensStreamName}",
+      "type": "kinesisstream",
+      "config": {
+        "streamArn": "${opensStreamARN}",
+        "enabled": true
+      }
+    }
+  ],
+  "environment": {
+    "SERVERLESS_PROJECT": "${project}",
+    "SERVERLESS_STAGE": "${stage}",
+    "SERVERLESS_REGION": "${region}",
+    "LINKS_TABLE": "$${linksTable}",
+    "DEBUG": "true"
+  },
+  "vpc": {
+    "securityGroupIds": [],
+    "subnetIds": []
+  }
+}

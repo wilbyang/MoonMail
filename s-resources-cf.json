@@ -44,6 +44,7 @@
             "$${lambdaStatementTemplate}",
             "$${sqsStatementTemplate}",
             "$${sesStatementTemplate}",
+            "$${kinesisStatementTemplate}",
             {
               "Effect": "Allow",
               "Action": [
@@ -82,10 +83,22 @@
         "TopicName": "$${sendCampaignTopic}"
       }
     },
+    "PrecompileCampaignTopic": {
+      "Type": "AWS::SNS::Topic",
+      "Properties": {
+        "TopicName": "$${precompileCampaignTopic}"
+      }
+    },
     "PrecompileEmailTopic": {
       "Type": "AWS::SNS::Topic",
       "Properties": {
         "TopicName": "$${precompileEmailTopic}"
+      }
+    },
+    "AttachRecipientsTopic": {
+      "Type": "AWS::SNS::Topic",
+      "Properties": {
+        "TopicName": "$${attachRecipientsTopic}"
       }
     },
     "FreeUsersSendEmailQueue": {
@@ -136,6 +149,18 @@
         },
         "TableName": "$${linksTable}"
       }
+    },
+    "OpensStream": {
+       "Type" : "AWS::Kinesis::Stream",
+       "Properties" : {
+          "ShardCount" : 1
+       }
+    },
+    "ClicksStream": {
+       "Type" : "AWS::Kinesis::Stream",
+       "Properties" : {
+          "ShardCount" : 1
+       }
     },
     "RecipientsTable": {
       "Type": "AWS::DynamoDB::Table",
@@ -266,6 +291,10 @@
       "Description" : "Name newly created SQS Queue",
       "Value" : { "Fn::GetAtt" : ["FreeUsersSendEmailQueue", "QueueName"]}
     },
+    "PrecompileCampaignTopicARN" : {
+      "Description" : "ARN of the PrecompileCampaign SNS topic",
+      "Value" : { "Ref" : "PrecompileCampaignTopic"}
+    },
     "SendCampaignTopicARN" : {
       "Description" : "ARN of the SendCampaign SNS topic",
       "Value" : { "Ref" : "SendCampaignTopic"}
@@ -273,6 +302,26 @@
     "SendEmailsTopicARN" : {
       "Description" : "ARN of the SendEmails SNS topic",
       "Value" : { "Ref" : "SendEmailsTopic"}
+    },
+    "AttachRecipientsTopicARN" : {
+      "Description" : "ARN of the SendEmails SNS topic",
+      "Value" : { "Ref" : "AttachRecipientsTopic"}
+    },
+    "OpensStreamName" : {
+      "Description" : "Name of the Opens Kinesis Stream",
+      "Value" : { "Ref" : "OpensStream"}
+    },
+    "OpensStreamARN" : {
+      "Description" : "Name of the Opens Kinesis Stream",
+      "Value" : { "Fn::GetAtt" : ["OpensStream", "Arn"]}
+    },
+    "ClicksStreamName" : {
+      "Description" : "Name of the Clicks Kinesis Stream",
+      "Value" : { "Ref" : "ClicksStream"}
+    },
+    "ClicksStreamARN" : {
+      "Description" : "Name of the Clicks Kinesis Stream",
+      "Value" : { "Fn::GetAtt" : ["ClicksStream", "Arn"]}
     }
   }
 }
