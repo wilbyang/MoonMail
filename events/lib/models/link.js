@@ -1,16 +1,11 @@
 'use strict';
 
 import { debug } from './../index';
-import { DynamoDB } from 'aws-sdk';
-
-const dynamoConfig = {
-  region: process.env.AWS_REGION || 'us-east-1'
-};
+import { Model } from './model';
 
 const TABLE_NAME = process.env.LINKS_TABLE;
-const client = new DynamoDB.DocumentClient(dynamoConfig);
 
-class Link {
+class Link extends Model {
 
   static save(linkParams) {
     debug('= Link.save', linkParams);
@@ -67,21 +62,6 @@ class Link {
       }
     };
     return this._client('update', addParams);
-  }
-
-  static _client(method, params) {
-    return new Promise((resolve, reject) => {
-      debug('Link._client', JSON.stringify(params));
-      client[method](params, (err, data) => {
-        if (err) {
-          debug('= Link._client', method, 'Error', err);
-          reject(err);
-        } else {
-          debug('= Link._client', method, 'Success');
-          resolve(data);
-        }
-      });
-    });
   }
 }
 
