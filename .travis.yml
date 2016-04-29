@@ -3,5 +3,4 @@ node_js:
 - '4.3'
 env:
   - TEST_DIR=events
-  - TEST_DIR=api
 script: cd $TEST_DIR && npm install && npm test
