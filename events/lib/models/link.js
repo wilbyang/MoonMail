@@ -3,23 +3,16 @@
 import { debug } from './../index';
 import { Model } from './model';
 
-const TABLE_NAME = process.env.LINKS_TABLE;
-
 class Link extends Model {
 
-  static save(linkParams) {
-    debug('= Link.save', linkParams);
-    const itemParams = {
-      TableName: TABLE_NAME,
-      Item: linkParams
-    };
-    return this._client('put', itemParams);
+  static get tableName() {
+    return process.env.LINKS_TABLE;
   }
 
   static saveAll(linksParams) {
     debug('= Link.saveAll', linksParams);
     let itemsParams = {RequestItems: {}};
-    itemsParams.RequestItems[TABLE_NAME] = linksParams.map((link) => {
+    itemsParams.RequestItems[this.tableName] = linksParams.map((link) => {
       return {
         PutRequest: {Item: link}
       };
@@ -33,7 +26,7 @@ class Link extends Model {
       Key: {
         id: campaignId
       },
-      TableName: TABLE_NAME,
+      TableName: this.tableName,
       AttributeUpdates: {
         opensCount: {
           Action: 'ADD',
@@ -50,7 +43,7 @@ class Link extends Model {
       Key: {
         id: campaignId
       },
-      TableName: TABLE_NAME,
+      TableName: this.tableName,
       UpdateExpression: 'ADD #linksList.#linkId.#attrName :clicksCount',
       ExpressionAttributeNames: {
         '#linksList': 'links',

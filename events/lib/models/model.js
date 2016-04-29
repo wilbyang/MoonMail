@@ -10,6 +10,15 @@ const db = new DynamoDB.DocumentClient(dynamoConfig);
 
 class Model {
 
+  static save(params) {
+    debug('= Link.save', params);
+    const itemParams = {
+      TableName: this.tableName,
+      Item: params
+    };
+    return this._client('put', itemParams);
+  }
+
   static _client(method, params) {
     return new Promise((resolve, reject) => {
       debug('Model._client', JSON.stringify(params));
@@ -23,6 +32,10 @@ class Model {
         }
       });
     });
+  }
+
+  static get tableName() {
+    throw new Error('No table name defined');
   }
 
  }
