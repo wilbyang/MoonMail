@@ -8,3 +8,4 @@ cache:
   directories:
     - node_modules
     - events/node_modules
+    - api/node_modules
