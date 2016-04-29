@@ -4,3 +4,6 @@ node_js:
 env:
   - TEST_DIR=events
 script: cd $TEST_DIR && npm install && npm test
+cache:
+  directories:
+    - node_modules
