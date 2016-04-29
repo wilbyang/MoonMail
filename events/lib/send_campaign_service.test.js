@@ -37,7 +37,7 @@ describe('SendCampaignService', () => {
         expect(campaign).to.have.deep.property('campaign.body', body);
         expect(campaign).to.have.deep.property('campaign.senderId', senderId);
         expect(campaign).to.have.deep.property('campaign.precompiled', false);
-        expect(campaign).to.have.deep.property('campaign.listIds', listIds);
+        expect(campaign).to.have.deep.property('listIds[0]', listIds[0]);
         done();
       });
     });
