@@ -1,0 +1,6 @@
+language: node_js
+node_js:
+- '4.3'
+env:
+  - TEST_DIR=events
+script: cd $TEST_DIR && npm install && npm test
