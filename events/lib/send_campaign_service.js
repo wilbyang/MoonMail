@@ -1,24 +1,30 @@
 'use strict';
 
 import { debug } from './index';
+import { Campaign } from './models/campaign';
 
 class SendCampaignService {
 
-  constructor() {
+  constructor(campaignId) {
+    this.campaignId = campaignId;
   }
 
-  buildCampaignObject() {
-    return new Promise((resolve, reject) => {
+  sendCampaign() {
+    return null;
+  }
+
+  buildCampaignMessage(campaignRecord) {
+    return new Promise((resolve) => {
       resolve({
-        userId: 'ca7654',
+        userId: campaignRecord.userId,
         campaign: {
-          id: 'ca213',
-          subject: 'my campaign subject',
-          body: 'my campaign body',
-          senderId: 'ca654',
+          id: campaignRecord.id,
+          subject: campaignRecord.subject,
+          body: campaignRecord.body,
+          senderId: campaignRecord.senderId,
           precompiled: false
         },
-        listIds: ['ca43546']
+        listIds: campaignRecord.listIds
       });
     });
   }
