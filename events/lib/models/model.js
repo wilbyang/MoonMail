@@ -11,12 +11,23 @@ const db = new DynamoDB.DocumentClient(dynamoConfig);
 class Model {
 
   static save(params) {
-    debug('= Link.save', params);
+    debug('= Model.save', params);
     const itemParams = {
       TableName: this.tableName,
       Item: params
     };
     return this._client('put', itemParams);
+  }
+
+  static get(key) {
+    debug('= Model.get', key);
+    const params = {
+      TableName: this.tableName,
+      Key: {
+        id: key
+      }
+    };
+    return this._client('get', params);
   }
 
   static _client(method, params) {
