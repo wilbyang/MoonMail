@@ -80,3 +80,4 @@ MoonMail is available under the MIT license. See the LICENSE file for more info.
 If you need support getting MoonMail into production in your AWS account, contact the experts:
 
 - <a href="mailto:ryan@serverlesscode.com">ServerlessCode</a>
+- <a href="http://www.apiwise.nl">Apiwise</a>
