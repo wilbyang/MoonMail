@@ -42,9 +42,21 @@ With MoonMail you can: create & edit lists of recipients (email addresses) and s
 
 You need to have installed the [Serverless Framework](https://github.com/serverless/serverless) (version 0.5.2 or higher is required to run the MoonMail API).
 
+Install npm packages:
+
+    npm install
+
 Initialize the Serverless project:
     
-    sls project init
+    sls project init -c
+
+Set `account-id` and `recipientsImportBucket` variables in your `s-variables-stage.json`. `account-id` must be the ID of the AWS account where you deploy MoonMail:
+
+    {
+      "stage": "dev",
+      "account-id": "<your_aws_account_id>",
+      "recipientsImportBucket": "<a_bucket_name>"
+    }
     
 Create all the needed resources in your AWS account:
 
