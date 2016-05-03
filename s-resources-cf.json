@@ -50,7 +50,7 @@
               "Action": [
                 "s3:GetObject"
               ],
-              "Resource": "arn:aws:s3:::${recipientsImportBucket}/*"
+              "Resource": { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "RecipientsImportS3Bucket" } , "/*" ]]}
             },
             {
               "Effect": "Allow",
@@ -271,6 +271,22 @@
         ],
         "TableName": "${project}-lists-${stage}"
       }
+    },
+    "RecipientsImportS3Bucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "AccessControl": "PublicReadWrite",
+        "BucketName": "recipients-${stage}",
+        "CorsConfiguration": {
+          "CorsRules": [
+            {
+              "AllowedHeaders" : [],
+              "AllowedMethods" : [ "GET", "PUT", "POST", "HEAD" ],
+              "AllowedOrigins" : [ "*" ]
+            }
+          ]
+        }
+      }
     }
   },
   "Outputs": {
@@ -326,6 +342,12 @@
     "ClicksStreamARN" : {
       "Description" : "Name of the Clicks Kinesis Stream",
       "Value" : { "Fn::GetAtt" : ["ClicksStream", "Arn"]}
+    },
+    "RecipientsImportS3BucketName": {
+      "Description": "ARN of the RecipientsImportS3Bucket",
+      "Value": {
+        "Ref": "RecipientsImportS3Bucket"
+      }
     }
   }
 }
