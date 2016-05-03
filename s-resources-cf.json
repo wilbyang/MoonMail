@@ -55,13 +55,17 @@
             {
               "Effect": "Allow",
               "Action": "dynamodb:*",
-              "Resource": "arn:aws:dynamodb:${region}:${account-id}:table/*"
-            },
+              "Resource": { "Fn::Join" : [
+                  "", [ "arn:aws:dynamodb:${region}:", { "Ref" : "AWS::AccountId" } , ":table/*" ]
+               ] }
+             },
             {
               "Effect": "Allow",
               "Action": "dynamodb:*",
-              "Resource": "arn:aws:dynamodb:${region}:${account-id}:table/*/index/*"
-            }
+              "Resource": { "Fn::Join" : [
+                  "", [ "arn:aws:dynamodb:${region}:", { "Ref" : "AWS::AccountId" } , ":table/*/index/*" ]
+               ] }
+             }
           ]
         },
         "Roles": [
