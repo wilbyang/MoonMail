@@ -324,7 +324,7 @@
       "Value" : { "Ref" : "SendEmailsTopic"}
     },
     "AttachRecipientsTopicARN" : {
-      "Description" : "ARN of the SendEmails SNS topic",
+      "Description" : "ARN of the AttachRecipients SNS topic",
       "Value" : { "Ref" : "AttachRecipientsTopic"}
     },
     "OpensStreamName" : {
