@@ -343,6 +343,12 @@
       "Description" : "Name of the Clicks Kinesis Stream",
       "Value" : { "Fn::GetAtt" : ["ClicksStream", "Arn"]}
     },
+    "PrecompileEmailTopicARN": {
+      "Description": "ARN of the PrecompileEmailTopic SNS topic",
+      "Value": {
+        "Ref": "PrecompileEmailTopic"
+      }
+    },
     "RecipientsImportS3BucketName": {
       "Description": "ARN of the RecipientsImportS3Bucket",
       "Value": {
