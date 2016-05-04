@@ -74,10 +74,13 @@ function publishToSns(canonicalMessage) {
           reject(err);
         }
       } else {
+        DEBUG('AttachRecipientsService.publishToSns', 'Message sent');
         if(retryMessages.has(email)){
           retryMessages.delete(email);
         }
-        DEBUG('AttachRecipientsService.publishToSns', 'Message sent');
+        if(!isThrottlingInProgress()){
+          return cb(null, `Campaign ${msg.campaign.id} recipients have been successfully sent`);
+        }
         resolve(data);
       }
     });
