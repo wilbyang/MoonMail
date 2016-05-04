@@ -6,24 +6,30 @@ AWS.config.region = process.env.SERVERLESS_REGION || 'us-east-1';
 
 const sns = new AWS.SNS();
 
-let retryMessages = new Set();
+let sentRecipientsCount = 0;
+let totalRecipientsToSendCount = 0;
 
 export function respond(event, cb){
   let msg = JSON.parse(event.Records[0].Sns.Message);
-  const listIds = msg.campaign.listIds;
-  sendCampaignRecipients(listIds, msg).then(()=>{
-    if(!isThrottlingInProgress()){
-      return cb(null, `Campaign ${msg.campaign.id} recipients have been successfully sent`);
-    }
-  }).catch(e => {
-    DEBUG(e);
-    return cb(e);
-    }
-  );
+  if(msg.recipientsCount && msg.campaign && msg.campaign.listIds){
+    totalRecipientsToSendCount = msg.recipientsCount;
+    const listIds = msg.campaign.listIds;
+    sendCampaignRecipients(listIds, msg).then(()=>{
+      if(!isRecipientsSendingInProgress()){
+        return cb(null, `Campaign ${msg.campaign.id} recipients have been successfully sent`);
+      }
+    }).catch(e => {
+      DEBUG(e);
+      return cb(e);
+    });
+  }else{
+    DEBUG('AttachRecipientsService', 'Could not send campaign recipients');
+    return cb('Required parameters are missing');
+  }
 }
 
-function isThrottlingInProgress(){
-  return retryMessages && retryMessages.size > 0;
+function isRecipientsSendingInProgress(){
+  return sentRecipientsCount < totalRecipientsToSendCount;
 }
 
 function sendCampaignRecipients(listIds, msg){
@@ -66,7 +72,6 @@ function publishToSns(canonicalMessage) {
       let email = canonicalMessage.recipient.email;
       if (err) {
         if (err.code === 'Throttling' || err.code === 'InternalFailure') {
-          retryMessages.add(email);
           publishToSns(canonicalMessage);
           resolve();
         }else{
@@ -74,11 +79,9 @@ function publishToSns(canonicalMessage) {
           reject(err);
         }
       } else {
+        sentRecipientsCount++;
         DEBUG('AttachRecipientsService.publishToSns', 'Message sent');
-        if(retryMessages.has(email)){
-          retryMessages.delete(email);
-        }
-        if(!isThrottlingInProgress()){
+        if(!isRecipientsSendingInProgress()){
           return cb(null, `Campaign ${msg.campaign.id} recipients have been successfully sent`);
         }
         resolve(data);
