@@ -47,17 +47,9 @@ Install npm packages:
     npm install
 
 Initialize the Serverless project:
-    
-    sls project init -c
 
-Set `account-id` and `recipientsImportBucket` variables in your `s-variables-stage.json`. `account-id` must be the ID of the AWS account where you deploy MoonMail:
+    sls project init -c -n your-lower-case-project-name
 
-    {
-      "stage": "dev",
-      "account-id": "<your_aws_account_id>",
-      "recipientsImportBucket": "<a_bucket_name>"
-    }
-    
 Create all the needed resources in your AWS account:
 
     sls resources deploy
