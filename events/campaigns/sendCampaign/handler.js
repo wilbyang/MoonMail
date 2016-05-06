@@ -1,7 +1,8 @@
-export default (event, context) => {
-  // must return a promise, a JSON.stringify compatible data, null or nothing.
-  return {
-    message: 'Go Serverless! Your Lambda function executed successfully!'
-  }
-}
+import { SendCampaignService } from '../../lib/send_campaign_service';
 
+export default (event, context) => {
+  const sendService = new SendCampaignService('ca213');
+  sendService.sendCampaign()
+    .then((data) => context.done(null, data))
+    .catch((err) => context.done(err));
+};

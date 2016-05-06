@@ -10,21 +10,28 @@ class SendCampaignService {
   }
 
   sendCampaign() {
-    return null;
+    return this.getCampaign()
+      .then((campaignRecord) => this.buildCampaignMessage(campaignRecord.Item));
   }
 
-  buildCampaignMessage(campaignRecord) {
+  getCampaign() {
+    debug('= SendCampaignService.getCampaign', this.campaignId);
+    return Campaign.get(this.campaignId);
+  }
+
+  buildCampaignMessage(campaign) {
+    debug('= SendCampaignService.buildCampaignMessage', campaign);
     return new Promise((resolve) => {
       resolve({
-        userId: campaignRecord.userId,
+        userId: campaign.userId,
         campaign: {
-          id: campaignRecord.id,
-          subject: campaignRecord.subject,
-          body: campaignRecord.body,
-          senderId: campaignRecord.senderId,
+          id: campaign.id,
+          subject: campaign.subject,
+          body: campaign.body,
+          senderId: campaign.senderId,
           precompiled: false
         },
-        listIds: campaignRecord.listIds
+        listIds: campaign.listIds
       });
     });
   }
