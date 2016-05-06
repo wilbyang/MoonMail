@@ -1,5 +1,5 @@
 import * as AWS from 'aws-sdk';
-import { getAll } from '../model/recipient';
+import { getAll } from '../../lib/models/recipient';
 import { DEBUG } from '../../lib/logger';
 
 AWS.config.region = process.env.SERVERLESS_REGION || 'us-east-1';
