@@ -67,21 +67,10 @@ export function create(recipient) {
 }
 
 export function update(recipient) {
-  return db('update', {
+  return db('put', {
     TableName: TABLE_NAME,
-    Key:{
-      "id": recipient.id
-    },
-    UpdateExpression: "set email = :email, firstName = :firstName, lastName = :lastName, isConfirmed = :isConfirmed, recipientStatus = :status",
-    ExpressionAttributeValues:{
-      ":email": recipient.email,
-      ":firstName": recipient.firstName,
-      ":lastName": recipient.lastName,
-      ":isConfirmed": recipient.isConfirmed,
-      ":status" : recipient.recipientStatus
-    },
-    ReturnValues:"ALL_NEW"
-  }).then((data) => data.Attributes);
+    Item: recipient
+  }).then(() => recipient);
 }
 
 export function remove(id) {
