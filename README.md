@@ -45,10 +45,21 @@ You need to have installed the [Serverless Framework](https://github.com/serverl
 Install npm packages:
 
     npm install
+    cd events/
+    npm install
+    cd ../api/
+    npm install
 
 Initialize the Serverless project:
 
     sls project init -c -n your-lower-case-project-name
+    
+Add variables to `s-variables-<stage>-<region>`:
+
+    {
+        ...,
+        "apiHost": "yourendpointhost.com"
+    }
 
 Create all the needed resources in your AWS account:
 
