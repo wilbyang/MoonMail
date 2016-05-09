@@ -101,6 +101,12 @@
         "TopicName": "$${attachRecipientsTopic}"
       }
     },
+    "AttachRecipientsCountTopic": {
+      "Type": "AWS::SNS::Topic",
+      "Properties": {
+        "TopicName": "$${attachRecipientsCountTopic}"
+      }
+    },
     "FreeUsersSendEmailQueue": {
       "Type": "AWS::SQS::Queue",
       "Properties": {
@@ -327,8 +333,12 @@
       "Value" : { "Ref" : "SendEmailsTopic"}
     },
     "AttachRecipientsTopicARN" : {
-      "Description" : "ARN of the SendEmails SNS topic",
+      "Description" : "ARN of the AttachRecipients SNS topic",
       "Value" : { "Ref" : "AttachRecipientsTopic"}
+    },
+    "AttachRecipientsCountTopicARN" : {
+      "Description" : "ARN of the AttachRecipientsCount SNS topic",
+      "Value" : { "Ref" : "AttachRecipientsCountTopic"}
     },
     "OpensStreamName" : {
       "Description" : "Name of the Opens Kinesis Stream",

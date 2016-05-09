@@ -70,6 +70,7 @@
   "linksTable": "${project}-${stage}-links",
   "campaignsTable": "${project}-${stage}-campaigns",
   "attachRecipientsTopic": "${project}-${stage}-attachRecipients",
+  "attachRecipientsCountTopic": "${project}-${stage}-attachRecipientsCount",
   "responses": {
     "400": {
       "statusCode": "400",
