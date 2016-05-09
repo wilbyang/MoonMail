@@ -4,7 +4,7 @@ import * as aws from 'aws-sdk';
 import { SendCampaignService } from '../../lib/send_campaign_service';
 import { debug } from '../../lib/index';
 
-aws.config.update({region: 'us-east-1'});
+aws.config.update({region: process.env.SERVERLESS_REGION});
 const sns = new aws.SNS();
 
 export function respond(event, cb) {

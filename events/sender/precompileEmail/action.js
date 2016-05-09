@@ -4,7 +4,7 @@ import * as aws from 'aws-sdk';
 import { debug } from '../../lib/index';
 import { PrecompileEmailService } from '../../lib/precompile_email_service';
 
-aws.config.update({region: 'us-east-1'});
+aws.config.update({region: process.env.SERVERLESS_REGION});
 const sqs = new aws.SQS();
 
 module.exports.respond = (event, cb) => {
