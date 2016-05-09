@@ -2,15 +2,20 @@
 
 import * as chai from 'chai';
 const chaiAsPromised = require('chai-as-promised');
+const sinonChai = require('sinon-chai');
 import { expect } from 'chai';
+import * as sinon from 'sinon';
+import { Campaign } from './models/campaign';
 import { SendCampaignService } from './send_campaign_service';
+import * as sinonAsPromised from 'sinon-as-promised';
 const awsMock = require('aws-sdk-mock');
 const AWS = require('aws-sdk-promise');
 
+chai.use(sinonChai);
 chai.use(chaiAsPromised);
 
 describe('SendCampaignService', () => {
-  let dbClient;
+  let snsClient;
   let sendCampaignService;
   const senderId = 'ca654';
   const id = 'ca213';
@@ -22,11 +27,7 @@ describe('SendCampaignService', () => {
   const campaignRecord = {senderId, id, subject, userId, listIds, name, body};
 
   before(() => {
-    dbClient = new AWS.DynamoDB.DocumentClient();
-    awsMock.mock('DynamoDB.DocumentClient', 'get', {
-      Item: campaignRecord
-    });
-    sendCampaignService = new SendCampaignService(id);
+    sendCampaignService = new SendCampaignService(snsClient, id);
   });
 
   describe('#buildCampaignMessage()', () => {
@@ -44,7 +45,38 @@ describe('SendCampaignService', () => {
     });
   });
 
-  after(() => {
-    // awsMock.restore('DynamoDB.DocumentClient');
+  describe('#sendCampaign()', () => {
+    beforeEach(() => {
+      sinon.stub(Campaign, 'get').resolves({Item: campaignRecord});
+      awsMock.mock('SNS', 'publish', (params, cb) => {
+        if (params.hasOwnProperty('Message') && params.hasOwnProperty('TopicArn')) {
+          cb(null, {ReceiptHandle: 'STRING_VALUE'});
+        } else {
+          cb('Invalid params');
+        }
+      });
+      snsClient = new AWS.SNS();
+      sendCampaignService = new SendCampaignService(snsClient, id);
+    });
+
+    it('gets the correct campaign from DB', (done) => {
+      sendCampaignService.sendCampaign().then(() => {
+        expect(Campaign.get).to.have.been.calledWithExactly(id);
+        done();
+      });
+    });
+
+    it('publishes the campaign canonical message to the correct SNS topic', (done) => {
+      sendCampaignService.sendCampaign().then((result) => {
+        expect(snsClient.publish.callCount).to.equal(1);
+        expect(result).to.have.property('ReceiptHandle');
+        done();
+      });
+    });
+
+    afterEach(() => {
+      awsMock.restore('SNS');
+      Campaign.get.restore();
+    });
   });
 });
