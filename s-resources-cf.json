@@ -50,18 +50,22 @@
               "Action": [
                 "s3:GetObject"
               ],
-              "Resource": "arn:aws:s3:::${recipientsImportBucket}/*"
+              "Resource": { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "RecipientsImportS3Bucket" } , "/*" ]]}
             },
             {
               "Effect": "Allow",
               "Action": "dynamodb:*",
-              "Resource": "arn:aws:dynamodb:${region}:${account-id}:table/*"
-            },
+              "Resource": { "Fn::Join" : [
+                  "", [ "arn:aws:dynamodb:${region}:", { "Ref" : "AWS::AccountId" } , ":table/*" ]
+               ] }
+             },
             {
               "Effect": "Allow",
               "Action": "dynamodb:*",
-              "Resource": "arn:aws:dynamodb:${region}:${account-id}:table/*/index/*"
-            }
+              "Resource": { "Fn::Join" : [
+                  "", [ "arn:aws:dynamodb:${region}:", { "Ref" : "AWS::AccountId" } , ":table/*/index/*" ]
+               ] }
+             }
           ]
         },
         "Roles": [
@@ -296,6 +300,22 @@
         ],
         "TableName": "${project}-lists-${stage}"
       }
+    },
+    "RecipientsImportS3Bucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "AccessControl": "PublicReadWrite",
+        "BucketName": "${project}-recipients-${stage}",
+        "CorsConfiguration": {
+          "CorsRules": [
+            {
+              "AllowedHeaders" : [],
+              "AllowedMethods" : [ "GET", "PUT", "POST", "HEAD" ],
+              "AllowedOrigins" : [ "*" ]
+            }
+          ]
+        }
+      }
     }
   },
   "Outputs": {
@@ -355,6 +375,18 @@
     "ClicksStreamARN" : {
       "Description" : "Name of the Clicks Kinesis Stream",
       "Value" : { "Fn::GetAtt" : ["ClicksStream", "Arn"]}
+    },
+    "PrecompileEmailTopicARN": {
+      "Description": "ARN of the PrecompileEmailTopic SNS topic",
+      "Value": {
+        "Ref": "PrecompileEmailTopic"
+      }
+    },
+    "RecipientsImportS3BucketName": {
+      "Description": "ARN of the RecipientsImportS3Bucket",
+      "Value": {
+        "Ref": "RecipientsImportS3Bucket"
+      }
     }
   }
 }
