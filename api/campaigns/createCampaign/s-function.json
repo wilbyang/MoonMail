@@ -34,6 +34,7 @@
     "SERVERLESS_PROJECT": "${project}",
     "SERVERLESS_STAGE": "${stage}",
     "SERVERLESS_REGION": "${region}",
+    "CAMPAIGNS_TABLE": "$${campaignsTable}",
     "DEBUG": "true"
   },
   "vpc": {
