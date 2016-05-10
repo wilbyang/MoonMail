@@ -1,10 +1,10 @@
 {
-  "name": "createCampaign",
+  "name": "listCampaigns",
   "runtime": "babel",
   "description": "Serverless Lambda function for project: MoonMail-v2",
-  "customName": "${project}-campaigns-createCampaign",
+  "customName": "${project}-campaigns-listCampaigns",
   "customRole": false,
-  "handler": "campaigns/createCampaign/handler.default",
+  "handler": "campaigns/listCampaigns/handler.default",
   "timeout": 6,
   "memorySize": 1024,
   "authorizer": {},
@@ -14,7 +14,7 @@
   "endpoints": [
     {
       "path": "/campaigns",
-      "method": "POST",
+      "method": "GET",
       "type": "AWS",
       "authorizationType": "none",
       "authorizerFunction": false,
@@ -22,8 +22,7 @@
       "requestParameters": {},
       "requestTemplates": {
         "application/json": {
-          "userId": "$input.params('userId')",
-          "campaign": "$input.json('$.campaign')"
+          "user_id": "$input.params('user_id')"
         }
       },
       "responses": "$${responses}"
