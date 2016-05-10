@@ -1,0 +1,36 @@
+{
+  "name": "sendCampaign",
+  "runtime": "babel",
+  "description": "Serverless Lambda function for project: MoonMail-v2",
+  "customName": "${project}-campaigns-sendCampaign",
+  "customRole": false,
+  "handler": "campaigns/sendCampaign/handler.default",
+  "timeout": 60,
+  "memorySize": 1024,
+  "authorizer": {},
+  "custom": {
+    "excludePatterns": []
+  },
+  "endpoints": [],
+  "events": [
+    {
+      "name": "sendCampaignSns",
+      "type": "sns",
+      "config": {
+        "topicName": "$${sendCampaignTopic}"
+      }
+    }
+  ],
+  "environment": {
+    "SERVERLESS_PROJECT": "${project}",
+    "SERVERLESS_STAGE": "${stage}",
+    "SERVERLESS_REGION": "${region}",
+    "CAMPAIGNS_TABLE": "$${campaignsTable}",
+    "ATTACH_RECIPIENTS_COUNT_TOPIC_ARN": "${attachRecipientsCountTopicARN}",
+    "DEBUG": "true"
+  },
+  "vpc": {
+    "securityGroupIds": [],
+    "subnetIds": []
+  }
+}

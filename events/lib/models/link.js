@@ -1,30 +1,18 @@
 'use strict';
 
 import { debug } from './../index';
-import { DynamoDB } from 'aws-sdk';
+import { Model } from './model';
 
-const dynamoConfig = {
-  region: process.env.AWS_REGION || 'us-east-1'
-};
+class Link extends Model {
 
-const TABLE_NAME = process.env.LINKS_TABLE;
-const client = new DynamoDB.DocumentClient(dynamoConfig);
-
-class Link {
-
-  static save(linkParams) {
-    debug('= Link.save', linkParams);
-    const itemParams = {
-      TableName: TABLE_NAME,
-      Item: linkParams
-    };
-    return this._client('put', itemParams);
+  static get tableName() {
+    return process.env.LINKS_TABLE;
   }
 
   static saveAll(linksParams) {
     debug('= Link.saveAll', linksParams);
     let itemsParams = {RequestItems: {}};
-    itemsParams.RequestItems[TABLE_NAME] = linksParams.map((link) => {
+    itemsParams.RequestItems[this.tableName] = linksParams.map((link) => {
       return {
         PutRequest: {Item: link}
       };
@@ -38,7 +26,7 @@ class Link {
       Key: {
         id: campaignId
       },
-      TableName: TABLE_NAME,
+      TableName: this.tableName,
       AttributeUpdates: {
         opensCount: {
           Action: 'ADD',
@@ -55,7 +43,7 @@ class Link {
       Key: {
         id: campaignId
       },
-      TableName: TABLE_NAME,
+      TableName: this.tableName,
       UpdateExpression: 'ADD #linksList.#linkId.#attrName :clicksCount',
       ExpressionAttributeNames: {
         '#linksList': 'links',
@@ -67,21 +55,6 @@ class Link {
       }
     };
     return this._client('update', addParams);
-  }
-
-  static _client(method, params) {
-    return new Promise((resolve, reject) => {
-      debug('Link._client', JSON.stringify(params));
-      client[method](params, (err, data) => {
-        if (err) {
-          debug('= Link._client', method, 'Error', err);
-          reject(err);
-        } else {
-          debug('= Link._client', method, 'Success');
-          resolve(data);
-        }
-      });
-    });
   }
 }
 

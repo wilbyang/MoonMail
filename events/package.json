@@ -19,7 +19,7 @@
     "babel": "^6.5.2",
     "babel-plugin-transform-object-assign": "^6.5.0",
     "babel-polyfill": "^6.6.1",
-    "babel-register": "^6.6.0",
+    "babel-register": "^6.7.2",
     "babelify": "^7.2.0",
     "chai": "^3.5.0",
     "chai-as-promised": "^5.2.0",

@@ -101,6 +101,12 @@
         "TopicName": "$${attachRecipientsTopic}"
       }
     },
+    "AttachRecipientsCountTopic": {
+      "Type": "AWS::SNS::Topic",
+      "Properties": {
+        "TopicName": "$${attachRecipientsCountTopic}"
+      }
+    },
     "FreeUsersSendEmailQueue": {
       "Type": "AWS::SQS::Queue",
       "Properties": {
@@ -148,6 +154,29 @@
           "WriteCapacityUnits": 5
         },
         "TableName": "$${linksTable}"
+      }
+    },
+    "CampaignsTable": {
+      "Type": "AWS::DynamoDB::Table",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "id",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "id",
+            "KeyType": "HASH"
+          }
+        ],
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": 3,
+          "WriteCapacityUnits": 5
+        },
+        "TableName": "$${campaignsTable}"
       }
     },
     "OpensStream": {
@@ -304,8 +333,12 @@
       "Value" : { "Ref" : "SendEmailsTopic"}
     },
     "AttachRecipientsTopicARN" : {
-      "Description" : "ARN of the SendEmails SNS topic",
+      "Description" : "ARN of the AttachRecipients SNS topic",
       "Value" : { "Ref" : "AttachRecipientsTopic"}
+    },
+    "AttachRecipientsCountTopicARN" : {
+      "Description" : "ARN of the AttachRecipientsCount SNS topic",
+      "Value" : { "Ref" : "AttachRecipientsCountTopic"}
     },
     "OpensStreamName" : {
       "Description" : "Name of the Opens Kinesis Stream",
