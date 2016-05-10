@@ -1,5 +1,5 @@
 import { update } from '../model/recipient';
-import { DEBUG } from '../../lib/logger';
+import { debug } from '../../lib/logger';
 
 export function respond(event, cb){
   if(event.recipient){
@@ -8,7 +8,7 @@ export function respond(event, cb){
     update(recipient).then( recipient => {
       return cb(null, recipient);
     }).catch( e => {
-      DEBUG(e);
+      debug(e);
       return cb(e);
     });
   }else{

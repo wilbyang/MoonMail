@@ -1,11 +1,11 @@
 import { remove } from '../model/recipient';
-import { DEBUG } from '../../lib/logger';
+import { debug } from '../../lib/logger';
 
 export function respond(event, cb){
   remove(event.id).then(() => {
     return cb(null, null);
   }).catch( e => {
-    DEBUG(e);
+    debug(e);
     return cb(e);
   });
 }

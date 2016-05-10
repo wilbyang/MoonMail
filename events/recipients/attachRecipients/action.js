@@ -1,6 +1,6 @@
 import * as AWS from 'aws-sdk';
 import { getAll } from '../../lib/models/recipient';
-import { DEBUG } from '../../lib/logger';
+import { debug } from '../../lib/logger';
 
 AWS.config.region = process.env.SERVERLESS_REGION || 'us-east-1';
 
@@ -19,11 +19,11 @@ export function respond(event, cb){
         return cb(null, `Campaign ${msg.campaign.id} recipients have been successfully sent`);
       }
     }).catch(e => {
-      DEBUG(e);
+      debug(e);
       return cb(e);
     });
   }else{
-    DEBUG('AttachRecipientsService', 'Could not send campaign recipients');
+    debug('AttachRecipientsService', 'Could not send campaign recipients');
     return cb('Required parameters are missing');
   }
 }
@@ -48,7 +48,7 @@ function sendNextBatch(id, msg){
       return publishToSns(message);
     });
     Promise.all(messages).then().catch(e =>{
-      DEBUG(e);
+      debug(e);
     });
     if(data.LastEvaluatedKey){
       let params = {
@@ -63,7 +63,7 @@ function sendNextBatch(id, msg){
 
 function publishToSns(canonicalMessage) {
   return new Promise((resolve, reject) => {
-    DEBUG('AttachRecipientsService.publishToSns', 'Sending canonical message', JSON.stringify(canonicalMessage));
+    debug('AttachRecipientsService.publishToSns', 'Sending canonical message', JSON.stringify(canonicalMessage));
     const params = {
       Message: JSON.stringify(canonicalMessage),
       TopicArn: process.env.PRECOMPILE_EMAIL_TOPIC_ARN
@@ -75,12 +75,12 @@ function publishToSns(canonicalMessage) {
           publishToSns(canonicalMessage);
           resolve();
         }else{
-          DEBUG('AttachRecipientsService.publishToSns', 'Error sending message', err);
+          debug('AttachRecipientsService.publishToSns', 'Error sending message', err);
           reject(err);
         }
       } else {
         sentRecipientsCount++;
-        DEBUG('AttachRecipientsService.publishToSns', 'Message sent');
+        debug('AttachRecipientsService.publishToSns', 'Message sent');
         if(!isRecipientsSendingInProgress()){
           return cb(null, `Campaign ${msg.campaign.id} recipients have been successfully sent`);
         }

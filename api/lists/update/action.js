@@ -1,5 +1,5 @@
 import { update } from '../model/list';
-import { DEBUG } from '../../lib/logger';
+import { debug } from '../../lib/logger';
 
 export function respond(event, cb){
   let list = event.list;
@@ -8,7 +8,7 @@ export function respond(event, cb){
     update(list).then(list => {
       return cb(null, list);
     }).catch( e => {
-      DEBUG(e);
+      debug(e);
       return cb(e);
     });
   }else{

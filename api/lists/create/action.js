@@ -1,5 +1,5 @@
 import { create } from '../model/list';
-import { DEBUG } from '../../lib/logger';
+import { debug } from '../../lib/logger';
 
 export function respond(event, cb){
   if(event.list){
@@ -10,7 +10,7 @@ export function respond(event, cb){
     create(list).then(list => {
       return cb(null, list);
     }).catch( e => {
-      DEBUG(e);
+      debug(e);
       return cb(e);
     });
   }else{

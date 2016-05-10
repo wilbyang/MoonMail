@@ -1,7 +1,10 @@
-import { create } from '../model/recipient';
+'use strict';
+
+import { create } from '../model/campaign';
 import { debug } from '../../lib/logger';
 
-export function respond(event, cb){
+export function respond(event, cb) {
+  debug('= createCampaign.action', JSON.stringify(event));
   if(event.recipient){
     let recipient = event.recipient;
     recipient.recipientStatus = recipient.recipientStatus || 'NORMAL';
