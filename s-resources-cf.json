@@ -139,7 +139,7 @@
     },
     "LinksTable": {
       "Type": "AWS::DynamoDB::Table",
-      "DeletionPolicy": "Retain",
+      "DeletionPolicy": "Delete",
       "Properties": {
         "AttributeDefinitions": [
           {
@@ -154,31 +154,39 @@
           }
         ],
         "ProvisionedThroughput": {
-          "ReadCapacityUnits": 3,
-          "WriteCapacityUnits": 5
+          "ReadCapacityUnits": 1,
+          "WriteCapacityUnits": 1
         },
         "TableName": "$${linksTable}"
       }
     },
     "CampaignsTable": {
       "Type": "AWS::DynamoDB::Table",
-      "DeletionPolicy": "Retain",
+      "DeletionPolicy": "Delete",
       "Properties": {
         "AttributeDefinitions": [
           {
             "AttributeName": "id",
             "AttributeType": "S"
+          },
+          {
+            "AttributeName": "userId",
+            "AttributeType": "S"
           }
         ],
         "KeySchema": [
           {
-            "AttributeName": "id",
+            "AttributeName": "userId",
             "KeyType": "HASH"
+          },
+          {
+            "AttributeName": "id",
+            "KeyType": "RANGE"
           }
         ],
         "ProvisionedThroughput": {
-          "ReadCapacityUnits": 3,
-          "WriteCapacityUnits": 5
+          "ReadCapacityUnits": 1,
+          "WriteCapacityUnits": 1
         },
         "TableName": "$${campaignsTable}"
       }
@@ -197,7 +205,7 @@
     },
     "RecipientsTable": {
       "Type": "AWS::DynamoDB::Table",
-      "DeletionPolicy": "Retain",
+      "DeletionPolicy": "Delete",
       "Properties": {
         "AttributeDefinitions": [
           {
@@ -220,8 +228,8 @@
           }
         ],
         "ProvisionedThroughput": {
-          "ReadCapacityUnits": 3,
-          "WriteCapacityUnits": 5
+          "ReadCapacityUnits": 1,
+          "WriteCapacityUnits": 1
         },
         "GlobalSecondaryIndexes": [
           {
@@ -240,8 +248,8 @@
               "ProjectionType": "ALL"
             },
             "ProvisionedThroughput": {
-              "ReadCapacityUnits": 5,
-              "WriteCapacityUnits": 5
+              "ReadCapacityUnits": 1,
+              "WriteCapacityUnits": 1
             }
           }
         ],
@@ -250,7 +258,7 @@
     },
     "ListsTable": {
       "Type": "AWS::DynamoDB::Table",
-      "DeletionPolicy": "Retain",
+      "DeletionPolicy": "Delete",
       "Properties": {
         "AttributeDefinitions": [
           {
@@ -273,8 +281,8 @@
           }
         ],
         "ProvisionedThroughput": {
-          "ReadCapacityUnits": 3,
-          "WriteCapacityUnits": 5
+          "ReadCapacityUnits": 1,
+          "WriteCapacityUnits": 1
         },
         "GlobalSecondaryIndexes": [
           {
@@ -293,8 +301,8 @@
               "ProjectionType": "ALL"
             },
             "ProvisionedThroughput": {
-              "ReadCapacityUnits": 5,
-              "WriteCapacityUnits": 5
+              "ReadCapacityUnits": 1,
+              "WriteCapacityUnits": 1
             }
           }
         ],
