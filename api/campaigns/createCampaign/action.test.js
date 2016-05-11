@@ -8,16 +8,15 @@ import { Campaign } from '../../lib/models/campaign';
 
 const expect = chai.expect;
 
-describe('action', () => {
+describe('createCampaign', () => {
 
   const senderId = 'ca654';
-  const id = 'ca21233';
   const subject = 'my campaign subject';
   const userId = 'ca7654';
   const listIds = ['ca43546'];
   const name = 'my campaign';
   const body = 'my campaign body';
-  const campaign = {senderId, id, subject, listIds, name, body};
+  const campaign = {senderId, subject, listIds, name, body};
   let event;
 
   describe('#respond()', () => {
@@ -32,7 +31,6 @@ describe('action', () => {
 
       it('creates the campaign', (done) => {
         respond(event, (err, result) => {
-          // expect(Campaign.save).to.have.been.calledWith();
           const args = Campaign.save.firstCall.args[0];
           expect(args).to.have.property('userId');
           expect(args).to.have.property('id');

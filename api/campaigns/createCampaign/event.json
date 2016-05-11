@@ -1,6 +1,6 @@
 {
   "campaign": {
-    "id": "ca213123",
+    "id": "ca21341",
     "senderId": "ca654",
     "id": "ca21233",
     "subject": "my campaign subject",
@@ -8,5 +8,5 @@
     "name": "my campaign",
     "body": "my campaign body"
   },
-  "userId": "ca7654"
+  "userId": "ca76"
 }
