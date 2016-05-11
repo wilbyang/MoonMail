@@ -30,6 +30,17 @@ class Model {
     return this._client('get', params);
   }
 
+  static allBy(key, value) {
+    debug('= Model.allBy', key, value);
+    const params = {
+      TableName: this.tableName,
+      KeyConditionExpression: '#hkey = :hvalue',
+      ExpressionAttributeNames: {'#hkey': key},
+      ExpressionAttributeValues: {':hvalue': value}
+    };
+    return this._client('query', params);
+  }
+
   static _client(method, params) {
     return new Promise((resolve, reject) => {
       debug('Model._client', JSON.stringify(params));
