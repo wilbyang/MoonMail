@@ -16,19 +16,17 @@ describe('listCampaigns', () => {
   describe('#respond()', () => {
     beforeEach(() => {
       sinon.stub(Campaign, 'allBy').resolves({
-        "Items": [
+        Items: [
           {
-            "senderId": "ca654",
-            "id": "cio2p2vqt0000n0edndspzrqy",
-            "subject": "my campaign subject",
-            "userId": userId,
-            "listIds": ["ca43546"],
-            "name": "my campaign",
-            "body": "my campaign body"
+            senderId: 'ca654',
+            id: 'cio2p2vqt0000n0edndspzrqy',
+            subject: 'my campaign subject',
+            listIds: ['ca43546'],
+            name: 'my campaign',
+            body: 'my campaign body',
+            userId
           }
-        ],
-        "Count": 1,
-        "ScannedCount": 1
+        ]
       });
     });
 
@@ -37,14 +35,26 @@ describe('listCampaigns', () => {
         event = {userId};
       });
 
-      it('creates the campaign', (done) => {
+      it('gets a list of campaigns', (done) => {
         respond(event, (err, result) => {
-          const args = Campaign.allBy.firstCall.args;
+          const args = Campaign.allBy.lastCall.args;
           expect(args[0]).to.equal('userId');
           expect(args[1]).to.equal(userId);
           expect(err).to.not.exist;
           expect(result).to.exist;
           done();
+        });
+      });
+
+      context('when the event contains nextPage', () => {
+        it('makes a paginated query', (done) => {
+          const nextPage = 'aaabbbb';
+          event.nextPage = nextPage;
+          respond(event, (err) => {
+            const allbyArgs = Campaign.allBy.lastCall.args;
+            expect(allbyArgs[2]).to.deep.equal({nextPage});
+            done();
+          });
         });
       });
     });
