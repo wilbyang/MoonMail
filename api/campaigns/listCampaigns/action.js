@@ -6,7 +6,11 @@ import { debug } from '../../lib/logger';
 export function respond(event, cb) {
   debug('= listCampaigns.action', JSON.stringify(event));
   if (event.userId) {
-    Campaign.allBy('userId', event.userId).then(campaigns => {
+    let options = {};
+    if (event.nextPage) {
+      options.nextPage = event.nextPage;
+    }
+    Campaign.allBy('userId', event.userId, options).then(campaigns => {
       debug('= listCampaigns.action', 'Success');
       return cb(null, campaigns);
     })
