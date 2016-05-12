@@ -4,7 +4,7 @@ import * as chai from 'chai';
 import { respond } from './action';
 import * as sinon from 'sinon';
 import * as sinonAsPromised from 'sinon-as-promised';
-import { Campaign } from '../../lib/models/campaign';
+import { Campaign } from 'moonmail-models';
 
 const expect = chai.expect;
 

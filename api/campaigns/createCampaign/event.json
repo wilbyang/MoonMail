@@ -1,12 +1,10 @@
 {
   "campaign": {
-    "id": "ca21341",
     "senderId": "ca654",
-    "id": "ca21233",
     "subject": "my campaign subject",
     "listIds": ["ca43546"],
     "name": "my campaign",
     "body": "my campaign body"
   },
-  "userId": "ca76"
+  "userId": "newca76new"
 }
