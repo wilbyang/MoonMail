@@ -15,7 +15,7 @@ export function respond(event, cb) {
       return cb(null, campaigns);
     })
     .catch(e => {
-      debug(e);
+      debug('= listCampaigns.action', e);
       return cb(e);
     });
   } else {
