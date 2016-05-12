@@ -5,7 +5,7 @@ const chaiAsPromised = require('chai-as-promised');
 const sinonChai = require('sinon-chai');
 import { expect } from 'chai';
 import * as sinon from 'sinon';
-import { Link } from './models/link';
+import { Link } from 'moonmail-models';
 import { IncrementClicksService } from './increment_clicks_service';
 import * as event from './increment_clicks_event.json';
 import * as sinonAsPromised from 'sinon-as-promised';
