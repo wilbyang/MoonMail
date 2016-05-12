@@ -15,7 +15,7 @@ class SendCampaignService {
   sendCampaign() {
     debug('= SendCampaignService.sendCampaign', `Sending campaign with id ${this.campaignId}`);
     return this.getCampaign()
-      .then((campaignRecord) => this.buildCampaignMessage(campaignRecord.Item))
+      .then((campaignRecord) => this.buildCampaignMessage(campaignRecord))
       .then((canonicalMessage) => this.publishToSns(canonicalMessage));
   }
 

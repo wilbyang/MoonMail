@@ -47,7 +47,7 @@ describe('SendCampaignService', () => {
 
   describe('#sendCampaign()', () => {
     beforeEach(() => {
-      sinon.stub(Campaign, 'get').resolves({Item: campaignRecord});
+      sinon.stub(Campaign, 'get').resolves(campaignRecord);
       awsMock.mock('SNS', 'publish', (params, cb) => {
         if (params.hasOwnProperty('Message') && params.hasOwnProperty('TopicArn')) {
           cb(null, {ReceiptHandle: 'STRING_VALUE'});
