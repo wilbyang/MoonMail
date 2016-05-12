@@ -9,7 +9,7 @@ const sns = new aws.SNS();
 
 export function respond(event, cb) {
   debug('= sendCampaign.action', JSON.stringify(event));
-  const sendService = new SendCampaignService(sns, event.campaignId);
+  const sendService = new SendCampaignService(sns, event.campaignId, event.userId);
   sendService.sendCampaign()
     .then((data) => cb(null, data))
     .catch((err) => cb(err));
