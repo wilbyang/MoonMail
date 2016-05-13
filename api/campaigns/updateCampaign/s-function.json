@@ -13,7 +13,7 @@
   },
   "endpoints": [
     {
-      "path": "updateCampaign",
+      "path": "/campaigns/{campaignId}",
       "method": "PATCH",
       "type": "AWS",
       "authorizationType": "none",
