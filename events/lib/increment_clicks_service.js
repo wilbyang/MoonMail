@@ -1,7 +1,7 @@
 'use strict';
 
 import { debug } from './index';
-import { Link } from './models/link';
+import { Link } from 'moonmail-models';
 import * as async from 'async';
 
 class IncrementClicksService {

@@ -1,0 +1,44 @@
+{
+  "name": "deleteCampaign",
+  "runtime": "babel",
+  "description": "Serverless Lambda function for project: MoonMail-v2",
+  "customName": "${project}-campaigns-deleteCampaign",
+  "customRole": false,
+  "handler": "campaigns/deleteCampaign/handler.default",
+  "timeout": 6,
+  "memorySize": 1024,
+  "authorizer": {},
+  "custom": {
+    "excludePatterns": []
+  },
+  "endpoints": [
+    {
+      "path": "/campaigns/{campaignId}",
+      "method": "DELETE",
+      "type": "AWS",
+      "authorizationType": "none",
+      "authorizerFunction": false,
+      "apiKeyRequired": false,
+      "requestParameters": {},
+      "requestTemplates": {
+        "application/json": {
+          "userId": "$input.params('user_id')",
+          "campaignId": "$input.params('campaignId')"
+        }
+      },
+      "responses": "$${responses}"
+    }
+  ],
+  "events": [],
+  "environment": {
+    "SERVERLESS_PROJECT": "${project}",
+    "SERVERLESS_STAGE": "${stage}",
+    "SERVERLESS_REGION": "${region}",
+    "CAMPAIGNS_TABLE": "$${campaignsTable}",
+    "DEBUG": "true"
+  },
+  "vpc": {
+    "securityGroupIds": [],
+    "subnetIds": []
+  }
+}

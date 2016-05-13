@@ -2,7 +2,7 @@ import AWS from 'aws-sdk';
 import uuid from 'uuid';
 import csv from 'csv-string';
 import { saveAll } from '../model/recipient';
-import { DEBUG } from '../../lib/logger';
+import { debug } from '../../lib/logger';
 
 export function respond(event, cb){
   const s3Event = event.Records[0].s3;
@@ -52,7 +52,7 @@ export function respond(event, cb){
             import_status: 'SUCCESS',
             updated_at: new Date().toString()
           };
-          DEBUG(importStatus);
+          debug(importStatus);
           return cb(null);
         }).catch(e => {
           //update status
@@ -66,17 +66,17 @@ export function respond(event, cb){
             message: e.message,
             stack_trace: e.stack
           };
-          DEBUG(importStatus);
-          DEBUG(e);
+          debug(importStatus);
+          debug(e);
           return cb(e);
         });
       }else{
-        DEBUG(`${fileExt} is not supported`);
+        debug(`${fileExt} is not supported`);
         return cb(`${fileExt} is not supported`, null);
       }
 
     }else{
-      DEBUG(err, err.stack);
+      debug(err, err.stack);
       return cb(err.stack);
     }
   });

@@ -5,7 +5,7 @@ const chaiAsPromised = require('chai-as-promised');
 const sinonChai = require('sinon-chai');
 import { expect } from 'chai';
 import * as sinon from 'sinon';
-import { Campaign } from './models/campaign';
+import { Campaign } from 'moonmail-models';
 import { SendCampaignService } from './send_campaign_service';
 import * as sinonAsPromised from 'sinon-as-promised';
 const awsMock = require('aws-sdk-mock');
@@ -27,7 +27,7 @@ describe('SendCampaignService', () => {
   const campaignRecord = {senderId, id, subject, userId, listIds, name, body};
 
   before(() => {
-    sendCampaignService = new SendCampaignService(snsClient, id);
+    sendCampaignService = new SendCampaignService(snsClient, id, userId);
   });
 
   describe('#buildCampaignMessage()', () => {
@@ -47,7 +47,7 @@ describe('SendCampaignService', () => {
 
   describe('#sendCampaign()', () => {
     beforeEach(() => {
-      sinon.stub(Campaign, 'get').resolves({Item: campaignRecord});
+      sinon.stub(Campaign, 'get').resolves(campaignRecord);
       awsMock.mock('SNS', 'publish', (params, cb) => {
         if (params.hasOwnProperty('Message') && params.hasOwnProperty('TopicArn')) {
           cb(null, {ReceiptHandle: 'STRING_VALUE'});
@@ -56,12 +56,12 @@ describe('SendCampaignService', () => {
         }
       });
       snsClient = new AWS.SNS();
-      sendCampaignService = new SendCampaignService(snsClient, id);
+      sendCampaignService = new SendCampaignService(snsClient, id, userId);
     });
 
     it('gets the correct campaign from DB', (done) => {
       sendCampaignService.sendCampaign().then(() => {
-        expect(Campaign.get).to.have.been.calledWithExactly(id);
+        expect(Campaign.get).to.have.been.calledWithExactly(userId, id);
         done();
       });
     });

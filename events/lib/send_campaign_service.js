@@ -1,33 +1,34 @@
 'use strict';
 
 import { debug } from './index';
-import { Campaign } from './models/campaign';
+import { Campaign } from 'moonmail-models';
 
 class SendCampaignService {
 
-  constructor(snsClient, campaignId) {
+  constructor(snsClient, campaignId, userId) {
     this.snsClient = snsClient;
     this.campaignId = campaignId;
+    this.userId = userId;
     this.attachRecipientsCountTopicArn = process.env.ATTACH_RECIPIENTS_COUNT_TOPIC_ARN;
   }
 
   sendCampaign() {
     debug('= SendCampaignService.sendCampaign', `Sending campaign with id ${this.campaignId}`);
     return this.getCampaign()
-      .then((campaignRecord) => this.buildCampaignMessage(campaignRecord.Item))
+      .then((campaignRecord) => this.buildCampaignMessage(campaignRecord))
       .then((canonicalMessage) => this.publishToSns(canonicalMessage));
   }
 
   getCampaign() {
     debug('= SendCampaignService.getCampaign', this.campaignId);
-    return Campaign.get(this.campaignId);
+    return Campaign.get(this.userId, this.campaignId);
   }
 
   buildCampaignMessage(campaign) {
     debug('= SendCampaignService.buildCampaignMessage', campaign);
     return new Promise((resolve) => {
       resolve({
-        userId: campaign.userId,
+        userId: this.userId,
         campaign: {
           id: campaign.id,
           subject: campaign.subject,
