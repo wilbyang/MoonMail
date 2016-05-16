@@ -5,7 +5,7 @@ import { debug } from '../../lib/index';
 import { EmailQueue } from '../../lib/email_queue';
 import { SendEmailService } from '../../lib/send_email_service';
 
-aws.config.update({region: 'us-east-1'});
+aws.config.update({region: process.env.SERVERLESS_REGION});
 const sqs = new aws.SQS();
 const lambda = new aws.Lambda();
 

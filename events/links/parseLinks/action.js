@@ -4,7 +4,7 @@ import * as aws from 'aws-sdk';
 import { debug } from '../../lib/index';
 import { ParseLinksService } from '../../lib/parse_links_service';
 
-aws.config.update({region: 'us-east-1'});
+aws.config.update({region: process.env.SERVERLESS_REGION});
 const sns = new aws.SNS();
 
 export function respond(event, cb) {

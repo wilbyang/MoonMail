@@ -1,0 +1,9 @@
+{
+  "campaign": {
+    "senderId": "ca654",
+    "subject": "my campaign subject",
+    "listIds": ["ca43546"],
+    "name": "my campaign",
+    "body": "my campaign body"
+  }
+}
