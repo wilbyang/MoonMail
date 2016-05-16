@@ -22,7 +22,6 @@
       "requestParameters": {},
       "requestTemplates": {
         "application/json":  {
-          "userId": "$input.params('user_id')",
           "campaignId": "$input.params('campaignId')",
           "campaign": "$input.json('$.campaign')"
         }

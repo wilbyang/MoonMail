@@ -7,8 +7,8 @@ import decrypt from '../../lib/auth-token-decryptor';
 export function respond(event, cb) {
   debug('= updateCampaign.action', JSON.stringify(event));
   decrypt(event.authToken).then((decoded) => {
-    if (event.campaign) {
-      Campaign.update(event.campaign, decoded.sub, event.campaign.id).then(campaign => {
+    if (event.campaign && event.campaignId) {
+      Campaign.update(event.campaign, decoded.sub, event.campaignId).then(campaign => {
         debug('= updateCampaign.action', 'Success');
         return cb(null, campaign);
       })
@@ -17,7 +17,7 @@ export function respond(event, cb) {
         return cb(e);
       });
     } else {
-      return cb('No user specified');
+      return cb('No campaign specified');
     }
   })
   .catch(err => cb('403: No authentication token provided', null));

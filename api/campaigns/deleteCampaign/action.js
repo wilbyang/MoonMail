@@ -17,7 +17,7 @@ export function respond(event, cb) {
         return cb(e);
       });
     } else {
-      return cb('No user specified');
+      return cb('No campaign specified');
     }
   })
   .catch(err => cb('403: No authentication token provided', null));
