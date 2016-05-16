@@ -8,9 +8,7 @@ import { Campaign } from 'moonmail-models';
 
 const expect = chai.expect;
 
-describe('deleteCampaign', () => {
-
-  const userId = 'ca7654';
+describe('updateCampaign', () => {
   const campaignId = 'my-campaign-id';
   const campaign = {
     senderId: 'ca654',
@@ -18,8 +16,7 @@ describe('deleteCampaign', () => {
     subject: 'my campaign subject',
     listIds: ['ca43546'],
     name: 'my campaign',
-    body: 'my campaign body',
-    userId
+    body: 'my campaign body'
   }
   let event;
 
@@ -30,14 +27,13 @@ describe('deleteCampaign', () => {
 
     context('when the event is valid', () => {
       before(() => {
-        event = {userId, campaign};
+        event = {campaign};
       });
 
       it('updates the campaign', (done) => {
         respond(event, (err, result) => {
           const args = Campaign.update.lastCall.args;
           expect(args[0]).to.equal(campaign);
-          expect(args[1]).to.equal(userId);
           expect(args[2]).to.equal(campaignId);
           expect(err).to.not.exist;
           expect(result).to.deep.equal(campaign);

@@ -12,7 +12,6 @@ describe('createCampaign', () => {
 
   const senderId = 'ca654';
   const subject = 'my campaign subject';
-  const userId = 'ca7654';
   const listIds = ['ca43546'];
   const name = 'my campaign';
   const body = 'my campaign body';
@@ -26,7 +25,7 @@ describe('createCampaign', () => {
 
     context('when the event is valid', () => {
       before(() => {
-        event = {campaign, userId};
+        event = {campaign};
       });
 
       it('creates the campaign', (done) => {

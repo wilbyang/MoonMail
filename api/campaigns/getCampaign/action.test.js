@@ -10,7 +10,6 @@ const expect = chai.expect;
 
 describe('getCampaign', () => {
 
-  const userId = 'ca7654';
   const campaignId = 'my-campaign-id';
   const campaign = {
     senderId: 'ca654',
@@ -18,9 +17,8 @@ describe('getCampaign', () => {
     subject: 'my campaign subject',
     listIds: ['ca43546'],
     name: 'my campaign',
-    body: 'my campaign body',
-    userId
-  }
+    body: 'my campaign body'
+  };
   let event;
 
   describe('#respond()', () => {
@@ -30,13 +28,12 @@ describe('getCampaign', () => {
 
     context('when the event is valid', () => {
       before(() => {
-        event = {userId, campaignId};
+        event = {campaignId};
       });
 
       it('gets the campaign', (done) => {
         respond(event, (err, result) => {
           const args = Campaign.get.lastCall.args;
-          expect(args[0]).to.equal(userId);
           expect(args[1]).to.equal(campaignId);
           expect(err).to.not.exist;
           expect(result).to.deep.equal(campaign);
