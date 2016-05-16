@@ -12,7 +12,6 @@ describe('updateCampaign', () => {
   const campaignId = 'my-campaign-id';
   const campaign = {
     senderId: 'ca654',
-    id: campaignId,
     subject: 'my campaign subject',
     listIds: ['ca43546'],
     name: 'my campaign',
@@ -27,7 +26,7 @@ describe('updateCampaign', () => {
 
     context('when the event is valid', () => {
       before(() => {
-        event = {campaign};
+        event = {campaign, campaignId};
       });
 
       it('updates the campaign', (done) => {
