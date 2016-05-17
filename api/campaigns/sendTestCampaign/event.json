@@ -1,0 +1,14 @@
+{
+  "campaign": {
+    "subject": "Hi {{ firstName }}",
+    "body": "Hey {{ firstName }} {{ lastName }}, this is the email body",
+    "listIds": ["my-list-id"],
+    "precompiled": false
+  },
+  "sender": {
+    "apiKey": "aws-api-key",
+    "apiSecret": "aws-api-secret",
+    "region": "aws-region",
+    "emailAddress": "some@email.com"
+  }
+}
