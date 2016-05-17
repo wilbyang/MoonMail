@@ -20,12 +20,12 @@ With MoonMail you can: create & edit lists of recipients (email addresses) and s
 * [Create and store recipients in lists](https://github.com/microapps/MoonMail/wiki/Lists-&-recipients)
 * [Compile and send email campaigns](https://github.com/microapps/MoonMail/wiki/Sender)
 * [Parse (track) opened emails + clicked links within an email](https://github.com/microapps/MoonMail/wiki/Links)
+* [Create, edit and delete campaigns](https://github.com/microapps/MoonMail/wiki/Campaigns)
 
 
 ## Upcoming Features
 
 ###Campaigns+Autoresponders
-* [Create, edit and delete campaigns](https://github.com/microapps/MoonMail/wiki/Campaigns)
 * Create, edit and delete autoresponders
 * Apply [liquid](https://shopify.github.io/liquid/) syntax within the campaigns and autoresponders
 
