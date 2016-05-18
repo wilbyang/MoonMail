@@ -42,7 +42,6 @@ admin.env
 _meta/_tmp/
 *.sublime-*
 
-.eslintrc
 .jshintrc
 _meta/
 !./_meta/variables/s-variables-common.json
