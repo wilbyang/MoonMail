@@ -14,7 +14,7 @@ export function respond(event, cb){
   if(msg.recipientsCount && msg.campaign && msg.campaign.listIds){
     totalRecipientsToSendCount = msg.recipientsCount;
     const listIds = msg.campaign.listIds;
-    sendCampaignRecipients(listIds, msg).then(()=>{
+    sendCampaignRecipients(listIds, msg, cb).then(()=>{
       if(!isRecipientsSendingInProgress()){
         return cb(null, `Campaign ${msg.campaign.id} recipients have been successfully sent`);
       }
@@ -32,20 +32,20 @@ function isRecipientsSendingInProgress(){
   return sentRecipientsCount < totalRecipientsToSendCount;
 }
 
-function sendCampaignRecipients(listIds, msg){
+function sendCampaignRecipients(listIds, msg, cb){
   let getLists = [];
   listIds.forEach(function(id){
-    getLists.push(sendNextBatch(id, msg));
+    getLists.push(sendNextBatch(id, msg, cb));
   });
   return Promise.all(getLists);
 }
 
-function sendNextBatch(id, msg){
+function sendNextBatch(id, msg, cb){
   return getAll(id).then(data => {
     let messages = data.Items.map(r => {
       let message = msg;
       message.recipient = r;
-      return publishToSns(message);
+      return publishToSns(message, cb);
     });
     Promise.all(messages).then().catch(e =>{
       debug(e);
@@ -61,7 +61,7 @@ function sendNextBatch(id, msg){
   });
 };
 
-function publishToSns(canonicalMessage) {
+function publishToSns(canonicalMessage, cb) {
   return new Promise((resolve, reject) => {
     debug('AttachRecipientsService.publishToSns', 'Sending canonical message', JSON.stringify(canonicalMessage));
     const params = {
