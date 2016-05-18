@@ -5,6 +5,7 @@ import { debug } from '../../lib/logger';
 import decrypt from '../../lib/auth-token-decryptor';
 
 AWS.config.region = process.env.SERVERLESS_REGION || 'us-east-1';
+const sns = new AWS.SNS();
 
 export function respond(event, cb) {
   debug('= createCampaign.action', JSON.stringify(event));
@@ -14,18 +15,18 @@ export function respond(event, cb) {
         Message: JSON.stringify(event),
         TopicArn: process.env.PRECOMPILE_CAMPAIGN_TOPIC_ARN
       };
-      sns.publish(event, (err, data) => {
+      sns.publish(params, (err, data) => {
         if (err) {
           debug('= sendTestCampaign.action', 'Error sending message', err);
-          reject(err);
+          cb(err);
         } else {
           debug('= sendTestCampaign.action', 'Message sent');
-          resolve(data);
+          cb(null, data);
         }
       });
     } else {
       return cb('No campaign specified');
     }
   })
-  .catch(err => cb('403: No authentication token provided', null));
+  .catch(err => cb(err, null));
 }
