@@ -6,11 +6,16 @@ import { SES } from 'aws-sdk';
 
 class SendEmailService {
 
-  constructor(queue, lambdaClient, lambdaName) {
+  constructor(queue, lambdaClient, context) {
     this.queue = queue;
     this.emailClient = null;
     this.lambdaClient = lambdaClient;
-    this.lambdaName = lambdaName;
+    this.lambdaName = context.functionName;
+    this.context = context;
+  }
+
+  get executionThreshold() {
+    return 60000;
   }
 
   sendEnqueuedEmails() {
@@ -20,8 +25,16 @@ class SendEmailService {
   }
 
   sendNextBatch() {
+    if (this.timeEnough()) {
+      return this.sendEnqueuedEmails();
+    } else {
+      return this.invokeLambda();
+    }
+  }
+
+  invokeLambda() {
     return new Promise((resolve, reject) => {
-      debug('= SendEmailService.sendNextBatch', 'Invoking function again', this.lambdaName);
+      debug('= SendEmailService.invokeLambda', 'Invoking function again', this.lambdaName);
       const payload = { QueueUrl: this.queue.url };
       const params = {
         FunctionName: this.lambdaName,
@@ -30,14 +43,18 @@ class SendEmailService {
       };
       this.lambdaClient.invoke(params, (err, data) => {
         if (err) {
-          debug('= SendEmailService.sendNextBatch', 'Error invoking lambda', err, err.stack);
+          debug('= SendEmailService.invokeLambda', 'Error invoking lambda', err, err.stack);
           reject(err);
         } else {
-          debug('= SendEmailService.sendNextBatch', 'Invoked successfully');
+          debug('= SendEmailService.invokeLambda', 'Invoked successfully');
           resolve(data);
         }
       });
     });
+  }
+
+  timeEnough() {
+    return (this.context.getRemainingTimeInMillis() > this.executionThreshold);
   }
 
   sendBatch() {
@@ -98,7 +115,7 @@ class SendEmailService {
       accessKeyId: enqueuedEmail.message.sender.apiKey,
       secretAccessKey: enqueuedEmail.message.sender.apiSecret,
       region: enqueuedEmail.message.sender.region
-    }
+    };
   }
 }
 

@@ -59,7 +59,7 @@ class EmailQueue {
               this.messages = enqueuedEmails;
               resolve(enqueuedEmails);
             } else {
-              reject('Empty queue');
+              reject('EmptyQueue');
             }
           }
         });
@@ -88,20 +88,24 @@ class EmailQueue {
 
   removeMessages(batch) {
     return new Promise((resolve, reject) => {
-      this.getOrCreateQueue().then((queueUrl) => {
-        debug('= EmailQueue.removeMessages', 'Deleting a batch of', batch.length, 'messages');
-        const params = {
-          Entries: batch,
-          QueueUrl: queueUrl
-        };
-        this.client.deleteMessageBatch(params, (err, data) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(data);
-          }
+      if (batch.length > 0) {
+        this.getOrCreateQueue().then((queueUrl) => {
+          debug('= EmailQueue.removeMessages', 'Deleting a batch of', batch.length, 'messages');
+          const params = {
+            Entries: batch,
+            QueueUrl: queueUrl
+          };
+          this.client.deleteMessageBatch(params, (err, data) => {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(data);
+            }
+          });
         });
-      });
+      } else {
+        resolve('Nothing to remove');
+      }
     });
   }
 
