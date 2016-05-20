@@ -3,7 +3,7 @@
 import * as chai from 'chai';
 const chaiAsPromised = require('chai-as-promised');
 const chaiThings = require('chai-things');
-import { expect } from 'chai';
+const expect = chai.expect;
 import * as sinon from 'sinon';
 import { EmailQueue } from './email_queue';
 import { EnqueuedEmail } from './enqueued_email';
@@ -16,18 +16,25 @@ chai.use(chaiAsPromised);
 chai.use(chaiThings);
 
 describe('SendEmailService', () => {
-  let sesClient;
   let sqsClient;
   let email;
   let queue;
+  const lambdaContext = {
+    functionName: 'lambda-function-name',
+    getRemainingTimeInMillis: () => {}
+  };
+  let contextStub;
+  let lambdaClient;
 
   before(() => {
     awsMock.mock('SES', 'sendEmail', { MessageId: 'some_message_id' });
     awsMock.mock('SQS', 'receiveMessage', sqsMessages);
     awsMock.mock('SQS', 'deleteMessage', { ResponseMetadata: { RequestId: 'e21774f2-6974-5d8b-adb2-3ba82afacdfc' } });
-    sesClient = new AWS.SES();
     sqsClient = new AWS.SQS();
     queue = new EmailQueue(sqsClient, { url: 'https://some_url.com'});
+    contextStub = sinon.stub(lambdaContext, 'getRemainingTimeInMillis').returns(100000);
+    awsMock.mock('Lambda', 'invoke', 'ok');
+    lambdaClient = new AWS.Lambda();
   });
 
   describe('#sendBatch()', () => {
@@ -38,7 +45,7 @@ describe('SendEmailService', () => {
       });
 
       before(() => {
-        senderService = new SendEmailService(queue);
+        senderService = new SendEmailService(queue, null, contextStub);
       });
 
       it('returns the sent emails message handles', (done) => {
@@ -56,6 +63,18 @@ describe('SendEmailService', () => {
     });
   });
 
+  describe('#sendNextBatch()', () => {
+    context('when there is time for a new batch', () => {
+      it('gets a new batch and delivers it', (done) => {
+        const senderService = new SendEmailService(queue, lambdaClient, contextStub);
+        done();
+      });
+    });
+
+    afterEach(() => {
+    });
+  });
+
   describe('#deliver()', () => {
     before(() => {
       const sqsMessage = sqsMessages.Messages[0];
@@ -63,7 +82,7 @@ describe('SendEmailService', () => {
     });
 
     it('sends the email', (done) => {
-      const senderService = new SendEmailService(queue);
+      const senderService = new SendEmailService(queue, null, contextStub);
       senderService.setEmailClient(email);
       expect(senderService.deliver(email)).to.eventually.have.keys('MessageId').notify(done);
     });
@@ -72,5 +91,7 @@ describe('SendEmailService', () => {
   after(() => {
     awsMock.restore('SES');
     awsMock.restore('SQS');
+    awsMock.restore('Lambda');
+    contextStub.restore();
   });
 });
