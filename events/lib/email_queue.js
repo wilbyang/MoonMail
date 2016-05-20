@@ -53,12 +53,13 @@ class EmailQueue {
             debug('= EmailQueue.retrieveMessages', 'Error retrieving messages', err, err.stack);
             reject(err);
           } else {
-            debug('= EmailQueue.retrieveMessages', 'Got some messages', JSON.stringify(data));
             if (data.Messages) {
+              debug('= EmailQueue.retrieveMessages', 'Got some messages', JSON.stringify(data));
               const enqueuedEmails = data.Messages.map((message) => new EnqueuedEmail(JSON.parse(message.Body), message.ReceiptHandle, message.MessageId));
               this.messages = enqueuedEmails;
               resolve(enqueuedEmails);
             } else {
+              debug('= EmailQueue.retrieveMessages', 'Empty queue');
               reject('EmptyQueue');
             }
           }
@@ -77,8 +78,10 @@ class EmailQueue {
         };
         this.client.deleteMessage(params, (err, data) => {
           if (err) {
+            debug('= EmailQueue.removeMessage', 'Error removing', err);
             reject(err);
           } else {
+            debug('= EmailQueue.removeMessage', 'Successfully removed messages');
             resolve(data);
           }
         });

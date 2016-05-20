@@ -12,6 +12,7 @@ class SendEmailService {
     this.lambdaClient = lambdaClient;
     this.lambdaName = context.functionName;
     this.context = context;
+    this.counter = 0;
   }
 
   get executionThreshold() {
@@ -21,13 +22,16 @@ class SendEmailService {
   sendEnqueuedEmails() {
     return this.sendBatch()
       .then((batch) => this.deleteBatch(batch))
-      .then(() => this.sendNextBatch());
+      .then(() => this.sendNextBatch())
+      .catch(err => debug('= SendEmailService.sendEnqueuedEmails', `Sent ${this.counter} emails so far`));
   }
 
   sendNextBatch() {
     if (this.timeEnough()) {
+      debug('= SendEmailService.sendNextBatch', 'Time enough for another batch');
       return this.sendEnqueuedEmails();
     } else {
+      debug('= SendEmailService.sendNextBatch', 'Not time enough for next batch, invoking lambda...');
       return this.invokeLambda();
     }
   }
@@ -73,15 +77,17 @@ class SendEmailService {
                   Id: email.messageId
                 });
                 callback();
-              }).catch(callback);
+              }).catch(err => callback());
           }, () => {
             resolve(sentEmailsHandles);
           });
-        });
+        })
+        .catch(err => debug('= SendEmailService.sendBatch', `Sent ${this.counter} emails so far`));
     });
   }
 
   deleteBatch(batch) {
+    debug('= SendEmailService.deleteBatch', `Deleting a batch of ${batch.length} messages`);
     return this.queue.removeMessages(batch);
   }
 
@@ -94,6 +100,7 @@ class SendEmailService {
           reject(err);
         } else {
           debug('= SendEmailService.deliver', 'Email sent');
+          this.counter++;
           resolve(data);
         }
       });

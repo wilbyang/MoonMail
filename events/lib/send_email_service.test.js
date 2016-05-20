@@ -70,9 +70,6 @@ describe('SendEmailService', () => {
         done();
       });
     });
-
-    afterEach(() => {
-    });
   });
 
   describe('#deliver()', () => {
