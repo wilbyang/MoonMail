@@ -53,13 +53,14 @@ class EmailQueue {
             debug('= EmailQueue.retrieveMessages', 'Error retrieving messages', err, err.stack);
             reject(err);
           } else {
-            debug('= EmailQueue.retrieveMessages', 'Got some messages', JSON.stringify(data));
             if (data.Messages) {
+              debug('= EmailQueue.retrieveMessages', 'Got some messages', JSON.stringify(data));
               const enqueuedEmails = data.Messages.map((message) => new EnqueuedEmail(JSON.parse(message.Body), message.ReceiptHandle, message.MessageId));
               this.messages = enqueuedEmails;
               resolve(enqueuedEmails);
             } else {
-              reject('Empty queue');
+              debug('= EmailQueue.retrieveMessages', 'Empty queue');
+              reject('EmptyQueue');
             }
           }
         });
@@ -77,8 +78,10 @@ class EmailQueue {
         };
         this.client.deleteMessage(params, (err, data) => {
           if (err) {
+            debug('= EmailQueue.removeMessage', 'Error removing', err);
             reject(err);
           } else {
+            debug('= EmailQueue.removeMessage', 'Successfully removed messages');
             resolve(data);
           }
         });
@@ -88,20 +91,24 @@ class EmailQueue {
 
   removeMessages(batch) {
     return new Promise((resolve, reject) => {
-      this.getOrCreateQueue().then((queueUrl) => {
-        debug('= EmailQueue.removeMessages', 'Deleting a batch of', batch.length, 'messages');
-        const params = {
-          Entries: batch,
-          QueueUrl: queueUrl
-        };
-        this.client.deleteMessageBatch(params, (err, data) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(data);
-          }
+      if (batch.length > 0) {
+        this.getOrCreateQueue().then((queueUrl) => {
+          debug('= EmailQueue.removeMessages', 'Deleting a batch of', batch.length, 'messages');
+          const params = {
+            Entries: batch,
+            QueueUrl: queueUrl
+          };
+          this.client.deleteMessageBatch(params, (err, data) => {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(data);
+            }
+          });
         });
-      });
+      } else {
+        resolve('Nothing to remove');
+      }
     });
   }
 

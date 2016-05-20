@@ -45,3 +45,4 @@ _meta/_tmp/
 .jshintrc
 _meta/
 !./_meta/variables/s-variables-common.json
+playground/

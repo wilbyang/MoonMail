@@ -6,22 +6,39 @@ import { SES } from 'aws-sdk';
 
 class SendEmailService {
 
-  constructor(queue, lambdaClient, lambdaName) {
+  constructor(queue, lambdaClient, context) {
     this.queue = queue;
     this.emailClient = null;
     this.lambdaClient = lambdaClient;
-    this.lambdaName = lambdaName;
+    this.lambdaName = context.functionName;
+    this.context = context;
+    this.counter = 0;
+  }
+
+  get executionThreshold() {
+    return 60000;
   }
 
   sendEnqueuedEmails() {
     return this.sendBatch()
       .then((batch) => this.deleteBatch(batch))
-      .then(() => this.sendNextBatch());
+      .then(() => this.sendNextBatch())
+      .catch(err => debug('= SendEmailService.sendEnqueuedEmails', `Sent ${this.counter} emails so far`));
   }
 
   sendNextBatch() {
+    if (this.timeEnough()) {
+      debug('= SendEmailService.sendNextBatch', 'Time enough for another batch');
+      return this.sendEnqueuedEmails();
+    } else {
+      debug('= SendEmailService.sendNextBatch', 'Not time enough for next batch, invoking lambda...');
+      return this.invokeLambda();
+    }
+  }
+
+  invokeLambda() {
     return new Promise((resolve, reject) => {
-      debug('= SendEmailService.sendNextBatch', 'Invoking function again', this.lambdaName);
+      debug('= SendEmailService.invokeLambda', 'Invoking function again', this.lambdaName);
       const payload = { QueueUrl: this.queue.url };
       const params = {
         FunctionName: this.lambdaName,
@@ -30,14 +47,18 @@ class SendEmailService {
       };
       this.lambdaClient.invoke(params, (err, data) => {
         if (err) {
-          debug('= SendEmailService.sendNextBatch', 'Error invoking lambda', err, err.stack);
+          debug('= SendEmailService.invokeLambda', 'Error invoking lambda', err, err.stack);
           reject(err);
         } else {
-          debug('= SendEmailService.sendNextBatch', 'Invoked successfully');
+          debug('= SendEmailService.invokeLambda', 'Invoked successfully');
           resolve(data);
         }
       });
     });
+  }
+
+  timeEnough() {
+    return (this.context.getRemainingTimeInMillis() > this.executionThreshold);
   }
 
   sendBatch() {
@@ -56,15 +77,17 @@ class SendEmailService {
                   Id: email.messageId
                 });
                 callback();
-              }).catch(callback);
+              }).catch(err => callback());
           }, () => {
             resolve(sentEmailsHandles);
           });
-        });
+        })
+        .catch(err => debug('= SendEmailService.sendBatch', `Sent ${this.counter} emails so far`));
     });
   }
 
   deleteBatch(batch) {
+    debug('= SendEmailService.deleteBatch', `Deleting a batch of ${batch.length} messages`);
     return this.queue.removeMessages(batch);
   }
 
@@ -77,6 +100,7 @@ class SendEmailService {
           reject(err);
         } else {
           debug('= SendEmailService.deliver', 'Email sent');
+          this.counter++;
           resolve(data);
         }
       });
@@ -98,7 +122,7 @@ class SendEmailService {
       accessKeyId: enqueuedEmail.message.sender.apiKey,
       secretAccessKey: enqueuedEmail.message.sender.apiSecret,
       region: enqueuedEmail.message.sender.region
-    }
+    };
   }
 }
 

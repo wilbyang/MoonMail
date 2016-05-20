@@ -21,7 +21,7 @@ module.exports.respond = (event, cb, context) => {
     const queueName = alarm.Trigger.Dimensions[0].value;
     emailQueue = new EmailQueue(sqs, {name: queueName});
   }
-  const senderService = new SendEmailService(emailQueue, lambda, context.functionName);
+  const senderService = new SendEmailService(emailQueue, lambda, context);
   senderService.sendEnqueuedEmails()
     .then((result) => cb(null, result))
     .catch((err) => cb(err, null));
