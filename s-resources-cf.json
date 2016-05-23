@@ -111,6 +111,12 @@
         "TopicName": "$${attachRecipientsCountTopic}"
       }
     },
+    "SentEmailsTopic": {
+      "Type": "AWS::SNS::Topic",
+      "Properties": {
+        "TopicName": "$${sentEmailsTopic}"
+      }
+    },
     "FreeUsersSendEmailQueue": {
       "Type": "AWS::SQS::Queue",
       "Properties": {
@@ -359,6 +365,10 @@
     "SendEmailsTopicARN" : {
       "Description" : "ARN of the SendEmails SNS topic",
       "Value" : { "Ref" : "SendEmailsTopic"}
+    },
+    "SentEmailsTopicARN" : {
+      "Description" : "ARN of the SentEmails SNS topic",
+      "Value" : { "Ref" : "SentEmailsTopic"}
     },
     "AttachRecipientsTopicARN" : {
       "Description" : "ARN of the AttachRecipients SNS topic",
