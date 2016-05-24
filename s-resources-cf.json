@@ -87,6 +87,12 @@
         "TopicName": "$${sendCampaignTopic}"
       }
     },
+    "EmailNotificationsTopic": {
+      "Type": "AWS::SNS::Topic",
+      "Properties": {
+        "TopicName": "$${emailNotificationsTopic}"
+      }
+    },
     "PrecompileCampaignTopic": {
       "Type": "AWS::SNS::Topic",
       "Properties": {
@@ -164,6 +170,52 @@
           "WriteCapacityUnits": 1
         },
         "TableName": "$${linksTable}"
+      }
+    },
+    "SentEmailsTable": {
+      "Type": "AWS::DynamoDB::Table",
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "messageId",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "messageId",
+            "KeyType": "HASH"
+          }
+        ],
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": 1,
+          "WriteCapacityUnits": 1
+        },
+        "TableName": "$${sentEmailsTable}"
+      }
+    },
+    "ReportsTable": {
+      "Type": "AWS::DynamoDB::Table",
+      "DeletionPolicy": "Delete",
+      "Properties": {
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "campaignId",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "campaignId",
+            "KeyType": "HASH"
+          }
+        ],
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": 1,
+          "WriteCapacityUnits": 1
+        },
+        "TableName": "$${reportsTable}"
       }
     },
     "CampaignsTable": {
@@ -365,6 +417,10 @@
     "SendEmailsTopicARN" : {
       "Description" : "ARN of the SendEmails SNS topic",
       "Value" : { "Ref" : "SendEmailsTopic"}
+    },
+    "EmailNotificationsTopicARN" : {
+      "Description" : "ARN of the EmailNotifications SNS topic",
+      "Value" : { "Ref" : "EmailNotificationsTopic"}
     },
     "SentEmailsTopicARN" : {
       "Description" : "ARN of the SentEmails SNS topic",

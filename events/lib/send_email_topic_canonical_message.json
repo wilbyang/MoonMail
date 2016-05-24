@@ -2,7 +2,7 @@
   "userId": "some_user_id",
   "sender": {
     "region": "us-east-1",
-    "apiKey": "aws_ses_api_key",
+    "apiKey": "aws_ses_api_key_213",
     "apiSecret": "aws_ses_api_key",
     "ratePerSecond": "14",
     "emailAddress": "david.garcia@microapps.com",
