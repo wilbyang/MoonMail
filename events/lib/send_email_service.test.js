@@ -5,6 +5,7 @@ const chaiAsPromised = require('chai-as-promised');
 const chaiThings = require('chai-things');
 const expect = chai.expect;
 import * as sinon from 'sinon';
+const sinonChai = require('sinon-chai');
 const awsMock = require('aws-sdk-mock');
 const AWS = require('aws-sdk');
 import { EmailQueue } from './email_queue';
@@ -12,6 +13,7 @@ import { EnqueuedEmail } from './enqueued_email';
 import { SendEmailService } from './send_email_service';
 import * as sqsMessages from './sqs_receive_messages_response.json';
 
+chai.use(sinonChai);
 chai.use(chaiAsPromised);
 chai.use(chaiThings);
 
@@ -56,7 +58,16 @@ describe('SendEmailService', () => {
       it('publish an SNS message for every sent email', (done) => {
         senderService.snsClient.publish.reset();
         senderService.sendBatch().then(() => {
-          expect(senderService.snsClient.publish.callCount).to.equal(sqsMessages.Messages.length);
+          expect(senderService.snsClient.publish).to.be.calledOnce;
+          const snsParams = senderService.snsClient.publish.lastCall.args[0];
+          const snsPayload = JSON.parse(snsParams.Message);
+          for (let sentEmail of snsPayload) {
+            expect(sentEmail).to.have.property('messageId');
+            expect(sentEmail).to.have.property('campaignId');
+            expect(sentEmail).to.have.property('listId');
+            expect(sentEmail).to.have.property('recipientId');
+            expect(sentEmail).to.have.property('status');
+          }
           done();
         });
       });

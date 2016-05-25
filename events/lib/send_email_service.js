@@ -65,7 +65,8 @@ class SendEmailService {
   sendBatch() {
     debug('= SendEmailService.sendBatch', 'Sending batch...');
     return new Promise((resolve, reject) => {
-      const sentEmailsHandles = new Array();
+      const sentEmailsHandles = [];
+      const sentEmails = [];
       this.queue.retrieveMessages()
         .then((enqueuedEmails) => {
           debug('= SendEmailService.sendBatch', 'Got', enqueuedEmails.length, 'messages');
@@ -77,15 +78,15 @@ class SendEmailService {
                   ReceiptHandle: email.receiptHandle,
                   Id: email.messageId
                 });
-                const sentEmail = email.toSentEmail(result.MessageId);
-                const snsParams = {
-                  Message: JSON.stringify(sentEmail),
-                  TopicArn: process.env.SENT_EMAILS_TOPIC_ARN
-                };
-                this.snsClient.publish(snsParams, () => callback());
+                sentEmails.push(email.toSentEmail(result.MessageId));
+                callback();
               }).catch(() => callback());
           }, () => {
-            resolve(sentEmailsHandles);
+            const snsParams = {
+              Message: JSON.stringify(sentEmails),
+              TopicArn: process.env.SENT_EMAILS_TOPIC_ARN
+            };
+            this.snsClient.publish(snsParams, () => resolve(sentEmailsHandles));
           });
         })
         .catch(() => debug('= SendEmailService.sendBatch', `Sent ${this.counter} emails so far`));
