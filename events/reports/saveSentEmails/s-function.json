@@ -1,10 +1,10 @@
 {
-  "name": "emailNotification",
+  "name": "saveSentEmails",
   "runtime": "babel",
   "description": "Serverless Lambda function for project: MoonMail-v2",
-  "customName": "${project}-reports-emailNotification",
+  "customName": "${project}-reports-saveSentEmails",
   "customRole": false,
-  "handler": "reports/emailNotification/handler.default",
+  "handler": "reports/saveSentEmails/handler.default",
   "timeout": 6,
   "memorySize": 1024,
   "authorizer": {},
@@ -14,10 +14,10 @@
   "endpoints": [],
   "events": [
     {
-      "name": "emailNotificationsTopic",
+      "name": "sentEmailsSns",
       "type": "sns",
       "config": {
-        "topicName": "$${emailNotificationsTopic}"
+        "topicName": "$${sentEmailsTopic}"
       }
     }
   ],
@@ -25,10 +25,8 @@
     "SERVERLESS_PROJECT": "${project}",
     "SERVERLESS_STAGE": "${stage}",
     "SERVERLESS_REGION": "${region}",
-    "SENT_EMAILS_TOPIC_ARN": "${sentEmailsTopicARN}",
-    "SENT_EMAILS_TABLE": "$${sentEmailsTable}",
-    "REPORTS_TABLE": "$${reportsTable}",
-    "DEBUG": "true"
+    "DEBUG": "true",
+    "REPORTS_TABLE": "$${reportsTable}"
   },
   "vpc": {
     "securityGroupIds": [],
