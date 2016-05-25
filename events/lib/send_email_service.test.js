@@ -5,12 +5,12 @@ const chaiAsPromised = require('chai-as-promised');
 const chaiThings = require('chai-things');
 const expect = chai.expect;
 import * as sinon from 'sinon';
+const awsMock = require('aws-sdk-mock');
+const AWS = require('aws-sdk');
 import { EmailQueue } from './email_queue';
 import { EnqueuedEmail } from './enqueued_email';
 import { SendEmailService } from './send_email_service';
 import * as sqsMessages from './sqs_receive_messages_response.json';
-const awsMock = require('aws-sdk-mock');
-const AWS = require('aws-sdk-promise');
 
 chai.use(chaiAsPromised);
 chai.use(chaiThings);
@@ -34,6 +34,7 @@ describe('SendEmailService', () => {
     queue = new EmailQueue(sqsClient, { url: 'https://some_url.com'});
     contextStub = sinon.stub(lambdaContext, 'getRemainingTimeInMillis').returns(100000);
     awsMock.mock('Lambda', 'invoke', 'ok');
+    awsMock.mock('SNS', 'publish', 'ok');
     lambdaClient = new AWS.Lambda();
   });
 
@@ -50,6 +51,14 @@ describe('SendEmailService', () => {
 
       it('returns the sent emails message handles', (done) => {
         expect(senderService.sendBatch()).to.eventually.deep.have.members(emailHandles).notify(done);
+      });
+
+      it('publish an SNS message for every sent email', (done) => {
+        senderService.snsClient.publish.reset();
+        senderService.sendBatch().then(() => {
+          expect(senderService.snsClient.publish.callCount).to.equal(sqsMessages.Messages.length);
+          done();
+        });
       });
 
       it('delivers all the emails', (done) => {
@@ -88,6 +97,7 @@ describe('SendEmailService', () => {
   after(() => {
     awsMock.restore('SES');
     awsMock.restore('SQS');
+    awsMock.restore('SNS');
     awsMock.restore('Lambda');
     contextStub.restore();
   });

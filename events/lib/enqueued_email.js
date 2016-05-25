@@ -25,6 +25,17 @@ class EnqueuedEmail {
     };
   }
 
+  toSentEmail(messageId) {
+    return {
+      messageId,
+      recipientId: this.message.recipient.id,
+      campaignId: this.message.campaign.id,
+      email: this.message.recipient.email,
+      listId: this.message.recipient.listId,
+      status: 'sent'
+    };
+  }
+
 }
 
 module.exports.EnqueuedEmail = EnqueuedEmail;

@@ -27,4 +27,18 @@ describe('EnqueuedEmail', () => {
       done();
     });
   });
+
+  describe('#toSentEmail()', () => {
+    it('builds SentEmail params', (done) => {
+      const messageId = 'my-message-id';
+      const sesEmail = email.toSentEmail(messageId);
+      expect(sesEmail).to.have.property('messageId', messageId);
+      expect(sesEmail).to.have.property('recipientId', email.message.recipient.id);
+      expect(sesEmail).to.have.property('campaignId', email.message.campaign.id);
+      expect(sesEmail).to.have.property('email', email.message.recipient.email);
+      expect(sesEmail).to.have.property('listId', email.message.recipient.listId);
+      expect(sesEmail).to.have.property('status', 'sent');
+      done();
+    });
+  });
 });
