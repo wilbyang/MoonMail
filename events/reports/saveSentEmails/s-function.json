@@ -26,7 +26,7 @@
     "SERVERLESS_STAGE": "${stage}",
     "SERVERLESS_REGION": "${region}",
     "DEBUG": "true",
-    "REPORTS_TABLE": "$${reportsTable}"
+    "SENT_EMAILS_TABLE": "$${sentEmailsTable}"
   },
   "vpc": {
     "securityGroupIds": [],
