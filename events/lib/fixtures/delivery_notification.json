@@ -1,0 +1,22 @@
+{
+  "notificationType": "Delivery",
+  "delivery": {
+    "timestamp": "2014-05-28T22:41:01.184Z",
+    "recipients": [
+      "success@simulator.amazonses.com"
+    ],
+    "processingTimeMillis": 546,
+    "reportingMTA": "a8-70.smtp-out.amazonses.com",
+    "smtpResponse": "250 ok:  Message 64111812 accepted"
+  },
+  "mail": {
+    "timestamp": "2016-05-24T11:11:38.000Z",
+    "source": "david.garcia@microapps.com",
+    "sourceArn": "arn:aws:ses:us-east-1:862946620411:identity/david.garcia@microapps.com",
+    "sendingAccountId": "862946620411",
+    "messageId": "01000154e276850f-4f4ad177-a3b2-4085-9b4a-6e3fb68a3ccf-000000",
+    "destination": [
+      "success@simulator.amazonses.com"
+    ]
+  }
+}

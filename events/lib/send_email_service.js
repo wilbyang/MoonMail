@@ -2,13 +2,14 @@
 
 import { debug } from './index';
 import * as async from 'async';
-import { SES } from 'aws-sdk';
+import { SES, SNS } from 'aws-sdk';
 
 class SendEmailService {
 
   constructor(queue, lambdaClient, context) {
     this.queue = queue;
     this.emailClient = null;
+    this.sns = null;
     this.lambdaClient = lambdaClient;
     this.lambdaName = context.functionName;
     this.context = context;
@@ -64,25 +65,31 @@ class SendEmailService {
   sendBatch() {
     debug('= SendEmailService.sendBatch', 'Sending batch...');
     return new Promise((resolve, reject) => {
-      const sentEmailsHandles = new Array();
+      const sentEmailsHandles = [];
+      const sentEmails = [];
       this.queue.retrieveMessages()
         .then((enqueuedEmails) => {
           debug('= SendEmailService.sendBatch', 'Got', enqueuedEmails.length, 'messages');
           this.setEmailClient(enqueuedEmails[0]);
           async.each(enqueuedEmails, (email, callback) => {
             this.deliver(email)
-              .then(() => {
+              .then((result) => {
                 sentEmailsHandles.push({
                   ReceiptHandle: email.receiptHandle,
                   Id: email.messageId
                 });
+                sentEmails.push(email.toSentEmail(result.MessageId));
                 callback();
-              }).catch(err => callback());
+              }).catch(() => callback());
           }, () => {
-            resolve(sentEmailsHandles);
+            const snsParams = {
+              Message: JSON.stringify(sentEmails),
+              TopicArn: process.env.SENT_EMAILS_TOPIC_ARN
+            };
+            this.snsClient.publish(snsParams, () => resolve(sentEmailsHandles));
           });
         })
-        .catch(err => debug('= SendEmailService.sendBatch', `Sent ${this.counter} emails so far`));
+        .catch(() => debug('= SendEmailService.sendBatch', `Sent ${this.counter} emails so far`));
     });
   }
 
@@ -105,6 +112,14 @@ class SendEmailService {
         }
       });
     });
+  }
+
+  get snsClient() {
+    debug('= SendEmailService.snsClient', 'Getting SNS client');
+    if (!this.sns) {
+      this.sns = new SNS({region: process.env.SERVERLESS_REGION || 'us-east-1'});
+    }
+    return this.sns;
   }
 
   setEmailClient(enqueuedEmail) {
