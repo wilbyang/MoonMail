@@ -71,6 +71,7 @@
   "sendCampaignTopic": "${project}-${stage}-sendCampaign",
   "linksTable": "${project}-${stage}-links",
   "campaignsTable": "${project}-${stage}-campaigns",
+  "sendersTable": "${project}-${stage}-senders",
   "sentEmailsTable": "${project}-${stage}-sentEmails",
   "listsTable": "${project}-${stage}-lists",
   "recipientsTable": "${project}-${stage}-recipients",
