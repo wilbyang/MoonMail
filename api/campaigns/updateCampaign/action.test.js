@@ -16,7 +16,7 @@ describe('updateCampaign', () => {
     listIds: ['ca43546'],
     name: 'my campaign',
     body: 'my campaign body'
-  }
+  };
   let event;
 
   describe('#respond()', () => {
