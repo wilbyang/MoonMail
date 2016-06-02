@@ -326,45 +326,23 @@
           {
             "AttributeName": "userId",
             "AttributeType": "S"
-          },
-          {
-            "AttributeName": "isDeleted",
-            "AttributeType": "S"
           }
         ],
         "KeySchema": [
           {
-            "AttributeName": "id",
+            "AttributeName": "userId",
             "KeyType": "HASH"
+          },
+          {
+            "AttributeName": "id",
+            "KeyType": "RANGE"
           }
         ],
         "ProvisionedThroughput": {
           "ReadCapacityUnits": 1,
           "WriteCapacityUnits": 1
         },
-        "GlobalSecondaryIndexes": [
-          {
-            "IndexName": "UserListsIndex",
-            "KeySchema": [
-              {
-                "AttributeName": "userId",
-                "KeyType": "HASH"
-              },
-              {
-                "AttributeName": "isDeleted",
-                "KeyType": "RANGE"
-              }
-            ],
-            "Projection": {
-              "ProjectionType": "ALL"
-            },
-            "ProvisionedThroughput": {
-              "ReadCapacityUnits": 1,
-              "WriteCapacityUnits": 1
-            }
-          }
-        ],
-        "TableName": "${project}-lists-${stage}"
+        "TableName": "$${listsTable}"
       }
     },
     "RecipientsImportS3Bucket": {
