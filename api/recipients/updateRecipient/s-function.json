@@ -1,19 +1,19 @@
 {
-  "name": "updateRecipients",
+  "name": "updateRecipient",
   "runtime": "babel",
   "description": "Serverless Lambda function for project: MoonMail-v2",
-  "customName": "${project}-recipients-update",
+  "customName": "${project}-recipients-updateRecipient",
   "customRole": false,
-  "handler": "recipients/update/handler.default",
+  "handler": "recipients/updateRecipient/handler.default",
   "timeout": 6,
-  "memorySize": 128,
+  "memorySize": 1024,
   "authorizer": {},
   "custom": {
     "excludePatterns": []
   },
   "endpoints": [
     {
-      "path": "/recipients/{id}",
+      "path": "/lists/{listId}/recipients/{recipientId}",
       "method": "PATCH",
       "type": "AWS",
       "authorizationType": "none",
@@ -22,7 +22,8 @@
       "requestParameters": {},
       "requestTemplates": {
         "application/json": {
-          "id": "$util.escapeJavaScript($input.params('id'))",
+          "listId": "$input.params('listId')",
+          "recipientId": "$input.params('recipientId')",
           "recipient": "$input.json('$.recipient')"
         }
       },
@@ -33,7 +34,9 @@
   "environment": {
     "SERVERLESS_PROJECT": "${project}",
     "SERVERLESS_STAGE": "${stage}",
-    "SERVERLESS_REGION": "${region}"
+    "SERVERLESS_REGION": "${region}",
+    "DEBUG": "true",
+    "RECIPIENTS_TABLE": "$${recipientsTable}"
   },
   "vpc": {
     "securityGroupIds": [],

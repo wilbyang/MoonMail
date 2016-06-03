@@ -1,0 +1,10 @@
+{
+  "listId": "some-list-id",
+  "recipientId": "ZGF2aWQuZ2FyY2lhQG1pY3JvYXBwcy5jb20=",
+  "recipient": {
+    "metadata": {
+      "name": "Alfred",
+      "surname": "Garcia"
+    }
+  }
+}
