@@ -1,10 +1,10 @@
 {
-  "name": "updateCampaign",
+  "name": "deleteEmailList",
   "runtime": "babel",
   "description": "Serverless Lambda function for project: MoonMail-v2",
-  "customName": "${project}-campaigns-updateCampaign",
+  "customName": "${project}-lists-deleteEmailList",
   "customRole": false,
-  "handler": "campaigns/updateCampaign/handler.default",
+  "handler": "lists/deleteEmailList/handler.default",
   "timeout": 6,
   "memorySize": 1024,
   "authorizer": {},
@@ -14,17 +14,16 @@
   },
   "endpoints": [
     {
-      "path": "/campaigns/{campaignId}",
-      "method": "PATCH",
+      "path": "/lists/{listId}",
+      "method": "DELETE",
       "type": "AWS",
       "authorizationType": "none",
       "authorizerFunction": false,
       "apiKeyRequired": false,
       "requestParameters": {},
       "requestTemplates": {
-        "application/json":  {
-          "campaignId": "$input.params('campaignId')",
-          "campaign": "$input.json('$.campaign')"
+        "application/json": {
+          "listId": "$input.params('listId')"
         }
       },
       "responses": "$${responses}"
@@ -35,7 +34,7 @@
     "SERVERLESS_PROJECT": "${project}",
     "SERVERLESS_STAGE": "${stage}",
     "SERVERLESS_REGION": "${region}",
-    "CAMPAIGNS_TABLE": "$${campaignsTable}",
+    "LISTS_TABLE": "$${listsTable}",
     "DEBUG": "true"
   },
   "vpc": {

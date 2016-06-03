@@ -4,38 +4,34 @@ import * as chai from 'chai';
 import { respond } from './action';
 import * as sinon from 'sinon';
 import * as sinonAsPromised from 'sinon-as-promised';
-import { Campaign } from 'moonmail-models';
+import { List } from 'moonmail-models';
 
 const expect = chai.expect;
 
-describe('updateCampaign', () => {
-  const campaignId = 'my-campaign-id';
-  const campaign = {
-    senderId: 'ca654',
-    subject: 'my campaign subject',
-    listIds: ['ca43546'],
-    name: 'my campaign',
-    body: 'my campaign body'
-  };
+describe('updateEmailList', () => {
+  const listId = 'my-list-id';
+  const list = {
+    name: 'my list'
+  }
   let event;
 
   describe('#respond()', () => {
     beforeEach(() => {
-      sinon.stub(Campaign, 'update').resolves(campaign);
+      sinon.stub(List, 'update').resolves(list);
     });
 
     context('when the event is valid', () => {
       before(() => {
-        event = {campaign, campaignId};
+        event = {list, listId};
       });
 
-      it('updates the campaign', (done) => {
+      it('updates the list', (done) => {
         respond(event, (err, result) => {
-          const args = Campaign.update.lastCall.args;
-          expect(args[0]).to.equal(campaign);
-          expect(args[2]).to.equal(campaignId);
+          const args = List.update.lastCall.args;
+          expect(args[0]).to.equal(list);
+          expect(args[2]).to.equal(listId);
           expect(err).to.not.exist;
-          expect(result).to.deep.equal(campaign);
+          expect(result).to.deep.equal(list);
           done();
         });
       });
@@ -53,7 +49,7 @@ describe('updateCampaign', () => {
     });
 
     afterEach(() => {
-      Campaign.update.restore();
+      List.update.restore();
     });
   });
 });

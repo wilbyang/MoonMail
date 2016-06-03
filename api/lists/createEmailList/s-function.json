@@ -1,10 +1,10 @@
 {
-  "name": "updateCampaign",
+  "name": "createEmailList",
   "runtime": "babel",
   "description": "Serverless Lambda function for project: MoonMail-v2",
-  "customName": "${project}-campaigns-updateCampaign",
+  "customName": "${project}-lists-createEmailList",
   "customRole": false,
-  "handler": "campaigns/updateCampaign/handler.default",
+  "handler": "lists/createEmailList/handler.default",
   "timeout": 6,
   "memorySize": 1024,
   "authorizer": {},
@@ -14,17 +14,16 @@
   },
   "endpoints": [
     {
-      "path": "/campaigns/{campaignId}",
-      "method": "PATCH",
+      "path": "/lists",
+      "method": "POST",
       "type": "AWS",
       "authorizationType": "none",
       "authorizerFunction": false,
       "apiKeyRequired": false,
       "requestParameters": {},
       "requestTemplates": {
-        "application/json":  {
-          "campaignId": "$input.params('campaignId')",
-          "campaign": "$input.json('$.campaign')"
+        "application/json": {
+          "list": "$input.json('$.list')"
         }
       },
       "responses": "$${responses}"
@@ -35,8 +34,8 @@
     "SERVERLESS_PROJECT": "${project}",
     "SERVERLESS_STAGE": "${stage}",
     "SERVERLESS_REGION": "${region}",
-    "CAMPAIGNS_TABLE": "$${campaignsTable}",
-    "DEBUG": "true"
+    "DEBUG": "true",
+    "LISTS_TABLE": "$${listsTable}"
   },
   "vpc": {
     "securityGroupIds": [],
