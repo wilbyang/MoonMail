@@ -75,6 +75,7 @@
   "listsTable": "${project}-${stage}-lists",
   "recipientsTable": "${project}-${stage}-recipients",
   "reportsTable": "${project}-${stage}-reports",
+  "sendersTable": "${project}-${stage}-senders",
   "attachRecipientsTopic": "${project}-${stage}-attachRecipients",
   "attachRecipientsCountTopic": "${project}-${stage}-attachRecipientsCount",
   "responses": {
