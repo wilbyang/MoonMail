@@ -144,5 +144,17 @@
         "application/json": ""
       }
     }
+  },
+  "corsSettings": {
+    "allowOrigin": "*",
+    "allowHeaders": [
+      "X-Amz-Security-Token",
+      "Authorization",
+      "Content-Type",
+      "X-Amz-Date",
+      "X-Api-Key",
+      "authToken",
+      "Accept"
+    ]
   }
 }
