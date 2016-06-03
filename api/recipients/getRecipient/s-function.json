@@ -1,20 +1,20 @@
 {
-  "name": "createRecipients",
+  "name": "getRecipient",
   "runtime": "babel",
   "description": "Serverless Lambda function for project: MoonMail-v2",
-  "customName": "${project}-recipients-create",
+  "customName": "${project}-recipients-getRecipient",
   "customRole": false,
-  "handler": "recipients/create/handler.default",
+  "handler": "recipients/getRecipient/handler.default",
   "timeout": 6,
-  "memorySize": 128,
+  "memorySize": 1024,
   "authorizer": {},
   "custom": {
     "excludePatterns": []
   },
   "endpoints": [
     {
-      "path": "/recipients",
-      "method": "POST",
+      "path": "/lists/{listId}/recipients/{recipientId}",
+      "method": "GET",
       "type": "AWS",
       "authorizationType": "none",
       "authorizerFunction": false,
@@ -22,7 +22,8 @@
       "requestParameters": {},
       "requestTemplates": {
         "application/json": {
-          "recipient": "$input.json('$.recipient')"
+          "listId": "$input.params('listId')",
+          "recipientId": "$input.params('recipientId')"
         }
       },
       "responses": "$${responses}"
@@ -32,7 +33,9 @@
   "environment": {
     "SERVERLESS_PROJECT": "${project}",
     "SERVERLESS_STAGE": "${stage}",
-    "SERVERLESS_REGION": "${region}"
+    "SERVERLESS_REGION": "${region}",
+    "DEBUG": "true",
+    "RECIPIENTS_TABLE": "$${recipientsTable}"
   },
   "vpc": {
     "securityGroupIds": [],
