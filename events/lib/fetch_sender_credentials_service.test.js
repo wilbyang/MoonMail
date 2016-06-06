@@ -5,7 +5,7 @@ const chaiAsPromised = require('chai-as-promised');
 const sinonChai = require('sinon-chai');
 import { expect } from 'chai';
 import * as sinon from 'sinon';
-import { FetchSenderCredentialsService } from './fetch_sender_crendentials_service';
+import { FetchSenderCredentialsService } from './fetch_sender_credentials_service';
 import { Sender } from 'moonmail-models';
 require('sinon-as-promised');
 
@@ -69,9 +69,9 @@ describe('FetchSenderCredentialsService', () => {
       it('retrieves the respective user credentials', (done) => {
         fetchSenderCredentialsService.getCredentials().then((credentials) => {
           expect(credentials).to.deep.equal({
-            apiKey: apiKey,
-            apiSecret: apiSecret,
-            region: region
+            apiKey,
+            apiSecret,
+            region
           });
           done();
         })
