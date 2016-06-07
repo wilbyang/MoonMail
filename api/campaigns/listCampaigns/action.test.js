@@ -47,7 +47,7 @@ describe('listCampaigns', () => {
         event.nextPage = nextPage;
         respond(event, (err) => {
           const allbyArgs = Campaign.allBy.lastCall.args;
-          expect(allbyArgs[2]).to.deep.equal({nextPage});
+          expect(allbyArgs[2]).to.have.property('nextPage', nextPage);
           done();
         });
       });

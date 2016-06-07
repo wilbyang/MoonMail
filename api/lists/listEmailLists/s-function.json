@@ -22,7 +22,9 @@
       "apiKeyRequired": false,
       "requestParameters": {},
       "requestTemplates": {
-        "application/json": ""
+        "application/json": {
+          "nextPage": "$input.params('page')"
+        }
       },
       "responses": "$${responses}"
     }
