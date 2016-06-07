@@ -23,6 +23,7 @@
       "requestParameters": {},
       "requestTemplates": {
         "application/json": {
+          "nextPage": "$input.params('page')"
         }
       },
       "responses": "$${responses}"
