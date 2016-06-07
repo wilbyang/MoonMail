@@ -44,7 +44,7 @@ describe('listEmailLists', () => {
         event.nextPage = nextPage;
         respond(event, (err) => {
           const allbyArgs = List.allBy.lastCall.args;
-          expect(allbyArgs[2]).to.deep.equal({nextPage});
+          expect(allbyArgs[2]).to.have.property('nextPage', nextPage);
           done();
         });
       });

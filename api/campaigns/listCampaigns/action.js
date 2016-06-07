@@ -7,7 +7,9 @@ import decrypt from '../../lib/auth-token-decryptor';
 export function respond(event, cb) {
   debug('= listCampaigns.action', JSON.stringify(event));
   decrypt(event.authToken).then((decoded) => {
-    let options = {};
+    let options = {
+        limit: 25
+      };
     if (event.nextPage) {
       options.nextPage = event.nextPage;
     }
