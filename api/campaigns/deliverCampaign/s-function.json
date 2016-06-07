@@ -1,0 +1,46 @@
+{
+  "name": "deliverCampaign",
+  "runtime": "babel",
+  "description": "Serverless Lambda function for project: MoonMail-v2",
+  "customName": "${project}-campaigns-deliverCampaign",
+  "customRole": false,
+  "handler": "campaigns/deliverCampaign/handler.default",
+  "timeout": 6,
+  "memorySize": 1024,
+  "authorizer": {},
+  "custom": {
+    "excludePatterns": [],
+    "cors": "$${corsSettings}"
+  },
+  "endpoints": [
+    {
+      "path": "/campaigns/{campaignId}/send",
+      "method": "POST",
+      "type": "AWS",
+      "authorizationType": "none",
+      "authorizerFunction": false,
+      "apiKeyRequired": false,
+      "requestParameters": {},
+      "requestTemplates": {
+        "application/json": {
+          "campaign": "$input.json('$.campaign')",
+          "campaignId": "$input.params('campaignId')"
+        }
+      },
+      "responses": "$${responses}"
+    }
+  ],
+  "events": [],
+  "environment": {
+    "SERVERLESS_PROJECT": "${project}",
+    "SERVERLESS_STAGE": "${stage}",
+    "SERVERLESS_REGION": "${region}",
+    "CAMPAIGNS_TABLE": "$${campaignsTable}",
+    "ATTACH_RECIPIENTS_COUNT_TOPIC_ARN": "${attachRecipientsCountTopicARN}",
+    "DEBUG": "true"
+  },
+  "vpc": {
+    "securityGroupIds": [],
+    "subnetIds": []
+  }
+}
