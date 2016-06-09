@@ -5,8 +5,8 @@
   "customName": false,
   "customRole": false,
   "handler": "recipients/attachRecipients/handler.default",
-  "timeout": 6,
-  "memorySize": 1024,
+  "timeout": 300,
+  "memorySize": 1536,
   "authorizer": {},
   "custom": {
     "excludePatterns": []
@@ -25,7 +25,10 @@
     "SERVERLESS_PROJECT": "${project}",
     "SERVERLESS_STAGE": "${stage}",
     "SERVERLESS_REGION": "${region}",
-    "PRECOMPILE_EMAIL_TOPIC_ARN": "${precompileEmailTopicARN}"
+    "PRECOMPILE_EMAIL_TOPIC_ARN": "${precompileEmailTopicARN}",
+    "SEND_EMAILS_TOPIC_ARN": "${sendEmailsTopicARN}",
+    "RECIPIENTS_TABLE": "$${recipientsTable}",
+    "DEBUG": "true"
   },
   "vpc": {
     "securityGroupIds": [],
