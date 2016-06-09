@@ -47,3 +47,5 @@ _meta/
 !./_meta/variables/s-variables-common.json
 playground/
 users/
+
+events/users

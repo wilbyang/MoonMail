@@ -99,6 +99,12 @@
         "TopicName": "$${precompileCampaignTopic}"
       }
     },
+    "UpdateCampaignTopic": {
+      "Type": "AWS::SNS::Topic",
+      "Properties": {
+        "TopicName": "$${updateCampaignTopic}"
+      }
+    },
     "PrecompileEmailTopic": {
       "Type": "AWS::SNS::Topic",
       "Properties": {
@@ -396,6 +402,10 @@
     "PrecompileCampaignTopicARN" : {
       "Description" : "ARN of the PrecompileCampaign SNS topic",
       "Value" : { "Ref" : "PrecompileCampaignTopic"}
+    },
+    "UpdateCampaignTopicARN" : {
+      "Description" : "ARN of the UpdateCampaign SNS topic",
+      "Value" : { "Ref" : "UpdateCampaignTopic"}
     },
     "SendCampaignTopicARN" : {
       "Description" : "ARN of the SendCampaign SNS topic",
