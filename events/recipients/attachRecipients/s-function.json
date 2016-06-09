@@ -5,8 +5,8 @@
   "customName": false,
   "customRole": false,
   "handler": "recipients/attachRecipients/handler.default",
-  "timeout": 6,
-  "memorySize": 1024,
+  "timeout": 300,
+  "memorySize": 1536,
   "authorizer": {},
   "custom": {
     "excludePatterns": []
