@@ -50,22 +50,51 @@
               "Action": [
                 "s3:GetObject"
               ],
-              "Resource": { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "RecipientsImportS3Bucket" } , "/*" ]]}
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:s3:::",
+                    {
+                      "Ref": "RecipientsImportS3Bucket"
+                    },
+                    "/*"
+                  ]
+                ]
+              }
             },
             {
               "Effect": "Allow",
               "Action": "dynamodb:*",
-              "Resource": { "Fn::Join" : [
-                  "", [ "arn:aws:dynamodb:${region}:", { "Ref" : "AWS::AccountId" } , ":table/*" ]
-               ] }
-             },
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:dynamodb:${region}:",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":table/*"
+                  ]
+                ]
+              }
+            },
             {
               "Effect": "Allow",
               "Action": "dynamodb:*",
-              "Resource": { "Fn::Join" : [
-                  "", [ "arn:aws:dynamodb:${region}:", { "Ref" : "AWS::AccountId" } , ":table/*/index/*" ]
-               ] }
-             }
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:dynamodb:${region}:",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":table/*/index/*"
+                  ]
+                ]
+              }
+            }
           ]
         },
         "Roles": [
@@ -141,18 +170,27 @@
         "AlarmDescription": "Alarm if free users queue is not empty",
         "Namespace": "AWS/SQS",
         "MetricName": "ApproximateNumberOfMessagesVisible",
-        "Dimensions": [{
-          "Name": "QueueName",
-          "Value" : { "Fn::GetAtt" : ["FreeUsersSendEmailQueue", "QueueName"] }
-        }],
+        "Dimensions": [
+          {
+            "Name": "QueueName",
+            "Value": {
+              "Fn::GetAtt": [
+                "FreeUsersSendEmailQueue",
+                "QueueName"
+              ]
+            }
+          }
+        ],
         "Statistic": "Average",
         "Period": "60",
         "EvaluationPeriods": "1",
         "Threshold": "1",
         "ComparisonOperator": "GreaterThanOrEqualToThreshold",
-        "AlarmActions": [{
-          "Ref": "SendEmailsTopic"
-        }]
+        "AlarmActions": [
+          {
+            "Ref": "SendEmailsTopic"
+          }
+        ]
       }
     },
     "LinksTable": {
@@ -287,16 +325,16 @@
       }
     },
     "OpensStream": {
-       "Type" : "AWS::Kinesis::Stream",
-       "Properties" : {
-          "ShardCount" : 1
-       }
+      "Type": "AWS::Kinesis::Stream",
+      "Properties": {
+        "ShardCount": 1
+      }
     },
     "ClicksStream": {
-       "Type" : "AWS::Kinesis::Stream",
-       "Properties" : {
-          "ShardCount" : 1
-       }
+      "Type": "AWS::Kinesis::Stream",
+      "Properties": {
+        "ShardCount": 1
+      }
     },
     "RecipientsTable": {
       "Type": "AWS::DynamoDB::Table",
@@ -368,9 +406,16 @@
         "CorsConfiguration": {
           "CorsRules": [
             {
-              "AllowedHeaders" : [],
-              "AllowedMethods" : [ "GET", "PUT", "POST", "HEAD" ],
-              "AllowedOrigins" : [ "*" ]
+              "AllowedHeaders": [],
+              "AllowedMethods": [
+                "GET",
+                "PUT",
+                "POST",
+                "HEAD"
+              ],
+              "AllowedOrigins": [
+                "*"
+              ]
             }
           ]
         }
@@ -387,65 +432,107 @@
         ]
       }
     },
-    "QueueURL" : {
-      "Description" : "URL of newly created SQS Queue",
-      "Value" : { "Ref" : "FreeUsersSendEmailQueue" }
+    "QueueURL": {
+      "Description": "URL of newly created SQS Queue",
+      "Value": {
+        "Ref": "FreeUsersSendEmailQueue"
+      }
     },
-    "QueueARN" : {
-      "Description" : "ARN of newly created SQS Queue",
-      "Value" : { "Fn::GetAtt" : ["FreeUsersSendEmailQueue", "Arn"]}
+    "QueueARN": {
+      "Description": "ARN of newly created SQS Queue",
+      "Value": {
+        "Fn::GetAtt": [
+          "FreeUsersSendEmailQueue",
+          "Arn"
+        ]
+      }
     },
-    "QueueName" : {
-      "Description" : "Name newly created SQS Queue",
-      "Value" : { "Fn::GetAtt" : ["FreeUsersSendEmailQueue", "QueueName"]}
+    "QueueName": {
+      "Description": "Name newly created SQS Queue",
+      "Value": {
+        "Fn::GetAtt": [
+          "FreeUsersSendEmailQueue",
+          "QueueName"
+        ]
+      }
     },
-    "PrecompileCampaignTopicARN" : {
-      "Description" : "ARN of the PrecompileCampaign SNS topic",
-      "Value" : { "Ref" : "PrecompileCampaignTopic"}
+    "PrecompileCampaignTopicARN": {
+      "Description": "ARN of the PrecompileCampaign SNS topic",
+      "Value": {
+        "Ref": "PrecompileCampaignTopic"
+      }
     },
-    "UpdateCampaignTopicARN" : {
-      "Description" : "ARN of the UpdateCampaign SNS topic",
-      "Value" : { "Ref" : "UpdateCampaignTopic"}
+    "UpdateCampaignTopicARN": {
+      "Description": "ARN of the UpdateCampaign SNS topic",
+      "Value": {
+        "Ref": "UpdateCampaignTopic"
+      }
     },
-    "SendCampaignTopicARN" : {
-      "Description" : "ARN of the SendCampaign SNS topic",
-      "Value" : { "Ref" : "SendCampaignTopic"}
+    "SendCampaignTopicARN": {
+      "Description": "ARN of the SendCampaign SNS topic",
+      "Value": {
+        "Ref": "SendCampaignTopic"
+      }
     },
-    "SendEmailsTopicARN" : {
-      "Description" : "ARN of the SendEmails SNS topic",
-      "Value" : { "Ref" : "SendEmailsTopic"}
+    "SendEmailsTopicARN": {
+      "Description": "ARN of the SendEmails SNS topic",
+      "Value": {
+        "Ref": "SendEmailsTopic"
+      }
     },
-    "EmailNotificationsTopicARN" : {
-      "Description" : "ARN of the EmailNotifications SNS topic",
-      "Value" : { "Ref" : "EmailNotificationsTopic"}
+    "EmailNotificationsTopicARN": {
+      "Description": "ARN of the EmailNotifications SNS topic",
+      "Value": {
+        "Ref": "EmailNotificationsTopic"
+      }
     },
-    "SentEmailsTopicARN" : {
-      "Description" : "ARN of the SentEmails SNS topic",
-      "Value" : { "Ref" : "SentEmailsTopic"}
+    "SentEmailsTopicARN": {
+      "Description": "ARN of the SentEmails SNS topic",
+      "Value": {
+        "Ref": "SentEmailsTopic"
+      }
     },
-    "AttachRecipientsTopicARN" : {
-      "Description" : "ARN of the AttachRecipients SNS topic",
-      "Value" : { "Ref" : "AttachRecipientsTopic"}
+    "AttachRecipientsTopicARN": {
+      "Description": "ARN of the AttachRecipients SNS topic",
+      "Value": {
+        "Ref": "AttachRecipientsTopic"
+      }
     },
-    "AttachRecipientsCountTopicARN" : {
-      "Description" : "ARN of the AttachRecipientsCount SNS topic",
-      "Value" : { "Ref" : "AttachRecipientsCountTopic"}
+    "AttachRecipientsCountTopicARN": {
+      "Description": "ARN of the AttachRecipientsCount SNS topic",
+      "Value": {
+        "Ref": "AttachRecipientsCountTopic"
+      }
     },
-    "OpensStreamName" : {
-      "Description" : "Name of the Opens Kinesis Stream",
-      "Value" : { "Ref" : "OpensStream"}
+    "OpensStreamName": {
+      "Description": "Name of the Opens Kinesis Stream",
+      "Value": {
+        "Ref": "OpensStream"
+      }
     },
-    "OpensStreamARN" : {
-      "Description" : "Name of the Opens Kinesis Stream",
-      "Value" : { "Fn::GetAtt" : ["OpensStream", "Arn"]}
+    "OpensStreamARN": {
+      "Description": "Name of the Opens Kinesis Stream",
+      "Value": {
+        "Fn::GetAtt": [
+          "OpensStream",
+          "Arn"
+        ]
+      }
     },
-    "ClicksStreamName" : {
-      "Description" : "Name of the Clicks Kinesis Stream",
-      "Value" : { "Ref" : "ClicksStream"}
+    "ClicksStreamName": {
+      "Description": "Name of the Clicks Kinesis Stream",
+      "Value": {
+        "Ref": "ClicksStream"
+      }
     },
-    "ClicksStreamARN" : {
-      "Description" : "Name of the Clicks Kinesis Stream",
-      "Value" : { "Fn::GetAtt" : ["ClicksStream", "Arn"]}
+    "ClicksStreamARN": {
+      "Description": "Name of the Clicks Kinesis Stream",
+      "Value": {
+        "Fn::GetAtt": [
+          "ClicksStream",
+          "Arn"
+        ]
+      }
     },
     "PrecompileEmailTopicARN": {
       "Description": "ARN of the PrecompileEmailTopic SNS topic",
