@@ -13,7 +13,8 @@ export function respond(event, cb) {
   decrypt(event.authToken).then((decoded) => {
     debug('= deliverCampaign.action', 'Getting campaign');
     const userId = decoded.sub;
-    const deliverService = new DeliverCampaignService(sns, {campaign: event.campaign, campaignId: event.campaignId, userId});
+    const userPlan = decoded.plan;
+    const deliverService = new DeliverCampaignService(sns, {campaign: event.campaign, campaignId: event.campaignId, userId, userPlan});
     deliverService.sendCampaign()
       .then(res => cb(null, res))
       .catch(err => cb(err));

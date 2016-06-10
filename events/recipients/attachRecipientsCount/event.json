@@ -1,0 +1,13 @@
+{
+  "Records": [
+    {
+      "EventSource": "aws:sns",
+      "EventVersion": "1.0",
+      "Sns": {
+        "Type": "Notification",
+        "Subject": "SomeSubject",
+        "Message": "{\"userId\":\"some_user_id\",\"campaign\":{\"id\":\"some_campaign_id\",\"body\":\"Hi {{ name }}, this is the body of the email\",\"subject\":\"Hi {{ name }} {{ surname }}\",\"listIds\":[\"some-list-id\", \"ca3456\"]}}"
+      }
+    }
+  ]
+}
