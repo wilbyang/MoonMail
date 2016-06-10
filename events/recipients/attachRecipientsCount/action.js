@@ -12,9 +12,21 @@ export function respond(event, cb) {
   const campaignMessage = parse(event)[0];
   const countPromises = campaignMessage.campaign.listIds.map(listId => Recipient.countBy('listId', listId));
   Promise.all(countPromises).then(results => {
+    debug('= attachRecipients.action', 'Count is', results);
     const recipientsCount = results.reduce((acumm, next) => (acumm + next));
     Object.assign(campaignMessage, {recipientsCount});
-    cb(null, campaignMessage);
+    const snsParams = {
+      TopicArn: process.env.ATTACH_SENDER_TOPIC_ARN,
+      Message: JSON.stringify(campaignMessage)
+    }
+    sns.publish(snsParams, (err, data) => {
+      if (err) {
+        debug('= attachRecipients.action', 'Error publishing message', err)
+        cb(err);
+      } else {
+        cb(null, data);
+      }
+    });
   })
   .catch(err => cb(err));
 }

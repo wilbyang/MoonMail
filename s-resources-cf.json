@@ -116,6 +116,12 @@
         "TopicName": "$${sendCampaignTopic}"
       }
     },
+    "AttachSenderTopic": {
+      "Type": "AWS::SNS::Topic",
+      "Properties": {
+        "TopicName": "$${attachSenderTopic}"
+      }
+    },
     "EmailNotificationsTopic": {
       "Type": "AWS::SNS::Topic",
       "Properties": {
@@ -496,6 +502,12 @@
       "Description": "ARN of the AttachRecipients SNS topic",
       "Value": {
         "Ref": "AttachRecipientsTopic"
+      }
+    },
+    "AttachSenderTopicARN": {
+      "Description": "ARN of the AttachSender SNS topic",
+      "Value": {
+        "Ref": "AttachSenderTopic"
       }
     },
     "AttachRecipientsCountTopicARN": {
