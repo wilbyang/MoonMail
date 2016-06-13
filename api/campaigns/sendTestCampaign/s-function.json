@@ -24,7 +24,8 @@
       "requestTemplates": {
         "application/json": {
           "campaign": "$input.json('$.campaign')",
-          "sender": "$input.json('$.sender')"
+          "sender": "$input.json('$.sender')",
+          "authToken": "$input.params('Authorization')"
         }
       },
       "responses": "$${responses}"

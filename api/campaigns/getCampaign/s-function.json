@@ -23,7 +23,8 @@
       "requestParameters": {},
       "requestTemplates": {
         "application/json": {
-          "campaignId": "$input.params('campaignId')"
+          "campaignId": "$input.params('campaignId')",
+          "authToken": "$input.params('Authorization')"
         }
       },
       "responses": "$${responses}"
