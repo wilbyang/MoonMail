@@ -13,7 +13,7 @@ export function respond(event, cb) {
       list.userId = decoded.sub;
       list.id = cuid();
       list.isDeleted = false.toString();
-      List.save(list).then(list => {
+      List.save(list).then(() => {
         return cb(null, list);
       }).catch( e => {
         debug(e);

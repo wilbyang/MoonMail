@@ -12,7 +12,7 @@ export function respond(event, cb) {
       let campaign = event.campaign;
       campaign.userId = decoded.sub;
       campaign.id = cuid();
-      Campaign.save(campaign).then(campaign => {
+      Campaign.save(campaign).then(() => {
         return cb(null, campaign);
       }).catch( e => {
         debug(e);
