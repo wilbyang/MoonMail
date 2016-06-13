@@ -51,3 +51,5 @@ users/
 events/users
 events/user
 .gitmodules
+certs/
+api/lib/auth.js

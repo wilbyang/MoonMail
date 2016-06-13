@@ -24,7 +24,8 @@
       "requestTemplates": {
         "application/json": {
           "listId": "$input.params('listId')",
-          "nextPage": "$input.params('page')"
+          "nextPage": "$input.params('page')",
+          "authToken": "$input.params('Authorization')"
         }
       },
       "responses": "$${responses}"

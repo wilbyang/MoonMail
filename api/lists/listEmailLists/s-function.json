@@ -23,7 +23,8 @@
       "requestParameters": {},
       "requestTemplates": {
         "application/json": {
-          "nextPage": "$input.params('page')"
+          "nextPage": "$input.params('page')",
+          "authToken": "$input.params('Authorization')"
         }
       },
       "responses": "$${responses}"

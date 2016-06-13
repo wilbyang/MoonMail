@@ -25,7 +25,8 @@
         "application/json": {
           "listId": "$input.params('listId')",
           "recipientId": "$input.params('recipientId')",
-          "recipient": "$input.json('$.recipient')"
+          "recipient": "$input.json('$.recipient')",
+          "authToken": "$input.params('Authorization')"
         }
       },
       "responses": "$${responses}"
