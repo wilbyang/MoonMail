@@ -23,7 +23,7 @@
       "requestParameters": {},
       "requestTemplates": {
         "application/json": {
-          "list": "$input.json('$.list')",
+          "list": "$input.json('$')",
           "authToken": "$input.params('Authorization')"
         }
       },
