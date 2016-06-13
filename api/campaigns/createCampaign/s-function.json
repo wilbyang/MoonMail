@@ -23,7 +23,7 @@
       "requestParameters": {},
       "requestTemplates": {
         "application/json": {
-          "campaign": "$input.json('$.campaign')",
+          "campaign": "$input.json('$')",
           "authToken": "$input.params('Authorization')"
         }
       },
