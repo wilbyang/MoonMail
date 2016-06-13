@@ -24,6 +24,7 @@ export function respond(event, cb) {
         debug('= attachRecipients.action', 'Error publishing message', err)
         cb(err);
       } else {
+        debug('= attachRecipients.action', 'Success publishing', campaignMessage)
         cb(null, data);
       }
     });

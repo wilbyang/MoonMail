@@ -5,11 +5,13 @@ import { Campaign } from 'moonmail-models';
 
 class DeliverCampaignService {
 
-  constructor(snsClient, { campaign, campaignId, userId } = {}) {
+  constructor(snsClient, { campaign, campaignId, userId, userPlan } = {}) {
     this.snsClient = snsClient;
     this.campaign = campaign;
     this.campaignId = campaignId;
     this.userId = userId;
+    this.userPlan = userPlan;
+    this.sentCampaignsInMonth = 0;
     this.attachRecipientsCountTopicArn = process.env.ATTACH_RECIPIENTS_COUNT_TOPIC_ARN;
   }
 
@@ -52,6 +54,8 @@ class DeliverCampaignService {
     return new Promise((resolve) => {
       resolve({
         userId: campaign.userId,
+        userPlan: this.userPlan,
+        sentCampaignsInMonth: this.sentCampaignsInMonth,
         campaign: {
           id: campaign.id,
           subject: campaign.subject,
