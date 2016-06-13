@@ -4,7 +4,7 @@
   "description": "Serverless Lambda function for project: MoonMail-v2",
   "customName": false,
   "customRole": false,
-  "handler": "handler.default",
+  "handler": "recipients/attachRecipientsCount/handler.default",
   "timeout": 60,
   "memorySize": 1024,
   "authorizer": {},
