@@ -19,9 +19,9 @@ describe('ImportRecipientsService', () => {
   };
   let contextStub;
   let lambdaClient;
+  let s3Client;
 
   before(() => {
-    awsMock.mock('DynamoDB.DocumentClient', 'batchWrite', { });
     awsMock.mock('S3', 'getObject', {
       data: {
         Body: fs.readFile(require('path').resolve(
@@ -32,6 +32,7 @@ describe('ImportRecipientsService', () => {
     contextStub = sinon.stub(lambdaContext, 'getRemainingTimeInMillis').returns(100000);
     awsMock.mock('Lambda', 'invoke', 'ok');
     lambdaClient = new AWS.Lambda();
+    s3Client = new AWS.S3();
   });
 
   describe('#importAll', () => {
@@ -59,7 +60,6 @@ describe('ImportRecipientsService', () => {
 
   after(() => {
     awsMock.restore('S3');
-    awsMock.restore('DynamoDB.DocumentClient');
     awsMock.restore('Lambda');
     contextStub.restore();
   });
