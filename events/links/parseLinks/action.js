@@ -17,7 +17,25 @@ export function respond(event, cb) {
     const precompileService = new ParseLinksService(sns, campaignParams);
     precompileService.precompile()
       .then((result) => {
-        cb(null, result);
+        debug('= links.parseLinks', 'Success');
+        const payload = {
+          userId: campaignParams.userId,
+          campaignId: campaignParams.campaign.id,
+          status: 'sending'
+        };
+        const params = {
+          TopicArn: process.env.UPDATE_CAMPAIGN_TOPIC_ARN,
+          Message: JSON.stringify(payload)
+        };
+        sns.publish(params, (err, res) => {
+          if (err) {
+            debug('= links.parseLinks', 'Error publishing to SNS', err);
+            cb(err);
+          } else {
+            debug('= links.parseLinks', 'Success sending SNS');
+            cb(null, res);
+          }
+        });
       })
       .catch(cb);
   } else {

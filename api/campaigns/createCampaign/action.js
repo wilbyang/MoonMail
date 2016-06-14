@@ -12,9 +12,10 @@ export function respond(event, cb) {
       let campaign = event.campaign;
       campaign.userId = decoded.sub;
       campaign.id = cuid();
+      campaign.status = 'draft';
       Campaign.save(campaign).then(() => {
         return cb(null, campaign);
-      }).catch( e => {
+      }).catch(e => {
         debug(e);
         return cb(e);
       });

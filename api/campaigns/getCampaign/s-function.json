@@ -24,6 +24,9 @@
       "requestTemplates": {
         "application/json": {
           "campaignId": "$input.params('campaignId')",
+          "options": {
+            "attributes": "$input.params('attributes')"
+            },
           "authToken": "$input.params('Authorization')"
         }
       },

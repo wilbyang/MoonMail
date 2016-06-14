@@ -51,6 +51,7 @@ describe('DeliverCampaignService', () => {
       before(() => {
         sinon.stub(Campaign, 'get').resolves(campaign);
         deliverCampaignService = new DeliverCampaignService(snsClient, {campaignId, userId});
+        sinon.stub(deliverCampaignService, 'updateCampaignStatus').resolves(true);
       });
 
       it('fetches the campaign from DB and sends it to the topic', done => {
@@ -73,6 +74,7 @@ describe('DeliverCampaignService', () => {
 
       after(() => {
         Campaign.get.restore();
+        deliverCampaignService.updateCampaignStatus.restore();
       });
     });
 
@@ -80,6 +82,7 @@ describe('DeliverCampaignService', () => {
       before(() => {
         sinon.stub(Campaign, 'update').resolves(updatedCampaign);
         deliverCampaignService = new DeliverCampaignService(snsClient, {campaign, campaignId, userId});
+        sinon.stub(deliverCampaignService, 'updateCampaignStatus').resolves(true);
       });
 
       it('fetches the campaign from DB and sends it to the topic', (done) => {
@@ -107,6 +110,7 @@ describe('DeliverCampaignService', () => {
 
     after(() => {
       awsMock.restore('SNS');
+      deliverCampaignService.updateCampaignStatus.restore();
     });
   });
 });

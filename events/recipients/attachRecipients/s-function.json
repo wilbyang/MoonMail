@@ -27,6 +27,7 @@
     "SERVERLESS_REGION": "${region}",
     "PRECOMPILE_EMAIL_TOPIC_ARN": "${precompileEmailTopicARN}",
     "SEND_EMAILS_TOPIC_ARN": "${sendEmailsTopicARN}",
+    "UPDATE_CAMPAIGN_TOPIC_ARN": "${updateCampaignTopicARN}",
     "RECIPIENTS_TABLE": "$${recipientsTable}",
     "DEBUG": "true"
   },

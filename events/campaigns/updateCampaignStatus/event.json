@@ -1,0 +1,13 @@
+{
+  "Records": [
+    {
+      "EventSource": "aws:sns",
+      "EventVersion": "1.0",
+      "Sns": {
+        "Type": "Notification",
+        "Subject": "SomeSubject",
+        "Message": "{\"userId\":\"my-user-id\",\"status\":\"pending\",\"campaignId\":\"cipe6r5wy000201ov112ntdkt\"}"
+      }
+    }
+  ]
+}
