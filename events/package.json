@@ -41,7 +41,6 @@
     "liquid-node": "^2.6.1",
     "moonmail-models": "github:microapps/moonmail-models",
     "saws": "^0.1.0",
-    "serverless-helpers-js": "~0.1.0",
-    "uuid": "^2.0.2"
+    "serverless-helpers-js": "~0.1.0"
   }
 }
