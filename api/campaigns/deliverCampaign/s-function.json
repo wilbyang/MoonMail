@@ -37,6 +37,7 @@
     "SERVERLESS_STAGE": "${stage}",
     "SERVERLESS_REGION": "${region}",
     "CAMPAIGNS_TABLE": "$${campaignsTable}",
+    "UPDATE_CAMPAIGN_TOPIC_ARN": "${updateCampaignTopicARN}",
     "ATTACH_RECIPIENTS_COUNT_TOPIC_ARN": "${attachRecipientsCountTopicARN}",
     "DEBUG": "true"
   },

@@ -1,30 +1,23 @@
 {
-  "name": "parseLinks",
+  "name": "updateCampaignStatus",
   "runtime": "babel",
   "description": "Serverless Lambda function for project: MoonMail-v2",
-  "customName": "${project}-links-parseLinks",
+  "customName": "${project}-campaigns-updateCampaignStatus",
   "customRole": false,
-  "handler": "links/parseLinks/handler.default",
+  "handler": "campaigns/updateCampaignStatus/handler.default",
   "timeout": 60,
   "memorySize": 1024,
   "authorizer": {},
   "custom": {
-    "runtime": {
-      "babel": {
-        "presets": ["es2015"]
-      },
-      "handlerExt": "js",
-      "ignore": ["aws-sdk"],
-      "minify": true
-    }
+    "excludePatterns": []
   },
   "endpoints": [],
   "events": [
     {
-      "name": "precompileCampaignSns",
+      "name": "updateCampaignSns",
       "type": "sns",
       "config": {
-        "topicName": "$${precompileCampaignTopic}"
+        "topicName": "$${updateCampaignTopic}"
       }
     }
   ],
@@ -32,11 +25,8 @@
     "SERVERLESS_PROJECT": "${project}",
     "SERVERLESS_STAGE": "${stage}",
     "SERVERLESS_REGION": "${region}",
-    "LINKS_TABLE": "$${linksTable}",
-    "ATTACH_RECIPIENTS_TOPIC": "$${attachRecipientsTopic}",
-    "ATTACH_RECIPIENTS_TOPIC_ARN": "${attachRecipientsTopicARN}",
+    "CAMPAIGNS_TABLE": "$${campaignsTable}",
     "UPDATE_CAMPAIGN_TOPIC_ARN": "${updateCampaignTopicARN}",
-    "API_HOST": "${apiHost}",
     "DEBUG": "true"
   },
   "vpc": {

@@ -14,7 +14,7 @@ class AttachRecipientsService {
   attachAllRecipients() {
     debug('= AttachRecipientsService.attachAllRecipients', this.listIds);
     const attachListPromises = this.listIds.map(listId => this.attachRecipientsList(listId));
-    return Promise.all(attachListPromises);
+    return Promise.all(attachListPromises).then(() => this._notifySent());
   }
 
   attachRecipientsList(listId, nextPage = {}) {
@@ -80,6 +80,28 @@ class AttachRecipientsService {
       const params = {
         TopicArn: process.env.PRECOMPILE_EMAIL_TOPIC_ARN,
         Message: JSON.stringify(recipientMessage)
+      };
+      this.snsClient.publish(params, (err, result) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result);
+        }
+      });
+    });
+  }
+
+  _notifySent() {
+    debug('= AttachRecipientsService._notifySent', JSON.stringify(this.campaignMessage));
+    return new Promise((resolve, reject) => {
+      const campaignStatus = {
+        status: 'sent',
+        campaignId: this.campaignMessage.campaign.id,
+        userId: this.campaignMessage.userId
+      };
+      const params = {
+        TopicArn: process.env.UPDATE_CAMPAIGN_TOPIC_ARN,
+        Message: JSON.stringify(campaignStatus)
       };
       this.snsClient.publish(params, (err, result) => {
         if (err) {

@@ -13,6 +13,7 @@ class DeliverCampaignService {
     this.userPlan = userPlan;
     this.sentCampaignsInMonth = 0;
     this.attachRecipientsCountTopicArn = process.env.ATTACH_RECIPIENTS_COUNT_TOPIC_ARN;
+    this.updateCampaignStatusTopicArn = process.env.ATTACH_RECIPIENTS_COUNT_TOPIC_ARN;
   }
 
   sendCampaign() {
@@ -20,7 +21,8 @@ class DeliverCampaignService {
     return this.getCampaign()
       .then(campaign => this.checkCampaign(campaign))
       .then(campaign => this.buildCampaignMessage(campaign))
-      .then((canonicalMessage) => this.publishToSns(canonicalMessage));
+      .then((canonicalMessage) => this.publishToSns(canonicalMessage))
+      .then(() => this.updateCampaignStatus());
   }
 
   getCampaign() {
@@ -86,6 +88,28 @@ class DeliverCampaignService {
       });
     });
   }
+
+  updateCampaignStatus() {
+    return new Promise((resolve, reject) => {
+      debug('= DeliverCampaignService.updateCampaignStatus');
+      const campaignStatus = {campaignId: this.campaignId, userId: this.userId, status: 'pending'};
+      const params = {
+        Message: JSON.stringify(campaignStatus),
+        TopicArn: this.updateCampaignStatusTopicArn
+      };
+      this.snsClient.publish(params, (err, data) => {
+        if (err) {
+          debug('= DeliverCampaignService.updateCampaignStatus', 'Error sending message', err);
+          reject(err);
+        } else {
+          debug('= DeliverCampaignService.updateCampaignStatus', 'Message sent');
+          resolve(data);
+        }
+      });
+    });
+  }
+
+
 }
 
 module.exports.DeliverCampaignService = DeliverCampaignService;
