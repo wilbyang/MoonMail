@@ -21,6 +21,7 @@ describe('DeliverCampaignService', () => {
   const body = 'my campaign body';
   const updatedBody = 'New updated body';
   const campaignId = 'some-campaign-id';
+  const freeUserPlan = 'free';
   const campaign = {userId, senderId, subject, listIds, name, body, id: campaignId};
   const updatedCampaign = {userId, senderId, subject, listIds, name, body: updatedBody, id: campaignId};
   const nonReadyCampaign = {userId, subject, name, body: updatedBody, id: campaignId};
@@ -29,6 +30,22 @@ describe('DeliverCampaignService', () => {
     before(() => {
       awsMock.mock('SNS', 'publish', {ReceiptHandle: 'STRING_VALUE'});
       snsClient = new AWS.SNS();
+    });
+
+    context('when the user is not allowed to send more campaigns', () => {
+      before(() => {
+        deliverCampaignService = new DeliverCampaignService(snsClient, {campaignId, userId, userPlan: freeUserPlan});
+        sinon.stub(Campaign, 'sentLastMonth').resolves(deliverCampaignService.maxMonthlyCampaigns + 1);
+      });
+
+      it('rejects the promise', done => {
+        const sendCampaignPromise = deliverCampaignService.sendCampaign();
+        expect(sendCampaignPromise).to.be.rejectedWith('User can\'t send more campaigns').notify(done);
+      });
+
+      after(() => {
+        Campaign.sentLastMonth.restore();
+      });
     });
 
     context('when the campaign is not ready to be sent', () => {
@@ -51,7 +68,7 @@ describe('DeliverCampaignService', () => {
       before(() => {
         sinon.stub(Campaign, 'get').resolves(campaign);
         deliverCampaignService = new DeliverCampaignService(snsClient, {campaignId, userId});
-        sinon.stub(deliverCampaignService, 'updateCampaignStatus').resolves(true);
+        sinon.stub(deliverCampaignService, '_updateCampaignStatus').resolves(true);
       });
 
       it('fetches the campaign from DB and sends it to the topic', done => {
@@ -74,7 +91,7 @@ describe('DeliverCampaignService', () => {
 
       after(() => {
         Campaign.get.restore();
-        deliverCampaignService.updateCampaignStatus.restore();
+        deliverCampaignService._updateCampaignStatus.restore();
       });
     });
 
@@ -82,7 +99,7 @@ describe('DeliverCampaignService', () => {
       before(() => {
         sinon.stub(Campaign, 'update').resolves(updatedCampaign);
         deliverCampaignService = new DeliverCampaignService(snsClient, {campaign, campaignId, userId});
-        sinon.stub(deliverCampaignService, 'updateCampaignStatus').resolves(true);
+        sinon.stub(deliverCampaignService, '_updateCampaignStatus').resolves(true);
       });
 
       it('fetches the campaign from DB and sends it to the topic', (done) => {
@@ -110,7 +127,7 @@ describe('DeliverCampaignService', () => {
 
     after(() => {
       awsMock.restore('SNS');
-      deliverCampaignService.updateCampaignStatus.restore();
+      deliverCampaignService._updateCampaignStatus.restore();
     });
   });
 });
