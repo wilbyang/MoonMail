@@ -151,8 +151,10 @@ class ImportRecipientsService {
         id: new Buffer(item[0]).toString('base64'),
         listId: this.listId,
         email: item[0],
-        firstName: item[1],
-        lastName: item[2],
+        metadata: {
+          firstName: item[1],
+          lastName: item[2]
+        },
         recipientStatus: 'NORMAL',
         isConfirmed: true
       }
