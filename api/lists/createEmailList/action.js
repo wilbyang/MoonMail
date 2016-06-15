@@ -4,6 +4,7 @@ import { List } from 'moonmail-models';
 import { debug } from '../../lib/logger';
 import cuid from 'cuid';
 import decrypt from '../../lib/auth-token-decryptor';
+import { ApiErrors } from '../../lib/errors';
 
 export function respond(event, cb) {
   debug('= createEmailList.action', JSON.stringify(event));
@@ -23,5 +24,5 @@ export function respond(event, cb) {
       return cb('No list specified');
     }
   })
-  .catch(err => cb('403: No authentication token provided', null));
+  .catch(err => cb(ApiErrors.response(err), null));
 }

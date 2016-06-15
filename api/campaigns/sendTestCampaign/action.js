@@ -3,6 +3,7 @@
 import * as AWS from 'aws-sdk';
 import { debug } from '../../lib/logger';
 import decrypt from '../../lib/auth-token-decryptor';
+import { ApiErrors } from '../../lib/errors';
 
 AWS.config.region = process.env.SERVERLESS_REGION || 'us-east-1';
 const sns = new AWS.SNS();
@@ -28,5 +29,5 @@ export function respond(event, cb) {
       return cb('No campaign specified');
     }
   })
-  .catch(err => cb(err, null));
+  .catch(err => cb(ApiErrors.response(err), null));
 }

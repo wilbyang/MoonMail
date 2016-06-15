@@ -3,6 +3,7 @@
 import { Campaign } from 'moonmail-models';
 import { debug } from '../../lib/logger';
 import decrypt from '../../lib/auth-token-decryptor';
+import { ApiErrors } from '../../lib/errors';
 
 export function respond(event, cb) {
   debug('= getCampaign.action', JSON.stringify(event));
@@ -24,5 +25,5 @@ export function respond(event, cb) {
       return cb('No campaign specified');
     }
   })
-  .catch(err => cb(err, null));
+  .catch(err => cb(ApiErrors.response(err), null));
 }

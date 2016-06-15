@@ -3,13 +3,14 @@
 import { List } from 'moonmail-models';
 import { debug } from '../../lib/logger';
 import decrypt from '../../lib/auth-token-decryptor';
+import { ApiErrors } from '../../lib/errors';
 
 export function respond(event, cb) {
   debug('= listEmailLists.action', JSON.stringify(event));
   decrypt(event.authToken).then((decoded) => {
-    let options = {
-        limit: 25
-      };
+    const options = {
+      limit: 25
+    };
     if (event.nextPage) {
       options.nextPage = event.nextPage;
     }
@@ -22,5 +23,5 @@ export function respond(event, cb) {
       return cb(e);
     });
   })
-  .catch(err => cb('403: No authentication token provided', null));
+  .catch(err => cb(ApiErrors.response(err), null));
 }
