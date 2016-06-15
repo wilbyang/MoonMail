@@ -4,6 +4,7 @@ import { Recipient } from 'moonmail-models';
 import { debug } from '../../lib/logger';
 import decrypt from '../../lib/auth-token-decryptor';
 import base64url from 'base64-url';
+import { ApiErrors } from '../../lib/errors';
 
 export function respond(event, cb) {
   debug('= createRecipient.action', JSON.stringify(event));
@@ -23,5 +24,5 @@ export function respond(event, cb) {
       return cb('No recipient specified');
     }
   })
-  .catch(() => cb('403: No authentication token provided', null));
+  .catch(err => cb(ApiErrors.response(err), null));
 }

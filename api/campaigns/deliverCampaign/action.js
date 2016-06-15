@@ -4,6 +4,7 @@ import * as aws from 'aws-sdk';
 import { debug } from '../../lib/logger';
 import decrypt from '../../lib/auth-token-decryptor';
 import { DeliverCampaignService } from '../../lib/services/deliver_campaign_service';
+import { ApiErrors } from '../../lib/errors';
 
 aws.config.update({region: process.env.SERVERLESS_REGION});
 const sns = new aws.SNS();
@@ -19,5 +20,5 @@ export function respond(event, cb) {
       .then(res => cb(null, res))
       .catch(err => cb(err));
   })
-  .catch(err => cb(err, null));
+  .catch(err => cb(ApiErrors.response(err), null));
 }
