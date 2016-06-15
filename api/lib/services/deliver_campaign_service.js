@@ -18,30 +18,53 @@ class DeliverCampaignService {
 
   sendCampaign() {
     debug('= DeliverCampaignService.sendCampaign', `Sending campaign with id ${this.campaignId}`);
-    return this.getCampaign()
-      .then(campaign => this.checkCampaign(campaign))
-      .then(campaign => this.buildCampaignMessage(campaign))
-      .then((canonicalMessage) => this.publishToSns(canonicalMessage))
-      .then(() => this.updateCampaignStatus());
+    return this._checkUserQuota()
+      .then(() => this._getCampaign())
+      .then(campaign => this._checkCampaign(campaign))
+      .then(campaign => this._buildCampaignMessage(campaign))
+      .then((canonicalMessage) => this._publishToSns(canonicalMessage))
+      .then(() => this._updateCampaignStatus());
   }
 
-  getCampaign() {
+  _checkUserQuota() {
+    return new Promise((resolve, reject) => {
+      debug('= DeliverCampaignService._checkUserQuota', this.userId);
+      if (this.maxMonthlyCampaigns) {
+        debug('= DeliverCampaignService._checkUserQuota', 'User has a limit of campaigns');
+        Campaign.sentLastMonth(this.userId)
+          .then(count => {
+            debug('= DeliverCampaignService._checkUserQuota', count);
+            if (count < this.maxMonthlyCampaigns) {
+              this.sentCampaignsInMonth = count;
+              resolve(true);
+            } else {
+              reject('User can\'t send more campaigns');
+            }
+          });
+      } else {
+        debug('= DeliverCampaignService._checkUserQuota', 'User has no limit of campaigns');
+        resolve(true);
+      }
+    });
+  }
+
+  _getCampaign() {
     return new Promise((resolve, reject) => {
       if (this.campaign) {
-        debug('= DeliverCampaignService.getCampaign', 'Updating campaign', this.campaign);
+        debug('= DeliverCampaignService._getCampaign', 'Updating campaign', this.campaign);
         resolve(Campaign.update(this.campaign, this.userId, this.campaignId));
       } else if (this.campaignId && this.userId) {
-        debug('= DeliverCampaignService.getCampaign', `ID ${this.campaignId} and user ID ${this.userId} was provided`);
+        debug('= DeliverCampaignService._getCampaign', `ID ${this.campaignId} and user ID ${this.userId} was provided`);
         resolve(Campaign.get(this.userId, this.campaignId));
       } else {
-        debug('= DeliverCampaignService.getCampaign', 'No info provided');
+        debug('= DeliverCampaignService._getCampaign', 'No info provided');
         reject('No campaign info provided');
       }
     });
   }
 
-  checkCampaign(campaign) {
-    debug('= DeliverCampaignService.checkCampaign', JSON.stringify(campaign));
+  _checkCampaign(campaign) {
+    debug('= DeliverCampaignService._checkCampaign', JSON.stringify(campaign));
     return new Promise((resolve, reject) => {
       if (Campaign.isValidToBeSent(campaign)) {
         resolve(campaign);
@@ -51,8 +74,8 @@ class DeliverCampaignService {
     });
   }
 
-  buildCampaignMessage(campaign) {
-    debug('= DeliverCampaignService.buildCampaignMessage', campaign);
+  _buildCampaignMessage(campaign) {
+    debug('= DeliverCampaignService._buildCampaignMessage', campaign);
     return new Promise((resolve) => {
       resolve({
         userId: campaign.userId,
@@ -70,28 +93,28 @@ class DeliverCampaignService {
     });
   }
 
-  publishToSns(canonicalMessage) {
+  _publishToSns(canonicalMessage) {
     return new Promise((resolve, reject) => {
-      debug('= DeliverCampaignService.publishToSns', 'Sending canonical message', JSON.stringify(canonicalMessage));
+      debug('= DeliverCampaignService._publishToSns', 'Sending canonical message', JSON.stringify(canonicalMessage));
       const params = {
         Message: JSON.stringify(canonicalMessage),
         TopicArn: this.attachRecipientsCountTopicArn
       };
       this.snsClient.publish(params, (err, data) => {
         if (err) {
-          debug('= DeliverCampaignService.publishToSns', 'Error sending message', err);
+          debug('= DeliverCampaignService._publishToSns', 'Error sending message', err);
           reject(err);
         } else {
-          debug('= DeliverCampaignService.publishToSns', 'Message sent');
+          debug('= DeliverCampaignService._publishToSns', 'Message sent');
           resolve(data);
         }
       });
     });
   }
 
-  updateCampaignStatus() {
+  _updateCampaignStatus() {
     return new Promise((resolve, reject) => {
-      debug('= DeliverCampaignService.updateCampaignStatus');
+      debug('= DeliverCampaignService._updateCampaignStatus');
       const campaignStatus = {campaignId: this.campaignId, userId: this.userId, status: 'pending'};
       const params = {
         Message: JSON.stringify(campaignStatus),
@@ -99,17 +122,21 @@ class DeliverCampaignService {
       };
       this.snsClient.publish(params, (err, data) => {
         if (err) {
-          debug('= DeliverCampaignService.updateCampaignStatus', 'Error sending message', err);
+          debug('= DeliverCampaignService._updateCampaignStatus', 'Error sending message', err);
           reject(err);
         } else {
-          debug('= DeliverCampaignService.updateCampaignStatus', 'Message sent');
+          debug('= DeliverCampaignService._updateCampaignStatus', 'Message sent');
           resolve(data);
         }
       });
     });
   }
 
-
+  get maxMonthlyCampaigns() {
+    if (this.userPlan === 'free') {
+      return 5;
+    }
+  }
 }
 
 module.exports.DeliverCampaignService = DeliverCampaignService;

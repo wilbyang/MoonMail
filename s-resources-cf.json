@@ -280,6 +280,10 @@
           {
             "AttributeName": "userId",
             "AttributeType": "S"
+          },
+          {
+            "AttributeName": "sentAt",
+            "AttributeType": "N"
           }
         ],
         "KeySchema": [
@@ -290,6 +294,24 @@
           {
             "AttributeName": "id",
             "KeyType": "RANGE"
+          }
+        ],
+        "LocalSecondaryIndexes": [
+          {
+            "IndexName": "$${campaignsSentAtIndex}",
+            "KeySchema": [
+              {
+                "AttributeName": "userId",
+                "KeyType": "HASH"
+              },
+              {
+                "AttributeName": "sentAt",
+                "KeyType": "RANGE"
+              }
+            ],
+            "Projection": {
+              "ProjectionType": "KEYS_ONLY"
+            }
           }
         ],
         "ProvisionedThroughput": {
