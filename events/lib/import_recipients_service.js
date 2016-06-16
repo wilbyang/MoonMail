@@ -4,7 +4,7 @@ import AWS from 'aws-sdk';
 import { debug } from './index';
 import csv from 'csv-string';
 import { Recipient } from 'moonmail-models';
-import base64url from 'base64url';
+import base64url from 'base64-url';
 
 class ImportRecipientsService {
 
