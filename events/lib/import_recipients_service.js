@@ -4,6 +4,7 @@ import AWS from 'aws-sdk';
 import { debug } from './index';
 import csv from 'csv-string';
 import { Recipient } from 'moonmail-models';
+import base64url from 'base64-url';
 
 class ImportRecipientsService {
 
@@ -148,11 +149,13 @@ class ImportRecipientsService {
     const pairs = csv.parse(csvString);
     return pairs.map(item => (
       {
-        id: new Buffer(item[0]).toString('base64'),
+        id: base64url.encode(item[0]),
         listId: this.listId,
         email: item[0],
-        firstName: item[1],
-        lastName: item[2],
+        metadata: {
+          firstName: item[1],
+          lastName: item[2]
+        },
         recipientStatus: 'NORMAL',
         isConfirmed: true
       }
