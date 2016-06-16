@@ -147,6 +147,7 @@ class ImportRecipientsService {
 
   parseCSV(csvString) {
     const pairs = csv.parse(csvString);
+    const createdAt = new Date().getTime();
     return pairs.map(item => (
       {
         id: base64url.encode(item[0]),
@@ -157,7 +158,8 @@ class ImportRecipientsService {
           lastName: item[2]
         },
         recipientStatus: 'NORMAL',
-        isConfirmed: true
+        isConfirmed: true,
+        createdAt
       }
     ));
   }

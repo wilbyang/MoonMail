@@ -14,9 +14,9 @@ export function respond(event, cb) {
       recipient.listId = event.listId;
       recipient.id = base64url.encode(recipient.email);
       recipient.recipientStatus = recipient.recipientStatus || 'NORMAL';
-      Recipient.save(recipient).then(() => {
-        return cb(null, recipient);
-      }).catch(e => {
+      recipient.createdAt = new Date().getTime();
+      Recipient.save(recipient).then(() => cb(null, recipient)
+      ).catch(e => {
         debug(e);
         return cb(e);
       });
