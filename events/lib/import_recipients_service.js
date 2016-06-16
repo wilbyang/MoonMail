@@ -157,7 +157,7 @@ class ImportRecipientsService {
           firstName: item[1],
           lastName: item[2]
         },
-        recipientStatus: 'NORMAL',
+        recipientStatus: 'SUBSCRIBED',
         isConfirmed: true,
         createdAt
       }
