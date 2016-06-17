@@ -43,7 +43,7 @@ describe('ImportRecipientsService', () => {
             name: 'Random S3 import bucket'
           },
           object: {
-            key: 'listId#1.amarker.csv'
+            key: 'userId.listId#1.amarker.csv'
           }
         }
       };
