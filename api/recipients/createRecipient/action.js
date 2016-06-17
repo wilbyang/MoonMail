@@ -13,7 +13,7 @@ export function respond(event, cb) {
       const recipient = event.recipient;
       recipient.listId = event.listId;
       recipient.id = base64url.encode(recipient.email);
-      recipient.recipientStatus = recipient.recipientStatus || 'NORMAL';
+      recipient.recipientStatus = recipient.recipientStatus || 'SUBSCRIBED';
       recipient.createdAt = new Date().getTime();
       Recipient.save(recipient).then(() => cb(null, recipient)
       ).catch(e => {

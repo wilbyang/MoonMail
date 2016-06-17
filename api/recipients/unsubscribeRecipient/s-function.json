@@ -1,20 +1,20 @@
 {
-  "name": "subscribeRecipient",
+  "name": "unsubscribeRecipient",
   "runtime": "babel",
   "description": "Serverless Lambda function for project: MoonMail-v2",
-  "customName": "${project}-recipients-subscribeRecipient",
+  "customName": "${project}-recipients-unsubscribeRecipient",
   "customRole": false,
-  "handler": "recipients/subscribeRecipient/handler.default",
+  "handler": "recipients/unsubscribeRecipient/handler.default",
   "timeout": 6,
-  "memorySize": 128,
+  "memorySize": 1024,
   "authorizer": {},
   "custom": {
     "excludePatterns": []
   },
   "endpoints": [
     {
-      "path": "lists/{listId}/subscribe",
-      "method": "POST",
+      "path": "lists/{listId}/recipients/{recipientId}/unsubscribe",
+      "method": "GET",
       "type": "AWS",
       "authorizationType": "none",
       "authorizerFunction": false,
@@ -23,7 +23,7 @@
       "requestTemplates": {
         "application/json": {
           "listId": "$input.params('listId')",
-          "recipient": "$input.json('$')"
+          "recipientId": "$input.params('recipientId')"
         }
       },
       "responses": "$${responses}"
@@ -34,7 +34,6 @@
     "SERVERLESS_PROJECT": "${project}",
     "SERVERLESS_STAGE": "${stage}",
     "SERVERLESS_REGION": "${region}",
-    "DEBUG": "true",
     "RECIPIENTS_TABLE": "$${recipientsTable}"
   },
   "vpc": {
