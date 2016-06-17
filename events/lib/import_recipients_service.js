@@ -14,7 +14,8 @@ class ImportRecipientsService {
     this.bucket = s3Event.bucket.name;
     this.fileKey = s3Event.object.key;
     const file = this.fileKey.split('.');
-    this.listId = file[0];
+    this.userId = file[0];
+    this.listId = file[1];
     this.fileExt = file[file.length - 1];
     this.s3 = null;
     this.corruptedEmails = [];
@@ -78,6 +79,7 @@ class ImportRecipientsService {
         debug('= ImportRecipientsService.saveRecipients', 'Error while saving recipients', err, err.stack);
         const importStatus = {
           listId: this.listId,
+          userId: this.userId,
           totalRecipientsCount: this.totalRecipientsCount,
           corruptedEmailsCount: this.corruptedEmails.length,
           corruptedEmails: this.corruptedEmails,
@@ -92,6 +94,7 @@ class ImportRecipientsService {
     } else {
       const importStatus = {
         listId: this.listId,
+        userId: this.userId,
         totalRecipientsCount: this.totalRecipientsCount,
         importedCount: this.importOffset,
         corruptedEmailsCount: this.corruptedEmails.length,
@@ -151,6 +154,7 @@ class ImportRecipientsService {
     return pairs.map(item => (
       {
         id: base64url.encode(item[0]),
+        userId: this.userId,
         listId: this.listId,
         email: item[0],
         metadata: {
