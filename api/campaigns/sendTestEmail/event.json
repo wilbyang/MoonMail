@@ -1,0 +1,5 @@
+{
+  "body": "mail body",
+  "subject": "The subject",
+  "emails": ["david.garcia@microapps.com", "dmitriy.nevzorov@microapps.com"]
+}
