@@ -10,7 +10,7 @@ export function respond(event, cb) {
     const recipient = event.recipient;
     recipient.listId = event.listId;
     recipient.id = base64url.encode(recipient.email);
-    recipient.recipientStatus = recipient.recipientStatus || 'WAITING_CONFIRMATION';
+    recipient.status = recipient.status || Recipient.statuses.awaitingConfirmation;
     Recipient.save(recipient).then(() => cb(null, recipient))
     .catch(e => {
       debug(e);
