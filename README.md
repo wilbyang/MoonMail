@@ -40,7 +40,7 @@ With MoonMail you can: create & edit lists of recipients (email addresses) and s
 
 ## Getting Started
 
-You need to have installed the [Serverless Framework](https://github.com/serverless/serverless) (version 0.5.2 or higher is required to run the MoonMail API).
+You need to have installed the [Serverless Framework](https://github.com/serverless/serverless) (version 0.5.2 or higher is required to run the [MoonMail API](http://microapps.github.io/MoonMail/).
 
 Install npm packages:
 
