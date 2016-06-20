@@ -3,11 +3,14 @@
 import * as chai from 'chai';
 const chaiAsPromised = require('chai-as-promised');
 import { expect } from 'chai';
+import * as sinon from 'sinon';
 import { Email } from './email';
 
 chai.use(chaiAsPromised);
 
 describe('Email', () => {
+  const apiHost = 'the-api.com';
+  process.env.API_HOST = apiHost;
   const metadata = {
     name: 'John',
     surname: 'Doe'
@@ -23,10 +26,14 @@ describe('Email', () => {
     to: 'somerecipient@test.com',
     metadata
   };
-  const emailWithTagsParams = Object.assign({body: bodyTemplate, subject: subjectTemplate}, emailParams);
-  const emailNoTagsParams = Object.assign({body: bodyNoTags, subject: subjectNoTags}, emailParams);
-  const emailWithTags = new Email(emailWithTagsParams);
-  const emailNoTags = new Email(emailNoTagsParams);
+  const recipientId = 'recipient-id';
+  const listId = 'list-id';
+  const emailWithTagsParams = Object.assign({body: bodyTemplate, subject: subjectTemplate, recipientId, listId}, emailParams);
+  const emailNoTagsParams = Object.assign({body: bodyNoTags, subject: subjectNoTags, recipientId, listId}, emailParams);
+  const emailWithTags = new Email(emailWithTagsParams, {footer: false});
+  const emailNoTags = new Email(emailNoTagsParams, {footer: false});
+  const emailWithFooter = new Email(emailNoTagsParams, {footer: true});
+  const footer = '<p>some footer</p>';
 
   describe('#renderBody()', () => {
     context('when the body contains liquid tags', () => {
@@ -38,6 +45,21 @@ describe('Email', () => {
       it('returns the body unmodified', (done) => {
         expect(emailNoTags.renderBody()).to.eventually.equal(bodyNoTags).notify(done);
       });
+    });
+    context('when the footer option is passed', () => {
+      before(() => sinon.stub(emailWithFooter, '_buildFooter').returns(footer));
+      it('appends the footer', done => {
+        expect(emailWithFooter.renderBody()).to.eventually.contain(footer).notify(done);
+      });
+      after(() => emailWithFooter._buildFooter.restore());
+    });
+  });
+
+  describe('#_buildUnsubscribeUrl()', () => {
+    it('returns the unsubscribe url for a specific recipient', done => {
+      const url = `https://${apiHost}/lists/${emailWithTags.listId}/recipients/${emailWithTags.recipientId}/unsubscribe`;
+      expect(emailWithTags._buildUnsubscribeUrl()).to.equal(url);
+      done();
     });
   });
 
