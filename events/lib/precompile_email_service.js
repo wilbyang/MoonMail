@@ -14,8 +14,11 @@ class PrecompileEmailService {
       to: emailParams.recipient.email,
       body: emailParams.campaign.body,
       subject: emailParams.campaign.subject,
-      metadata: emailParams.recipient.metadata
-    });
+      metadata: emailParams.recipient.metadata,
+      recipientId: emailParams.recipient.id,
+      listId: emailParams.recipient.listId
+    },
+    {footer: this._needsFooter(emailParams)});
   }
 
   composeEmail() {
@@ -49,6 +52,10 @@ class PrecompileEmailService {
           reject(err);
         });
     });
+  }
+
+  _needsFooter(emailParams) {
+    return (emailParams.userPlan === 'free');
   }
 }
 
