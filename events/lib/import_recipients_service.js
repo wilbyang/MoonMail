@@ -158,10 +158,10 @@ class ImportRecipientsService {
         listId: this.listId,
         email: item[0],
         metadata: {
-          firstName: item[1],
-          lastName: item[2]
+          name: item[1],
+          surname: item[2]
         },
-        recipientStatus: 'SUBSCRIBED',
+        status: Recipient.statuses.subscribed,
         isConfirmed: true,
         createdAt
       }

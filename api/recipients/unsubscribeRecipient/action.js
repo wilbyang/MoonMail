@@ -7,7 +7,7 @@ export function respond(event, cb) {
   debug('= unsubscribeRecipient.action', JSON.stringify(event));
   if (event.listId && event.recipientId) {
     const recipient = {
-      recipientStatus: 'UNSUBSCRIBED'
+      status: Recipient.status.unsubscribed
     };
     Recipient.update(recipient, event.listId, event.recipientId).then(recipient => {
       debug('= unsubscribeRecipient.action', 'Success');
