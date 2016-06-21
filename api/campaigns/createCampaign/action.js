@@ -18,10 +18,10 @@ export function respond(event, cb) {
         return cb(null, campaign);
       }).catch(e => {
         debug(e);
-        return cb(e);
+        return cb(ApiErrors.response(e));
       });
     } else {
-      return cb('No campaign specified');
+      return cb(ApiErrors.response('No campaign specified'));
     }
   })
   .catch(err => cb(ApiErrors.response(err), null));

@@ -23,7 +23,12 @@
       "requestParameters": {},
       "requestTemplates": {
         "application/json": {
-          "nextPage": "$input.params('page')",
+          "options": {
+            "page": "$input.params('page')",
+            "limit": "$input.params('limit')",
+            "fields": "$input.params('fields')",
+            "include_fields": "$input.params('include_fields')"
+          },
           "authToken": "$input.params('Authorization')"
         }
       },

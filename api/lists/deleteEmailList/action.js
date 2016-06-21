@@ -15,10 +15,10 @@ export function respond(event, cb) {
       })
       .catch(e => {
         debug('= deleteEmailList.action', e);
-        return cb(e);
+        return cb(ApiErrors.response(e));
       });
     } else {
-      return cb('No list specified');
+      return cb(ApiErrors.response('No list specified'));
     }
   })
   .catch(err => cb(ApiErrors.response(err), null));

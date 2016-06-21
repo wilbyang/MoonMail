@@ -15,10 +15,10 @@ export function respond(event, cb) {
       })
       .catch(e => {
         debug('= deleteRecipient.action', e);
-        return cb(e);
+        return cb(ApiErrors.response(e));
       });
     } else {
-      return cb('No recipient specified');
+      return cb(ApiErrors.response('No recipient specified'));
     }
   })
   .catch(err => cb(ApiErrors.response(err), null));

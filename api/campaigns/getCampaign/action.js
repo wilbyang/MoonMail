@@ -10,8 +10,8 @@ export function respond(event, cb) {
   decrypt(event.authToken).then((decoded) => {
     if (event.campaignId) {
       const options = {};
-      if (event.options && event.options.attributes) {
-        options.attributes = event.options.attributes.split(',');
+      if (event.options) {
+        Object.assign(options, event.options);
       }
       Campaign.get(decoded.sub, event.campaignId, options).then(campaign => {
         debug('= getCampaign.action', 'Success');
@@ -19,10 +19,10 @@ export function respond(event, cb) {
       })
       .catch(e => {
         debug('= getCampaign.action', 'Error getting campaign', e);
-        return cb(e);
+        return cb(ApiErrors.response(e));
       });
     } else {
-      return cb('No campaign specified');
+      return cb(ApiErrors.response('No campaign specified'));
     }
   })
   .catch(err => cb(ApiErrors.response(err), null));

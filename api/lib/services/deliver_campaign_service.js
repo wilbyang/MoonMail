@@ -126,7 +126,7 @@ class DeliverCampaignService {
           reject(err);
         } else {
           debug('= DeliverCampaignService._updateCampaignStatus', 'Message sent');
-          resolve(data);
+          resolve({id: this.campaignId, status: 'pending'});
         }
       });
     });

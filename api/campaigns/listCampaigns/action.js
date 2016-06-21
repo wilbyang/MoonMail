@@ -8,11 +8,11 @@ import { ApiErrors } from '../../lib/errors';
 export function respond(event, cb) {
   debug('= listCampaigns.action', JSON.stringify(event));
   decrypt(event.authToken).then((decoded) => {
-    let options = {
-        limit: 25
-      };
-    if (event.nextPage) {
-      options.nextPage = event.nextPage;
+    const options = {
+      limit: 10
+    };
+    if (event.options) {
+      Object.assign(options, event.options);
     }
     Campaign.allBy('userId', decoded.sub, options).then(campaigns => {
       debug('= listCampaigns.action', 'Success');
@@ -20,7 +20,7 @@ export function respond(event, cb) {
     })
     .catch(e => {
       debug('= listCampaigns.action', e);
-      return cb(e);
+      return cb(ApiErrors.response(e));
     });
   })
   .catch(err => cb(ApiErrors.response(err), null));

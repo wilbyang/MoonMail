@@ -23,8 +23,13 @@
       "requestParameters": {},
       "requestTemplates": {
         "application/json": {
+          "options": {
+            "page": "$input.params('page')",
+            "limit": "$input.params('limit')",
+            "fields": "$input.params('fields')",
+            "include_fields": "$input.params('include_fields')"
+          },
           "listId": "$input.params('listId')",
-          "nextPage": "$input.params('page')",
           "authToken": "$input.params('Authorization')"
         }
       },

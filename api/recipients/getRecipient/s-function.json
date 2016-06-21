@@ -25,6 +25,10 @@
         "application/json": {
           "listId": "$input.params('listId')",
           "recipientId": "$input.params('recipientId')",
+          "options": {
+            "fields": "$input.params('fields')",
+            "include_fields": "$input.params('include_fields')"
+          },
           "authToken": "$input.params('Authorization')"
         }
       },

@@ -9,10 +9,10 @@ export function respond(event, cb) {
   debug('= listEmailLists.action', JSON.stringify(event));
   decrypt(event.authToken).then((decoded) => {
     const options = {
-      limit: 25
+      limit: 10
     };
-    if (event.nextPage) {
-      options.nextPage = event.nextPage;
+    if (event.options) {
+      Object.assign(options, event.options);
     }
     List.allBy('userId', decoded.sub, options).then(list => {
       debug('= listEmailLists.action', 'Success');
@@ -20,7 +20,7 @@ export function respond(event, cb) {
     })
     .catch(e => {
       debug('= listEmailLists.action', e);
-      return cb(e);
+      return cb(ApiErrors.response(e));
     });
   })
   .catch(err => cb(ApiErrors.response(err), null));
