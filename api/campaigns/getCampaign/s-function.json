@@ -25,8 +25,9 @@
         "application/json": {
           "campaignId": "$input.params('campaignId')",
           "options": {
-            "attributes": "$input.params('attributes')"
-            },
+            "fields": "$input.params('fields')",
+            "include_fields": "$input.params('include_fields')"
+          },
           "authToken": "$input.params('Authorization')"
         }
       },

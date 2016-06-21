@@ -41,13 +41,13 @@ describe('listCampaigns', () => {
       });
     });
 
-    context('when the event contains nextPage', () => {
+    context('when the event contains page', () => {
       it('makes a paginated query', (done) => {
-        const nextPage = 'aaabbbb';
-        event.nextPage = nextPage;
+        const page = 'aaabbbb';
+        event.options = {page};
         respond(event, (err) => {
           const allbyArgs = Campaign.allBy.lastCall.args;
-          expect(allbyArgs[2]).to.have.property('nextPage', nextPage);
+          expect(allbyArgs[2]).to.have.property('page', page);
           done();
         });
       });

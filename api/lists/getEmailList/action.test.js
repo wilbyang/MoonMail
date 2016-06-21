@@ -8,7 +8,7 @@ import { List } from 'moonmail-models';
 
 const expect = chai.expect;
 
-describe('getCampaign', () => {
+describe('getEmailList', () => {
 
   const listId = 'my-list-id';
   const list = {
@@ -34,17 +34,6 @@ describe('getCampaign', () => {
           expect(args[1]).to.equal(listId);
           expect(err).to.not.exist;
           expect(result).to.deep.equal(list);
-          done();
-        });
-      });
-    });
-
-    context('when the event is not valid', () => {
-      event = {};
-      it('returns an error message', (done) => {
-        respond(event, (err, result) => {
-          expect(result).to.not.exist;
-          expect(err).to.exist;
           done();
         });
       });

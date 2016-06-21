@@ -18,7 +18,7 @@ export function respond(event, cb) {
     const deliverService = new DeliverCampaignService(sns, {campaign: event.campaign, campaignId: event.campaignId, userId, userPlan});
     deliverService.sendCampaign()
       .then(res => cb(null, res))
-      .catch(err => cb(err));
+      .catch(err => cb(ApiErrors.response(err)));
   })
   .catch(err => cb(ApiErrors.response(err), null));
 }

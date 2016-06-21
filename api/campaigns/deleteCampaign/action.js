@@ -15,10 +15,10 @@ export function respond(event, cb) {
       })
       .catch(e => {
         debug('= deleteCampaign.action', e);
-        return cb(e);
+        return cb(ApiErrors.response(e));
       });
     } else {
-      return cb('No campaign specified');
+      return cb(ApiErrors.response('No campaign specified'));
     }
   })
   .catch(err => cb(ApiErrors.response(err), null));

@@ -19,7 +19,7 @@ export function respond(event, cb) {
       sns.publish(params, (err, data) => {
         if (err) {
           debug('= sendTestCampaign.action', 'Error sending message', err);
-          cb(err);
+          cb(ApiErrors.response(err));
         } else {
           debug('= sendTestCampaign.action', 'Message sent');
           cb(null, data);

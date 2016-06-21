@@ -4,6 +4,7 @@ import { Recipient } from 'moonmail-models';
 import { debug } from '../../lib/logger';
 import decrypt from '../../lib/auth-token-decryptor';
 import { ApiErrors } from '../../lib/errors';
+import omitEmpty from 'omit-empty';
 
 export function respond(event, cb) {
   debug('= listRecipients.action', JSON.stringify(event));
@@ -12,8 +13,8 @@ export function respond(event, cb) {
       let options = {
         limit: 25
       };
-      if (event.nextPage) {
-        options.nextPage = event.nextPage;
+      if (event.options) {
+        Object.assign(options, omitEmpty(event.options));
       }
       Recipient.allBy('listId', event.listId, options).then(recipients => {
         debug('= listRecipients.action', 'Success');
@@ -21,10 +22,10 @@ export function respond(event, cb) {
       })
       .catch(e => {
         debug('= listRecipients.action', e);
-        return cb(e);
+        return cb(ApiErrors.response(e));
       });
     } else {
-      return cb('No list provided');
+      return cb(ApiErrors.response('No list provided'));
     }
   })
   .catch(err => cb(ApiErrors.response(err), null));
