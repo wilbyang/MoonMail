@@ -388,6 +388,9 @@
             "KeyType": "RANGE"
           }
         ],
+        "StreamSpecification": {
+          "StreamViewType": "NEW_AND_OLD_IMAGES"
+        },
         "ProvisionedThroughput": {
           "ReadCapacityUnits": 1,
           "WriteCapacityUnits": 1
@@ -578,6 +581,15 @@
       "Description": "ARN of the RecipientsImportS3Bucket",
       "Value": {
         "Ref": "RecipientsImportS3Bucket"
+      }
+    },
+    "RecipientsTableStreamARN": {
+      "Description": "Arn of the Recipients DynamoDB Table Stream",
+      "Value": {
+        "Fn::GetAtt": [
+          "RecipientsTable",
+          "StreamArn"
+        ]
       }
     }
   }

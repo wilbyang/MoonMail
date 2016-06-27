@@ -51,6 +51,9 @@ users/
 events/users
 events/user
 .gitmodules
+
 certs/
 api/lib/auth.js
 api/lib/auth-token-decryptor.js.bak
+
+/.vscode/settings.json
