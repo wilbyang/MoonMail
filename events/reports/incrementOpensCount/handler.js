@@ -7,10 +7,6 @@ export default (event, context) => {
   debug('= incrementOpensCount.handler');
   const incrementService = new IncrementOpensService(event.Records);
   incrementService.incrementAll()
-    .then(data => {
-      context.done(null, 'ok');
-    })
-    .catch(err => {
-      context.done(err);
-    });
+    .then(() => context.done(null, 'ok'))
+    .catch(err => context.done(err));
 };

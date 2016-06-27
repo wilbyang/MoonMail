@@ -7,7 +7,7 @@ import * as url from 'url';
 const liquid = new Liquid.Engine();
 
 class Email {
-  constructor({ fromEmail, to, body, subject, metadata, recipientId, listId } = {}, options = {footer: true}) {
+  constructor({ fromEmail, to, body, subject, metadata, recipientId, listId, campaignId } = {}, options = {footer: true}) {
     this.from = fromEmail;
     this.to = to;
     this.body = body;
@@ -15,6 +15,7 @@ class Email {
     this.metadata = metadata;
     this.listId = listId;
     this.recipientId = recipientId;
+    this.campaignId = campaignId;
     this.apiHost = process.env.API_HOST;
     this.options = options;
   }
@@ -46,7 +47,8 @@ class Email {
     const unsubscribeUrl = {
       protocol: 'https',
       hostname: this.apiHost,
-      pathname: unsubscribePath
+      pathname: unsubscribePath,
+      query: {cid: this.campaignId}
     };
     return url.format(unsubscribeUrl);
   }

@@ -11,7 +11,7 @@ export function respond(event, cb) {
   decrypt(event.authToken).then((decoded) => {
     if (event.listId) {
       let options = {
-        limit: 25
+        limit: 10
       };
       if (event.options) {
         Object.assign(options, omitEmpty(event.options));

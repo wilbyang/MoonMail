@@ -28,8 +28,9 @@ describe('Email', () => {
   };
   const recipientId = 'recipient-id';
   const listId = 'list-id';
-  const emailWithTagsParams = Object.assign({body: bodyTemplate, subject: subjectTemplate, recipientId, listId}, emailParams);
-  const emailNoTagsParams = Object.assign({body: bodyNoTags, subject: subjectNoTags, recipientId, listId}, emailParams);
+  const campaignId = 'campaign-id';
+  const emailWithTagsParams = Object.assign({body: bodyTemplate, subject: subjectTemplate, recipientId, listId, campaignId}, emailParams);
+  const emailNoTagsParams = Object.assign({body: bodyNoTags, subject: subjectNoTags, recipientId, listId, campaignId}, emailParams);
   const emailWithTags = new Email(emailWithTagsParams, {footer: false});
   const emailNoTags = new Email(emailNoTagsParams, {footer: false});
   const emailWithFooter = new Email(emailNoTagsParams, {footer: true});
@@ -57,7 +58,7 @@ describe('Email', () => {
 
   describe('#_buildUnsubscribeUrl()', () => {
     it('returns the unsubscribe url for a specific recipient', done => {
-      const url = `https://${apiHost}/lists/${emailWithTags.listId}/recipients/${emailWithTags.recipientId}/unsubscribe`;
+      const url = `https://${apiHost}/lists/${emailWithTags.listId}/recipients/${emailWithTags.recipientId}/unsubscribe?cid=${campaignId}`;
       expect(emailWithTags._buildUnsubscribeUrl()).to.equal(url);
       done();
     });

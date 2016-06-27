@@ -18,7 +18,7 @@ export function respond(event, cb) {
     const snsParams = {
       TopicArn: process.env.ATTACH_SENDER_TOPIC_ARN,
       Message: JSON.stringify(campaignMessage)
-    }
+    };
     sns.publish(snsParams, (err, data) => {
       if (err) {
         debug('= attachRecipients.action', 'Error publishing message', err)

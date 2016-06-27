@@ -1,0 +1,13 @@
+{
+  "Records": [
+    {
+      "EventSource": "aws:sns",
+      "EventVersion": "1.0",
+      "Sns": {
+        "Type": "Notification",
+        "Subject": "SomeSubject",
+        "Message": "{\"userId\":\"my-user-id\",\"listId\":\"my-list\",\"campaignId\":\"my-campaign\"}"
+      }
+    }
+  ]
+}

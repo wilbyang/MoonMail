@@ -1,10 +1,10 @@
 {
-  "name": "recipientsCounter",
+  "name": "incrementOpensCount",
   "runtime": "babel",
   "description": "Serverless Lambda function for project: MoonMail-v2",
-  "customName": "${project}-recipients-recipientsCounter",
+  "customName": "${project}-reports-incrementOpensCount",
   "customRole": false,
-  "handler": "recipients/recipientsCounter/handler.default",
+  "handler": "reports/incrementOpensCount/handler.default",
   "timeout": 60,
   "memorySize": 1024,
   "authorizer": {},
@@ -14,12 +14,10 @@
   "endpoints": [],
   "events": [
     {
-      "name": "recipientsTable",
-      "type": "dynamodbstream",
+      "name": "${opensStreamName}",
+      "type": "kinesisstream",
       "config": {
-        "streamArn": "${recipientsTableStreamARN}",
-        "startingPosition": "LATEST",
-        "batchSize": 5,
+        "streamArn": "${opensStreamARN}",
         "enabled": true
       }
     }
@@ -28,8 +26,8 @@
     "SERVERLESS_PROJECT": "${project}",
     "SERVERLESS_STAGE": "${stage}",
     "SERVERLESS_REGION": "${region}",
-    "DEBUG": true,
-    "LISTS_TABLE": "$${listsTable}"
+    "REPORTS_TABLE": "$${reportsTable}",
+    "DEBUG": "true"
   },
   "vpc": {
     "securityGroupIds": [],

@@ -5,6 +5,8 @@ import { debug } from './index';
 import csv from 'csv-string';
 import { Recipient } from 'moonmail-models';
 import base64url from 'base64-url';
+import querystring from 'querystring';
+import moment from 'moment';
 
 class ImportRecipientsService {
 
@@ -12,7 +14,7 @@ class ImportRecipientsService {
     this.s3Event = s3Event;
     this.importOffset = importOffset;
     this.bucket = s3Event.bucket.name;
-    this.fileKey = s3Event.object.key;
+    this.fileKey = querystring.unescape(s3Event.object.key);
     const file = this.fileKey.split('.');
     this.userId = file[0];
     this.listId = file[1];
@@ -131,6 +133,7 @@ class ImportRecipientsService {
   parseFile() {
     return new Promise((resolve, reject) => {
       const params = {Bucket: this.bucket, Key: this.fileKey};
+      debug('= ImportRecipientsService.parseFile', 'File', this.fileKey);
       this.s3Client.getObject(params, (err, data) => {
         if (err) {
           debug('= ImportRecipientsService.parseFile', 'Error while loading an S3 file', err, err.stack);
@@ -150,7 +153,7 @@ class ImportRecipientsService {
 
   parseCSV(csvString) {
     const pairs = csv.parse(csvString);
-    const createdAt = new Date().getTime();
+    const createdAt = moment().unix();
     return pairs.map(item => (
       {
         id: base64url.encode(item[0]),
