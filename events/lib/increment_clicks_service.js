@@ -13,12 +13,8 @@ class IncrementClicksService {
     return new Promise((resolve, reject) => {
       async.forEachOf(this.clicksByLink, (data, lid, cb) => {
         this.incrementCount(data.campaignId, lid, data.count)
-          .then(() => {
-            cb();
-          })
-          .catch(() => {
-            cb();
-          });
+          .then(() => cb())
+          .catch(() => cb());
       }, err => {
         if (err) {
           debug('= IncrementClicksService.incrementAll', 'Error incrementing clicks', err);

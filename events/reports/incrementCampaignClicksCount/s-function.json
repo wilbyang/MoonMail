@@ -1,10 +1,10 @@
 {
-  "name": "incrementOpensCount",
+  "name": "incrementCampaignClicksCount",
   "runtime": "babel",
   "description": "Serverless Lambda function for project: MoonMail-v2",
-  "customName": "${project}-links-incrementOpensCount",
+  "customName": "${project}-reports-incrementCampaignClicksCount",
   "customRole": false,
-  "handler": "links/incrementOpensCount/handler.default",
+  "handler": "reports/incrementCampaignClicksCount/handler.default",
   "timeout": 60,
   "memorySize": 1024,
   "authorizer": {},
@@ -14,10 +14,10 @@
   "endpoints": [],
   "events": [
     {
-      "name": "${opensStreamName}",
+      "name": "campaignClicksStream",
       "type": "kinesisstream",
       "config": {
-        "streamArn": "${opensStreamARN}",
+        "streamArn": "${clicksStreamARN}",
         "enabled": true
       }
     }
@@ -26,7 +26,7 @@
     "SERVERLESS_PROJECT": "${project}",
     "SERVERLESS_STAGE": "${stage}",
     "SERVERLESS_REGION": "${region}",
-    "LINKS_TABLE": "$${linksTable}",
+    "REPORTS_TABLE": "$${reportsTable}",
     "DEBUG": "true"
   },
   "vpc": {

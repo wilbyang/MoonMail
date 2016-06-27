@@ -29,7 +29,7 @@ class RecipientsCounterService {
         const listIdUserIdMapping = this._getListIdUserIdMapping();
         let operations = [];
         for (let listId in aggregatedCounters) {
-          operations.push(List.incrementAll(listId, listIdUserIdMapping[listId], aggregatedCounters[listId]));
+          operations.push(List.incrementAll(listIdUserIdMapping[listId], listId, aggregatedCounters[listId]));
         }
         Promise.all(operations)
           .then(() => { resolve({}); })
@@ -54,15 +54,15 @@ class RecipientsCounterService {
         complained: this.complainedCountAttr,
         bounced: this.bouncedCountAttr
       }
-    }
+    };
   }
 
   _getListIdUserIdMapping() {
     let listIdUserIdMapping = {};
     this.eventDetails.Records.forEach((event) => {
-      let image = "NewImage";
-      if (event.eventName === "REMOVE") {
-        image = "OldImage";
+      let image = 'NewImage';
+      if (event.eventName === 'REMOVE') {
+        image = 'OldImage';
       }
       const listId = event.dynamodb.Keys.listId.S;
       const userId = event.dynamodb[image].userId.S;

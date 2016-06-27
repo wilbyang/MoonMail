@@ -164,6 +164,12 @@
         "TopicName": "$${sentEmailsTopic}"
       }
     },
+    "UnsubscribedRecipientTopic": {
+      "Type": "AWS::SNS::Topic",
+      "Properties": {
+        "TopicName": "$${unsubscribedRecipientTopic}"
+      }
+    },
     "FreeUsersSendEmailQueue": {
       "Type": "AWS::SQS::Queue",
       "Properties": {
@@ -242,7 +248,10 @@
           "ReadCapacityUnits": 1,
           "WriteCapacityUnits": 1
         },
-        "TableName": "$${sentEmailsTable}"
+        "TableName": "$${sentEmailsTable}",
+        "StreamSpecification": {
+          "StreamViewType": "NEW_IMAGE"
+        }
       }
     },
     "ReportsTable": {
@@ -493,6 +502,12 @@
         "Ref": "PrecompileCampaignTopic"
       }
     },
+    "UnsubscribedRecipientTopicARN": {
+      "Description": "ARN of the UnsubscribedRecipientTopic SNS topic",
+      "Value": {
+        "Ref": "UnsubscribedRecipientTopic"
+      }
+    },
     "UpdateCampaignTopicARN": {
       "Description": "ARN of the UpdateCampaign SNS topic",
       "Value": {
@@ -588,6 +603,15 @@
       "Value": {
         "Fn::GetAtt": [
           "RecipientsTable",
+          "StreamArn"
+        ]
+      }
+    },
+    "SentEmailsTableStreamARN": {
+      "Description": "Arn of the SentEmails DynamoDB Table Stream",
+      "Value": {
+        "Fn::GetAtt": [
+          "SentEmailsTable",
           "StreamArn"
         ]
       }

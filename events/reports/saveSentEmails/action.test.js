@@ -5,7 +5,7 @@ import { respond } from './action';
 import * as sinon from 'sinon';
 import * as sinonAsPromised from 'sinon-as-promised';
 import { SentEmail } from 'moonmail-models';
-import * as event from './event.json'
+import * as event from './event.json';
 
 const expect = chai.expect;
 

@@ -1,10 +1,10 @@
 {
-  "name": "recipientsCounter",
+  "name": "unsubscribedCampaign",
   "runtime": "babel",
   "description": "Serverless Lambda function for project: MoonMail-v2",
-  "customName": "${project}-recipients-recipientsCounter",
+  "customName": "${project}-campaigns-unsubscribedCampaign",
   "customRole": false,
-  "handler": "recipients/recipientsCounter/handler.default",
+  "handler": "campaigns/unsubscribedCampaign/handler.default",
   "timeout": 60,
   "memorySize": 1024,
   "authorizer": {},
@@ -14,13 +14,10 @@
   "endpoints": [],
   "events": [
     {
-      "name": "recipientsTable",
-      "type": "dynamodbstream",
+      "name": "unsubscribedRecipientSns",
+      "type": "sns",
       "config": {
-        "streamArn": "${recipientsTableStreamARN}",
-        "startingPosition": "LATEST",
-        "batchSize": 5,
-        "enabled": true
+        "topicName": "$${unsubscribedRecipientTopic}"
       }
     }
   ],
@@ -28,8 +25,8 @@
     "SERVERLESS_PROJECT": "${project}",
     "SERVERLESS_STAGE": "${stage}",
     "SERVERLESS_REGION": "${region}",
-    "DEBUG": true,
-    "LISTS_TABLE": "$${listsTable}"
+    "CAMPAIGNS_TABLE": "$${campaignsTable}",
+    "DEBUG": "true"
   },
   "vpc": {
     "securityGroupIds": [],

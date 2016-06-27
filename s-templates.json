@@ -81,6 +81,7 @@
   "attachRecipientsCountTopic": "${project}-${stage}-attachRecipientsCount",
   "attachSenderTopic": "${project}-${stage}-attachSender",
   "updateCampaignTopic": "${project}-${stage}-updateCampaign",
+  "unsubscribedRecipientTopic": "${project}-${stage}-unsubscribedRecipient",
   "responses": {
     "400": {
       "statusCode": "400",

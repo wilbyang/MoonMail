@@ -1,7 +1,7 @@
 'use strict';
 
 import { debug } from './index';
-import { Link } from 'moonmail-models';
+import { Report } from 'moonmail-models';
 import * as async from 'async';
 
 class IncrementOpensService {
@@ -13,12 +13,8 @@ class IncrementOpensService {
     return new Promise((resolve, reject) => {
       async.forEachOf(this.opensByCampaign, (count, cid, cb) => {
         this.incrementCount(cid, count)
-          .then((data) => {
-            cb();
-          })
-          .catch((err) => {
-            cb(err);
-          });
+          .then(() => cb())
+          .catch(err => cb(err));
       }, err => {
         if (err) {
           debug('= IncrementOpensService.incrementAll', 'Error incrementing opens', err);
@@ -33,7 +29,7 @@ class IncrementOpensService {
 
   incrementCount(campaignId, count = 1) {
     debug('= IncrementOpensService.incrementCount', 'Campaign ID:', campaignId, 'Count:', count);
-    return Link.incrementOpens(campaignId, count);
+    return Report.incrementOpens(campaignId, count);
   }
 
   get opensByCampaign() {
