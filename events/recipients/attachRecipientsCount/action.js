@@ -21,10 +21,10 @@ export function respond(event, cb) {
     };
     sns.publish(snsParams, (err, data) => {
       if (err) {
-        debug('= attachRecipients.action', 'Error publishing message', err)
+        debug('= attachRecipients.action', 'Error publishing message', err);
         cb(err);
       } else {
-        debug('= attachRecipients.action', 'Success publishing', campaignMessage)
+        debug('= attachRecipients.action', 'Success publishing', campaignMessage);
         cb(null, data);
       }
     });
