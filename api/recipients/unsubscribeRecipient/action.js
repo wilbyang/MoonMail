@@ -34,7 +34,8 @@ export function respond(event, cb) {
           return cb(ApiErrors.response(err));
         } else {
           debug('= unsubscribeRecipient.action', 'Successfully published to SNS');
-          return cb(null, data);
+          const callbackUrl = process.env.UNSUBSCRIBED_CALLBACK_URL;
+          return cb(null, {url: callbackUrl});
         }
       });
     })

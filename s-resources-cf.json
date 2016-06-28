@@ -453,9 +453,28 @@
                 "POST",
                 "HEAD"
               ],
-              "AllowedOrigins": [
-                "*"
-              ]
+              "AllowedOrigins": ["*"]
+            }
+          ]
+        }
+      }
+    },
+    "StaticDataBucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "AccessControl": "PublicReadWrite",
+        "BucketName": "$${staticDataBucket}",
+        "CorsConfiguration": {
+          "CorsRules": [
+            {
+              "AllowedHeaders": [],
+              "AllowedMethods": [
+                "GET",
+                "PUT",
+                "POST",
+                "HEAD"
+              ],
+              "AllowedOrigins": ["*"]
             }
           ]
         }
