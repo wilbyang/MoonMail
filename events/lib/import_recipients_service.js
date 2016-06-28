@@ -2,11 +2,12 @@
 
 import AWS from 'aws-sdk';
 import { debug } from './index';
-import csv from 'fast-csv';
+import Baby from 'babyparse';
 import { Recipient } from 'moonmail-models';
 import base64url from 'base64-url';
 import querystring from 'querystring';
 import moment from 'moment';
+import { List } from 'moonmail-models';
 
 class ImportRecipientsService {
 
@@ -80,34 +81,38 @@ class ImportRecipientsService {
             return this.invokeLambda();
           }
         }).catch(err => {
-          debug('= ImportRecipientsService.saveRecipients', 'Error while saving recipients', err, err.stack);
-          const importStatus = {
-            listId: this.listId,
-            userId: this.userId,
-            totalRecipientsCount: this.totalRecipientsCount,
-            corruptedEmailsCount: this.corruptedEmails.length,
-            corruptedEmails: this.corruptedEmails,
-            importedCount: this.importOffset,
-            importStatus: 'FAILED',
-            updatedAt: new Date().toString(),
-            message: err.message,
-            stackTrace: err.stack
-          };
-          Promise.reject(importStatus);
+          return new Promise((resolve, reject) => {
+            debug('= ImportRecipientsService.saveRecipients', 'Error while saving recipients', err, err.stack);
+            const importStatus = {
+              listId: this.listId,
+              userId: this.userId,
+              totalRecipientsCount: this.totalRecipientsCount,
+              corruptedEmailsCount: this.corruptedEmails.length,
+              corruptedEmails: this.corruptedEmails,
+              importedCount: this.importOffset,
+              importStatus: 'FAILED',
+              updatedAt: new Date().toString(),
+              message: err.message,
+              stackTrace: err.stack
+            };
+            reject(importStatus);
+          });
         });
     } else {
-      const importStatus = {
-        listId: this.listId,
-        userId: this.userId,
-        totalRecipientsCount: this.totalRecipientsCount,
-        importedCount: this.importOffset,
-        corruptedEmailsCount: this.corruptedEmails.length,
-        corruptedEmails: this.corruptedEmails,
-        importStatus: 'SUCCESS',
-        updatedAt: new Date().toString()
-      };
-      debug('= ImportRecipientsService.saveRecipients', 'Saved recipients successfully', importStatus);
-      Promise.resolve(importStatus);
+      return new Promise((resolve, reject) => {
+        const importStatus = {
+          listId: this.listId,
+          userId: this.userId,
+          totalRecipientsCount: this.totalRecipientsCount,
+          importedCount: this.importOffset,
+          corruptedEmailsCount: this.corruptedEmails.length,
+          corruptedEmails: this.corruptedEmails,
+          importStatus: 'SUCCESS',
+          updatedAt: new Date().toString()
+        };
+        debug('= ImportRecipientsService.saveRecipients', 'Saved recipients successfully', importStatus);
+        this._saveMetadataAttributes().then(() => resolve(importStatus)).catch((error) => reject(error));
+      });
     }
   }
 
@@ -144,48 +149,49 @@ class ImportRecipientsService {
           debug('= ImportRecipientsService.parseFile', 'File metadata', data.Metadata);
           if (this.fileExt === 'csv') {
             this.headerMapping = JSON.parse(data.Metadata.headers);
-            this.parseCSV(data.Body.toString('utf8'), (recipients) => {
-              resolve(recipients);
-            });
+            return this.parseCSV(data.Body.toString('utf8')).then((recipients) => resolve(recipients)).catch((error) => reject(error));
           } else {
             debug('= ImportRecipientsService.parseFile', `${this.fileExt} is not supported`);
-            reject(`${this.fileExt} is not supported`);
+            return reject(`${this.fileExt} is not supported`);
           }
         }
       });
     });
   }
 
-  parseCSV(csvString, callback) {
-    let recipients = [];
-    const headerMapping = this.headerMapping;
-    const userId = this.userId;
-    const listId = this.listId;
+  parseCSV(csvString) {
+    return new Promise((resolve, reject) => {
+      const headerMapping = this.headerMapping;
+      const userId = this.userId;
+      const listId = this.listId;
 
-    csv.fromString(csvString, { headers: true, ignoreEmpty: true, objectMode: true, delimiter: ';' })
-      .on('data', data => {
-        debug('= ImportRecipientsService.parseCSV', 'Parsing recipient', JSON.stringify(data), headerMapping);
-        const emailKey = Object.keys(data)[0];
+      const result = Baby.parse(csvString, {
+        header: true
+      });
+      if (result.errors.length > 0) { return reject(result.errors); }
+
+      const recipients = result.data.map((item) => {
+        debug('= ImportRecipientsService.parseCSV', 'Parsing recipient', JSON.stringify(item), headerMapping);
+        const emailKey = Object.keys(item)[0];
         let newRecp = {
-          id: base64url.encode(data[emailKey]),
+          id: base64url.encode(item[emailKey]),
           userId,
           listId,
-          email: data[emailKey],
+          email: item[emailKey],
           metadata: {},
           status: Recipient.statuses.subscribed,
           isConfirmed: true,
           createdAt: new Date().getTime()
         };
-        for (let key in headerMapping) {
+        for (const key in headerMapping) {
           const newKey = headerMapping[key];
-          newRecp.metadata[newKey] = data[key];
-        };
+          newRecp.metadata[newKey] = item[key];
+        }
         delete newRecp.metadata.email;
-        recipients.push(newRecp);
-      })
-      .on('end', () => {
-        callback(recipients);
+        return newRecp;
       });
+      return resolve(recipients);
+    });
   }
 
   filterByEmail(recipient) {
@@ -196,6 +202,11 @@ class ImportRecipientsService {
       this.corruptedEmails.push(email);
       return false;
     }
+  }
+
+  _saveMetadataAttributes() {
+    const metadataAttributes = Object.keys(this.recipients[0].metadata);
+    return List.update({ metadataAttributes }, this.userId, this.listId);
   }
 }
 
