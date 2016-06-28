@@ -200,7 +200,7 @@ describe('AttachRecipientsService', () => {
       const getBatchPromise = service._getRecipientsBatch(listIds[0]);
       expect(getBatchPromise).to.eventually.have.deep.property('items', recipients);
       const allByOptions = Recipient.allBy.lastCall.args[2];
-      expect(allByOptions.conditions).to.have.deep.equal({eq: {status: 'subscribed'}});
+      expect(allByOptions.filters).to.have.deep.equal({status: {eq: 'subscribed'}});
       expect(allByOptions.limit).to.equal(250);
       done();
     });
@@ -211,7 +211,7 @@ describe('AttachRecipientsService', () => {
         service._getRecipientsBatch(listIds[0], {nextPage}).then(() => {
           const allByOptions = Recipient.allBy.lastCall.args[2];
           expect(allByOptions).to.have.property('nextPage', nextPage);
-          expect(allByOptions.conditions).to.have.deep.equal({eq: {status: 'subscribed'}});
+          expect(allByOptions.filters).to.have.deep.equal({status: {eq: 'subscribed'}});
           done();
         });
       });

@@ -52,7 +52,7 @@ class AttachRecipientsService {
 
   _getRecipientsBatch(listId, options = {}) {
     debug('= AttachRecipientsService.attachRecipients', `Getting recipients for ${listId}`);
-    const subscribedCondition = {conditions: {eq: {status: Recipient.statuses.subscribed}}};
+    const subscribedCondition = {filters: {status: {eq: Recipient.statuses.subscribed}}};
     const recipientOptions = Object.assign(options, subscribedCondition);
     recipientOptions.limit = 250;
     return Recipient.allBy('listId', listId, recipientOptions);

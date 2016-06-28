@@ -61,22 +61,18 @@ describe('ImportRecipientsService', () => {
           expect(Recipient.saveAll).to.have.been.called;
           const args = Recipient.saveAll.lastCall.args[0];
           expect(args.length).to.equals(2);
-          
           expect(args[0].userId).to.equals('userId');
           expect(args[0].listId).to.equals('listId#1');
           expect(args[0].email).to.equals('em1@examplemail.com');
           expect(args[0].status).to.equals('subscribed');
           expect(args[0].isConfirmed).to.be.true;
           expect(args[0].metadata).to.deep.equals({ name: 'firstName1', surname: 'lastName1' });
-          
-
           expect(args[1].userId).to.equals('userId');
           expect(args[1].listId).to.equals('listId#1');
           expect(args[1].email).to.equals('em2@examplemail.com');
           expect(args[1].status).to.equals('subscribed');
           expect(args[1].isConfirmed).to.be.true;
           expect(args[1].metadata).to.deep.equals({ name: 'firstName2', surname: 'lastName2' });
-          
           done();
         }).catch((err) => console.log(err, err.stack));
       });
