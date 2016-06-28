@@ -27,9 +27,11 @@ class RecipientsCounterService {
       try {
         const aggregatedCounters = this._getIncrements();
         const listIdUserIdMapping = this._getListIdUserIdMapping();
-        let operations = [];
+        const operations = [];
         for (let listId in aggregatedCounters) {
-          operations.push(List.incrementAll(listIdUserIdMapping[listId], listId, aggregatedCounters[listId]));
+          if (listIdUserIdMapping[listId]) {
+            operations.push(List.incrementAll(listIdUserIdMapping[listId], listId, aggregatedCounters[listId]));
+          }
         }
         Promise.all(operations)
           .then(() => { resolve({}); })
@@ -38,7 +40,7 @@ class RecipientsCounterService {
     });
   }
 
-  get statusChangesStateMachine() {
+  get statusUpdatesMapping() {
     return {
       subscribed: {
         unsubscribed: this.unsubscribedCountAttr,
@@ -57,6 +59,14 @@ class RecipientsCounterService {
     };
   }
 
+  statusChangesStateMachine(oldStatus, newStatus) {
+    try {
+      return this.statusUpdatesMapping[oldStatus][newStatus];
+    } catch (e) {
+      return null;
+    }
+  }
+
   _getListIdUserIdMapping() {
     let listIdUserIdMapping = {};
     this.eventDetails.Records.forEach((event) => {
@@ -64,9 +74,11 @@ class RecipientsCounterService {
       if (event.eventName === 'REMOVE') {
         image = 'OldImage';
       }
-      const listId = event.dynamodb.Keys.listId.S;
-      const userId = event.dynamodb[image].userId.S;
-      listIdUserIdMapping[listId] = userId;
+      try {
+        const listId = event.dynamodb.Keys.listId.S;
+        const userId = event.dynamodb[image].userId.S;
+        listIdUserIdMapping[listId] = userId;
+      } catch (e) { debug('= RecipientsCounterService._getListIdUserIdMapping', 'Attributes missing', e); }
     });
     return listIdUserIdMapping;
   }
@@ -106,7 +118,7 @@ class RecipientsCounterService {
           const oldStatus = event.dynamodb.OldImage.status.S;
           const newStatus = event.dynamodb.NewImage.status.S;
 
-          attribute = this.statusChangesStateMachine[oldStatus][newStatus];
+          attribute = this.statusChangesStateMachine(oldStatus, newStatus);
           // Check if the update changed the status attribute
           if (attribute) {
             aggregatedCounters[listId][attribute] += 1; // increment according to the change
