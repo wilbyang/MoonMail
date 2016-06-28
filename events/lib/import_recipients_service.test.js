@@ -24,11 +24,13 @@ describe('ImportRecipientsService', () => {
 
   before(() => {
     awsMock.mock('S3', 'getObject', {
-      Body: `email,first name,last name
-            "em1@examplemail.com","firstName1","lastName1"
-            "em2@examplemail.com","firstName2","lastName2"
+      Body: `email address;first name;last name
+            "em1@examplemail.com";"firstName1";"lastName1"
+            "em2@examplemail.com";"firstName2";"lastName2"
             `,
-      Metadata: '{"first name":"name","last name":"surname"}'
+      Metadata: {
+        headers: '{"email address":"email", "first name":"name","last name":"surname"}' 
+      }
     });
     sinon.stub(Recipient, 'saveAll').resolves('Ok');
     contextStub = sinon.stub(lambdaContext, 'getRemainingTimeInMillis').returns(100000);
