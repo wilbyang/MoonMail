@@ -136,13 +136,14 @@ class ImportRecipientsService {
     return new Promise((resolve, reject) => {
       const params = { Bucket: this.bucket, Key: this.fileKey };
       debug('= ImportRecipientsService.parseFile', 'File', this.fileKey);
-      this.s3Client.getObject(params, (err, data) => {
+      this.s3.getObject(params, (err, data) => {
         if (err) {
           debug('= ImportRecipientsService.parseFile', 'Error while loading an S3 file', err, err.stack);
           reject(err);
         } else {
+          debug('= ImportRecipientsService.parseFile', 'File metadata', data.Metadata);
           if (this.fileExt === 'csv') {
-            this.headerMapping = JSON.parse(data.Metadata);
+            this.headerMapping = JSON.parse(data.Metadata.headers);
             this.parseCSV(data.Body.toString('utf8'), (recipients) => {
               resolve(recipients);
             });
@@ -161,13 +162,15 @@ class ImportRecipientsService {
     const userId = this.userId;
     const listId = this.listId;
 
-    csv.fromString(csvString, { headers: true, ignoreEmpty: true, objectMode: true })
-      .on('data', function (data) {
+    csv.fromString(csvString, { headers: true, ignoreEmpty: true, objectMode: true, delimiter: ';' })
+      .on('data', data => {
+        debug('= ImportRecipientsService.parseCSV', 'Parsing recipient', JSON.stringify(data), headerMapping);
+        const emailKey = Object.keys(data)[0];
         let newRecp = {
-          id: base64url.encode(data.email),
-          userId: userId,
-          listId: listId,
-          email: data.email,
+          id: base64url.encode(data[emailKey]),
+          userId,
+          listId,
+          email: data[emailKey],
           metadata: {},
           status: Recipient.statuses.subscribed,
           isConfirmed: true,
@@ -177,9 +180,10 @@ class ImportRecipientsService {
           const newKey = headerMapping[key];
           newRecp.metadata[newKey] = data[key];
         };
+        delete newRecp.metadata.email;
         recipients.push(newRecp);
       })
-      .on('end', function () {
+      .on('end', () => {
         callback(recipients);
       });
   }
