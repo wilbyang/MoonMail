@@ -28,7 +28,7 @@ describe('RecipientsCounterService', () => {
       recipientsCounterService.updateCounters().then(() => {
         expect(List.incrementAll).to.have.been.called;
         done();
-      }).catch((err) => { console.log("dddddd", err, err.stack); });
+      });
     });
 
     after(() => {
