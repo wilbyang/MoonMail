@@ -228,8 +228,8 @@
           }
         ],
         "ProvisionedThroughput": {
-          "ReadCapacityUnits": 1,
-          "WriteCapacityUnits": 1
+          "ReadCapacityUnits": "${defaultRCU}",
+          "WriteCapacityUnits": "${defaultWCU}"
         },
         "TableName": "$${linksTable}"
       }
@@ -251,8 +251,8 @@
           }
         ],
         "ProvisionedThroughput": {
-          "ReadCapacityUnits": 1,
-          "WriteCapacityUnits": 1
+          "ReadCapacityUnits": "${sentEmailsRCU}",
+          "WriteCapacityUnits": "${sentEmailsWCU}"
         },
         "TableName": "$${sentEmailsTable}",
         "StreamSpecification": {
@@ -277,8 +277,8 @@
           }
         ],
         "ProvisionedThroughput": {
-          "ReadCapacityUnits": 1,
-          "WriteCapacityUnits": 1
+          "ReadCapacityUnits": "${defaultRCU}",
+          "WriteCapacityUnits": "${defaultWCU}"
         },
         "TableName": "$${reportsTable}"
       }
@@ -330,8 +330,8 @@
           }
         ],
         "ProvisionedThroughput": {
-          "ReadCapacityUnits": 1,
-          "WriteCapacityUnits": 1
+          "ReadCapacityUnits": "${defaultRCU}",
+          "WriteCapacityUnits": "${defaultWCU}"
         },
         "TableName": "$${campaignsTable}"
       }
@@ -361,8 +361,8 @@
           }
         ],
         "ProvisionedThroughput": {
-          "ReadCapacityUnits": 1,
-          "WriteCapacityUnits": 1
+          "ReadCapacityUnits": "${defaultRCU}",
+          "WriteCapacityUnits": "${defaultWCU}"
         },
         "TableName": "$${sendersTable}"
       }
@@ -407,8 +407,8 @@
           "StreamViewType": "NEW_AND_OLD_IMAGES"
         },
         "ProvisionedThroughput": {
-          "ReadCapacityUnits": 1,
-          "WriteCapacityUnits": 1
+          "ReadCapacityUnits": "${recipientsRCU}",
+          "WriteCapacityUnits": "${recipientsWCU}"
         },
         "TableName": "$${recipientsTable}"
       }
@@ -438,8 +438,8 @@
           }
         ],
         "ProvisionedThroughput": {
-          "ReadCapacityUnits": 1,
-          "WriteCapacityUnits": 1
+          "ReadCapacityUnits": "${defaultRCU}",
+          "WriteCapacityUnits": "${defaultWCU}"
         },
         "TableName": "$${listsTable}"
       }
@@ -448,7 +448,7 @@
       "Type": "AWS::S3::Bucket",
       "Properties": {
         "AccessControl": "PublicReadWrite",
-        "BucketName": "${project}-recipients-${stage}",
+        "BucketName": "$${recipientsImportBucket}",
         "CorsConfiguration": {
           "CorsRules": [
             {

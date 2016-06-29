@@ -84,6 +84,7 @@
   "unsubscribedRecipientTopic": "${project}-${stage}-unsubscribedRecipient",
   "updateListImportStatusTopic": "${project}-${stage}-updateListImportStatus",
   "staticDataBucket": "static.moonmail.${stage}.${region}",
+  "recipientsImportBucket": "recipients.moonmail.${stage}.${region}",
   "responses": {
     "400": {
       "statusCode": "400",
