@@ -30,6 +30,7 @@
     "SERVERLESS_STAGE": "${stage}",
     "SERVERLESS_REGION": "${region}",
     "RECIPIENTS_TABLE": "$${recipientsTable}",
+    "LISTS_TABLE": "$${listsTable}",
     "DEBUG": "true"
   },
   "vpc": {
