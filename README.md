@@ -31,6 +31,7 @@ With MoonMail you can: create & edit lists of recipients (email addresses) and s
 
 ###Campaigns+Autoresponders
 * Create, edit and delete autoresponders
+* Schedule campaigns to be sent in the future
 
 ## Getting Started
 
