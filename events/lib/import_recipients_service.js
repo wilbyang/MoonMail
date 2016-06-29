@@ -56,6 +56,7 @@ class ImportRecipientsService {
     return this.parseFile().then(recipients => {
       this.totalRecipientsCount = recipients.length || 0;
       this.recipients = recipients.filter(this.filterByEmail.bind(this));
+      console.log(recipients);
       return this.saveRecipients();
     });
   }
@@ -172,35 +173,42 @@ class ImportRecipientsService {
       const headerMapping = this.headerMapping;
       const userId = this.userId;
       const listId = this.listId;
-
-      const result = Baby.parse(csvString, {
+      const recipients = [];
+      Baby.parse(csvString, {
         header: true,
         dynamicTyping: true,
-        skipEmptyLines: true
-      });
-      if (result.errors.length > 0) { return reject(result.errors); }
-
-      const recipients = result.data.map((item) => {
-        debug('= ImportRecipientsService.parseCSV', 'Parsing recipient', JSON.stringify(item), headerMapping);
-        const emailKey = Object.keys(item)[0];
-        let newRecp = {
-          id: base64url.encode(item[emailKey]),
-          userId,
-          listId,
-          email: item[emailKey],
-          metadata: {},
-          status: Recipient.statuses.subscribed,
-          isConfirmed: true,
-          createdAt: new Date().getTime()
-        };
-        for (const key in headerMapping) {
-          const newKey = headerMapping[key];
-          newRecp.metadata[newKey] = item[key];
+        skipEmptyLines: true,
+        step: (results, parser) => {
+          if (results.errors.length > 0) {
+            debug('= ImportRecipientsService.parseCSV', 'Error parsing line', JSON.stringify(results.errors));
+          } else {
+            debug('= ImportRecipientsService.parseCSV', 'Parsing recipient', JSON.stringify(item), headerMapping);
+            const item = results.data[0];
+            const emailKey = Object.keys(item)[0];
+            let newRecp = {
+              id: base64url.encode(item[emailKey]),
+              userId,
+              listId,
+              email: item[emailKey],
+              metadata: {},
+              status: Recipient.statuses.subscribed,
+              isConfirmed: true,
+              createdAt: moment().unix()
+            };
+            for (const key in headerMapping) {
+              const newKey = headerMapping[key];
+              if (newKey) {
+                newRecp.metadata[newKey] = item[key];
+              }
+            }
+            delete newRecp.metadata.email;
+            recipients.push(newRecp);
+          }
+        },
+        complete: (results, parser) => {
+          return resolve(recipients);
         }
-        delete newRecp.metadata.email;
-        return newRecp;
       });
-      return resolve(recipients);
     });
   }
 

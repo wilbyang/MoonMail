@@ -16,7 +16,7 @@ chai.use(sinonChai);
 
 describe('UpdateImportStatusService', () => {
   let updateImportStatusService;
-  const updateStatusEvent = { fileName: 'filename.csv', userId: 'user-id', listId: 'list-id', status: 'SUCCESS', updatedAt: '876876978676' };
+  const updateStatusEvent = { fileName: 'filename.csv', userId: 'user-id', listId: 'list-id', importStatus: 'SUCCESS', updatedAt: '876876978676' };
 
   describe('#updateListImportStatus()', () => {
     before(() => {
