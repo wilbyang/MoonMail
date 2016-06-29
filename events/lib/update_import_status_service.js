@@ -17,7 +17,7 @@ class UpdateImportStatusService {
   _statusFromEvent() {
     return {
       fileName: this.importStatusEvent.fileName,
-      status: this.importStatusEvent.status,
+      status: this.importStatusEvent.importStatus,
       updatedAt: this.importStatusEvent.updatedAt
     };
   }
