@@ -26,7 +26,7 @@ describe('IncrementCampaignsUnsubscriptionsService', () => {
       const countByItem = incrementerService.countByItem;
       expect(countByItem).to.have.lengthOf(1);
       const firstItem = countByItem[0];
-      expect(firstItem[0]).to.deep.equal([userId, campaignId]);
+      expect(firstItem[0]).to.deep.equal([campaignId]);
       expect(firstItem[1]).to.equal(1);
       done();
     });
