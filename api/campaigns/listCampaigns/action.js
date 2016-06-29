@@ -4,6 +4,7 @@ import { Campaign } from 'moonmail-models';
 import { debug } from '../../lib/logger';
 import decrypt from '../../lib/auth-token-decryptor';
 import { ApiErrors } from '../../lib/errors';
+import omitEmpty from 'omit-empty';
 
 export function respond(event, cb) {
   debug('= listCampaigns.action', JSON.stringify(event));
@@ -12,7 +13,7 @@ export function respond(event, cb) {
       limit: 10
     };
     if (event.options) {
-      Object.assign(options, event.options);
+      Object.assign(options, omitEmpty(event.options));
     }
     Campaign.allBy('userId', decoded.sub, options).then(campaigns => {
       debug('= listCampaigns.action', 'Success');
