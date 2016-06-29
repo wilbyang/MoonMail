@@ -25,6 +25,7 @@ With MoonMail you can: create & edit lists of recipients (email addresses) and s
 * Update the recipient status with any of the following: Unsubscribed, Bounced, Complaint-Spam, Suppresion-list
 * Basic front / UI to manage lists and to send campaigns 
 * Apply [liquid](https://shopify.github.io/liquid/) syntax within the campaigns and autoresponders
+* [Public API to interact with the SAAS version](http://microapps.github.io/MoonMail/)
 
 ## Upcoming Features
 
