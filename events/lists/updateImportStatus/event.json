@@ -1,0 +1,13 @@
+{
+  "Records": [
+    {
+      "EventSource": "aws:sns",
+      "EventVersion": "1.0",
+      "Sns": {
+        "Type": "Notification",
+        "Subject": "SomeSubject",
+        "Message": "{\"listId\":\"listId#1\",\"userId\":\"userId\",\"totalRecipientsCount\":2,\"importedCount\":2,\"corruptedEmailsCount\":0,\"corruptedEmails\":[],\"importStatus\":\"SUCCESS\",\"updatedAt\":\"8766823642398746\"}"
+      }
+    }
+  ]
+}

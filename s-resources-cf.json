@@ -170,6 +170,12 @@
         "TopicName": "$${unsubscribedRecipientTopic}"
       }
     },
+    "UpdateListImportStatusTopic": {
+      "Type": "AWS::SNS::Topic",
+      "Properties": {
+        "TopicName": "$${updateListImportStatusTopic}"
+      }
+    },
     "FreeUsersSendEmailQueue": {
       "Type": "AWS::SQS::Queue",
       "Properties": {
@@ -573,6 +579,12 @@
       "Description": "ARN of the AttachRecipientsCount SNS topic",
       "Value": {
         "Ref": "AttachRecipientsCountTopic"
+      }
+    },
+    "UpdateListImportStatusTopicARN": {
+      "Description": "ARN of the UpdateListImportStatus SNS topic",
+      "Value": {
+        "Ref": "UpdateListImportStatusTopic"
       }
     },
     "OpensStreamName": {

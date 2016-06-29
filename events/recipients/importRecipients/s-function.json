@@ -31,6 +31,7 @@
     "SERVERLESS_REGION": "${region}",
     "RECIPIENTS_TABLE": "$${recipientsTable}",
     "LISTS_TABLE": "$${listsTable}",
+    "UPDATE_IMPORT_STATUS_TOPIC_ARN": "${updateListImportStatusTopicARN}",
     "DEBUG": "true"
   },
   "vpc": {

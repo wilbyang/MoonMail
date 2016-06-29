@@ -3,15 +3,14 @@
 import AWS from 'aws-sdk';
 import { debug } from './index';
 import Baby from 'babyparse';
-import { Recipient } from 'moonmail-models';
+import { Recipient, List } from 'moonmail-models';
 import base64url from 'base64-url';
 import querystring from 'querystring';
 import moment from 'moment';
-import { List } from 'moonmail-models';
 
 class ImportRecipientsService {
 
-  constructor({s3Event, importOffset = 0 }, s3Client, lambdaClient, context) {
+  constructor({s3Event, importOffset = 0 }, s3Client, snsClient, lambdaClient, context) {
     this.s3Event = s3Event;
     this.importOffset = importOffset;
     this.bucket = s3Event.bucket.name;
@@ -28,6 +27,8 @@ class ImportRecipientsService {
     this.lambdaName = context.functionName;
     this.context = context;
     this.headerMapping = null;
+    this.sns = snsClient;
+    this.updateImportStatusTopicArn = process.env.UPDATE_IMPORT_STATUS_TOPIC_ARN;
   }
 
   get executionThreshold() {
@@ -86,16 +87,19 @@ class ImportRecipientsService {
             const importStatus = {
               listId: this.listId,
               userId: this.userId,
+              fileName: this.fileKey,
               totalRecipientsCount: this.totalRecipientsCount,
               corruptedEmailsCount: this.corruptedEmails.length,
               corruptedEmails: this.corruptedEmails,
               importedCount: this.importOffset,
               importStatus: 'FAILED',
-              updatedAt: new Date().toString(),
+              updatedAt: moment().unix(),
               message: err.message,
               stackTrace: err.stack
             };
-            reject(importStatus);
+            this._publishToSns(importStatus)
+              .then(() => reject(importStatus))
+              .catch((e) => reject(importStatus));
           });
         });
     } else {
@@ -103,15 +107,19 @@ class ImportRecipientsService {
         const importStatus = {
           listId: this.listId,
           userId: this.userId,
+          fileName: this.fileKey,
           totalRecipientsCount: this.totalRecipientsCount,
           importedCount: this.importOffset,
           corruptedEmailsCount: this.corruptedEmails.length,
           corruptedEmails: this.corruptedEmails,
           importStatus: 'SUCCESS',
-          updatedAt: new Date().toString()
+          updatedAt: moment().unix()
         };
         debug('= ImportRecipientsService.saveRecipients', 'Saved recipients successfully', importStatus);
-        this._saveMetadataAttributes().then(() => resolve(importStatus)).catch((error) => reject(error));
+        this._saveMetadataAttributes()
+          .then(() => this._publishToSns(importStatus))
+          .then(() => resolve(importStatus))
+          .catch((error) => reject(error));
       });
     }
   }
@@ -166,7 +174,9 @@ class ImportRecipientsService {
       const listId = this.listId;
 
       const result = Baby.parse(csvString, {
-        header: true
+        header: true,
+        dynamicTyping: true,
+        skipEmptyLines: true
       });
       if (result.errors.length > 0) { return reject(result.errors); }
 
@@ -207,6 +217,26 @@ class ImportRecipientsService {
   _saveMetadataAttributes() {
     const metadataAttributes = Object.keys(this.recipients[0].metadata);
     return List.update({ metadataAttributes }, this.userId, this.listId);
+  }
+
+  _publishToSns(message) {
+    const topic = this.updateImportStatusTopicArn;
+    return new Promise((resolve, reject) => {
+      debug('= ImportRecipientsService._publishToSns', 'Sending message', topic, JSON.stringify(message));
+      const params = {
+        Message: JSON.stringify(message),
+        TopicArn: topic
+      };
+      this.sns.publish(params, (err, data) => {
+        if (err) {
+          debug('= ImportRecipientsService._publishToSns', 'Error sending message', err);
+          reject(err);
+        } else {
+          debug('= ImportRecipientsService._publishToSns', 'Message sent');
+          resolve(data);
+        }
+      });
+    });
   }
 }
 

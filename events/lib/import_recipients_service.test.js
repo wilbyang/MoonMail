@@ -20,12 +20,13 @@ describe('ImportRecipientsService', () => {
   };
   let lambdaClient;
   let s3Client;
+  let sns;
 
   before(() => {
     awsMock.mock('S3', 'getObject', {
       Body: `email address;first name;last name
-"em1@examplemail.com";"firstName1";"lastName1"
-"em2@examplemail.com";"firstName2";"lastName2"`,
+em1@examplemail.com;firstName1;lastName1
+em2@examplemail.com;firstName2;lastName2`,
       Metadata: {
         headers: '{"email address":"email", "first name":"name","last name":"surname"}'
       }
@@ -36,6 +37,9 @@ describe('ImportRecipientsService', () => {
     awsMock.mock('Lambda', 'invoke', 'ok');
     lambdaClient = new AWS.Lambda();
     s3Client = new AWS.S3();
+    awsMock.mock('SNS', 'publish');
+    sns = new AWS.SNS();
+    process.env.UPDATE_IMPORT_STATUS_TOPIC_ARN = 'update-import-topic-arn';
   });
 
   // TODO: Add error ocurred case
@@ -52,7 +56,7 @@ describe('ImportRecipientsService', () => {
         }
       };
       it('imports recipients', (done) => {
-        const importRecipientsService = new ImportRecipientsService(serviceParams, s3Client, lambdaClient, lambdaContext);
+        const importRecipientsService = new ImportRecipientsService(serviceParams, s3Client, sns, lambdaClient, lambdaContext);
         expect(importRecipientsService).to.have.property('listId', 'listId#1');
         expect(importRecipientsService).to.have.property('fileExt', 'csv');
         expect(importRecipientsService).to.have.property('importOffset', 0);
@@ -78,12 +82,16 @@ describe('ImportRecipientsService', () => {
 
           expect(List.update).to.have.been.calledOnce;
           const updateArgs = List.update.lastCall.args;
-          expect(updateArgs[0]).to.deep.equals({metadataAttributes: ['name', 'surname']});
+          expect(updateArgs[0]).to.deep.equals({ metadataAttributes: ['name', 'surname'] });
           expect(updateArgs[1]).to.equals('userId');
           expect(updateArgs[2]).to.equals('listId#1');
-          
+
+          expect(sns.publish.callCount).to.equal(1);
+          const payload = JSON.parse(sns.publish.lastCall.args[0].Message);
+          expect(payload).to.have.property('importStatus', 'SUCCESS');
+
           done();
-        });
+        }).catch((e) => console.log(e, e.stack));
       });
     });
   });
@@ -93,5 +101,6 @@ describe('ImportRecipientsService', () => {
     awsMock.restore('Lambda');
     Recipient.saveAll.restore();
     List.update.restore();
+    awsMock.restore('SNS');
   });
 });

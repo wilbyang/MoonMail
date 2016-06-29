@@ -82,6 +82,7 @@
   "attachSenderTopic": "${project}-${stage}-attachSender",
   "updateCampaignTopic": "${project}-${stage}-updateCampaign",
   "unsubscribedRecipientTopic": "${project}-${stage}-unsubscribedRecipient",
+  "updateListImportStatusTopic": "${project}-${stage}-updateListImportStatus",
   "staticDataBucket": "static.moonmail.${stage}.${region}",
   "responses": {
     "400": {

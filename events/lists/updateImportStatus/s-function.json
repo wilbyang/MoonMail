@@ -1,0 +1,35 @@
+{
+  "name": "updateImportStatus",
+  "runtime": "babel",
+  "description": "Serverless Lambda function for project: MoonMail-v2",
+  "customName": "${project}-lists-updateImportStatus",
+  "customRole": false,
+  "handler": "lists/updateImportStatus/handler.default",
+  "timeout": 60,
+  "memorySize": 1024,
+  "authorizer": {},
+  "custom": {
+    "excludePatterns": []
+  },
+  "endpoints": [],
+  "events": [
+    {
+      "name": "update-import-status-topic",
+      "type": "sns",
+      "config": {
+        "topicName": "$${updateListImportStatusTopic}"
+      }
+    }
+  ],
+  "environment": {
+    "SERVERLESS_PROJECT": "${project}",
+    "SERVERLESS_STAGE": "${stage}",
+    "SERVERLESS_REGION": "${region}",
+    "DEBUG": true,
+    "LISTS_TABLE": "$${listsTable}"
+  },
+  "vpc": {
+    "securityGroupIds": [],
+    "subnetIds": []
+  }
+}
