@@ -7,16 +7,16 @@ class UpdateImportStatusService {
     this.importStatusEvent = importStatusEvent;
     this.userId = this.importStatusEvent.userId;
     this.listId = this.importStatusEvent.listId;
+    this.fileName = this.importStatusEvent.fileName;
   }
 
   updateListImportStatus() {
     debug('= UpdateImportStatusService.updateListImportStatus', this.importStatusEvent);
-    return List.update({ importStatus: this._statusFromEvent() }, this.userId, this.listId);
+    return List.updateImportStatus(this.userId, this.listId, this.fileName, this._statusFromEvent());
   }
 
   _statusFromEvent() {
     return {
-      fileName: this.importStatusEvent.fileName,
       status: this.importStatusEvent.importStatus,
       updatedAt: this.importStatusEvent.updatedAt
     };

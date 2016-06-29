@@ -21,28 +21,27 @@ describe('UpdateImportStatusService', () => {
   describe('#updateListImportStatus()', () => {
     before(() => {
       updateImportStatusService = new UpdateImportStatusService(updateStatusEvent);
-      sinon.stub(List, 'update').resolves('Ok');
+      sinon.stub(List, 'updateImportStatus').resolves('Ok');
     });
 
     it('updates List import status accordingly', (done) => {
       updateImportStatusService.updateListImportStatus().then(() => {
-        expect(List.update).to.have.been.called;
-        const updateArgs = List.update.lastCall.args;
+        expect(List.updateImportStatus).to.have.been.called;
+        const updateArgs = List.updateImportStatus.lastCall.args;
+        expect(updateArgs[0]).to.equals('user-id');
+        expect(updateArgs[1]).to.equals('list-id');
+        expect(updateArgs[2]).to.equals('filename.csv');
         expect(updateArgs[0]).to.deep.equals({
-          importStatus: {
-            fileName: 'filename.csv',
-            status: 'SUCCESS',
-            updatedAt: '876876978676'
-          }
+          status: 'SUCCESS',
+          updatedAt: '876876978676'
         });
-        expect(updateArgs[1]).to.equals('user-id');
-        expect(updateArgs[2]).to.equals('list-id');
+
         done();
       });
     });
 
     after(() => {
-      List.update.restore();
+      List.updateImportStatus.restore();
     });
   });
 });
