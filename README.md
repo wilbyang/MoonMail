@@ -31,9 +31,6 @@ With MoonMail you can: create & edit lists of recipients (email addresses) and s
 ###Campaigns+Autoresponders
 * Create, edit and delete autoresponders
 
-###Other
-* Download the full Serverless project as a Node.js® module
-
 ## Getting Started
 
 You need to have installed the [Serverless Framework](https://github.com/serverless/serverless) (version 0.5.2 or higher is required to run the [MoonMail API](http://microapps.github.io/MoonMail/)).
