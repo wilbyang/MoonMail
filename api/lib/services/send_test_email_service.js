@@ -1,6 +1,7 @@
 'use strict';
 
 import { debug } from '../logger';
+import inlineCss from 'inline-css';
 
 class SendTestEmailService {
 
@@ -19,6 +20,7 @@ class SendTestEmailService {
   sendEmail() {
     debug('= SendTestEmailService.sendEmail', `Sending test email to ${this.emails}`);
     return this._checkParams()
+      .then(() => this._inlineBodyCss())
       .then(() => this._buildSesRequest())
       .then(sesParams => this._deliver(sesParams));
   }
@@ -29,8 +31,20 @@ class SendTestEmailService {
       if (this.body && this.subject && this.emails) {
         resolve(true);
       } else {
+        debug('= SendTestEmailService._checkParams', 'Error', this.emails, this.body, this.subject);
         reject(new Error('Params missing'));
       }
+    });
+  }
+
+  _inlineBodyCss() {
+    return new Promise(resolve => {
+      debug('= SendTestEmailService._inlineBodyCss');
+      inlineCss(this.body, {url: './'})
+        .then(inlinedBody => {
+          this.body = inlinedBody;
+          resolve(true);
+        });
     });
   }
 

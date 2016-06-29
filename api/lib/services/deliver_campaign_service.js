@@ -2,6 +2,7 @@
 
 import { debug } from '../logger';
 import { Campaign } from 'moonmail-models';
+import inlineCss from 'inline-css';
 
 class DeliverCampaignService {
 
@@ -77,19 +78,22 @@ class DeliverCampaignService {
   _buildCampaignMessage(campaign) {
     debug('= DeliverCampaignService._buildCampaignMessage', campaign);
     return new Promise((resolve) => {
-      resolve({
-        userId: campaign.userId,
-        userPlan: this.userPlan,
-        sentCampaignsInMonth: this.sentCampaignsInMonth,
-        campaign: {
-          id: campaign.id,
-          subject: campaign.subject,
-          body: campaign.body,
-          senderId: campaign.senderId,
-          precompiled: false,
-          listIds: campaign.listIds
-        }
-      });
+      inlineCss(campaign.body, {url: './'})
+        .then(inlinedBody => {
+          resolve({
+            userId: campaign.userId,
+            userPlan: this.userPlan,
+            sentCampaignsInMonth: this.sentCampaignsInMonth,
+            campaign: {
+              id: campaign.id,
+              subject: campaign.subject,
+              body: inlinedBody,
+              senderId: campaign.senderId,
+              precompiled: false,
+              listIds: campaign.listIds
+            }
+          });
+        });
     });
   }
 
