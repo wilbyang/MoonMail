@@ -128,6 +128,50 @@
         "TopicName": "$${emailNotificationsTopic}"
       }
     },
+    "EmailNotificationsTopicPolicy": {
+      "Type": "AWS::SNS::TopicPolicy",
+      "Properties": {
+        "PolicyDocument": {
+            "Version": "2008-10-17",
+            "Statement": [
+              {
+                "Sid": "__default_statement_ID",
+                "Effect": "Allow",
+                "Principal": {
+                  "AWS": "*"
+                },
+                "Action": [
+                  "SNS:Publish",
+                  "SNS:RemovePermission",
+                  "SNS:SetTopicAttributes",
+                  "SNS:DeleteTopic",
+                  "SNS:ListSubscriptionsByTopic",
+                  "SNS:GetTopicAttributes",
+                  "SNS:Receive",
+                  "SNS:AddPermission",
+                  "SNS:Subscribe"
+                ],
+                "Resource": {"Ref": "EmailNotificationsTopic"},
+                "Condition": {
+                  "StringEquals": {
+                    "AWS:SourceOwner": {"Ref": "AWS::AccountId"}
+                  }
+                }
+              },
+              {
+                "Sid": "__console_pub_1",
+                "Effect": "Allow",
+                "Principal": {
+                  "AWS": "*"
+                },
+                "Action": "SNS:Publish",
+                "Resource": {"Ref": "EmailNotificationsTopic"}
+              }
+            ]
+        },
+        "Topics": [{"Ref": "EmailNotificationsTopic"}]
+      }
+    },
     "PrecompileCampaignTopic": {
       "Type": "AWS::SNS::Topic",
       "Properties": {
@@ -452,14 +496,19 @@
         "CorsConfiguration": {
           "CorsRules": [
             {
-              "AllowedHeaders": [],
+              "AllowedHeaders": ["*"],
               "AllowedMethods": [
                 "GET",
                 "PUT",
                 "POST",
                 "HEAD"
               ],
-              "AllowedOrigins": ["*"]
+              "AllowedOrigins": ["*"],
+              "ExposedHeaders": [
+                "x-amz-server-side-encryption",
+                "x-amz-request-id",
+                "x-amz-id-2"
+              ]
             }
           ]
         }
