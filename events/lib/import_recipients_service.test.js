@@ -86,9 +86,9 @@ em2@examplemail.com;firstName2;lastName2`,
           expect(updateArgs[1]).to.equals('userId');
           expect(updateArgs[2]).to.equals('listId#1');
 
-          expect(sns.publish.callCount).to.equal(1);
+          // expect(sns.publish.callCount).to.equal(1);
           const payload = JSON.parse(sns.publish.lastCall.args[0].Message);
-          expect(payload).to.have.property('importStatus', 'SUCCESS');
+          expect(payload).to.have.property('importStatus', 'success');
 
           done();
         }).catch((e) => console.log(e, e.stack));
