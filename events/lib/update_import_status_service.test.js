@@ -16,7 +16,7 @@ chai.use(sinonChai);
 
 describe('UpdateImportStatusService', () => {
   let updateImportStatusService;
-  const updateStatusEvent = { fileName: 'filename.csv', userId: 'user-id', listId: 'list-id', importStatus: 'SUCCESS', updatedAt: '876876978676' };
+  const updateStatusEvent = { fileName: 'google-oauth2|113373534076241986701.ciq20pw7r000001q6fdm8wb8p.1467208085000.csv', userId: 'user-id', listId: 'list-id', importStatus: 'SUCCESS', updatedAt: '876876978676' };
 
   describe('#updateListImportStatus()', () => {
     before(() => {
@@ -30,7 +30,7 @@ describe('UpdateImportStatusService', () => {
         const updateArgs = List.updateImportStatus.lastCall.args;
         expect(updateArgs[0]).to.equals('user-id');
         expect(updateArgs[1]).to.equals('list-id');
-        expect(updateArgs[2]).to.equals('filename.csv');
+        expect(updateArgs[2]).to.equals('1467208085000');
         expect(updateArgs[3]).to.deep.equals({
           status: 'SUCCESS',
           updatedAt: '876876978676'
