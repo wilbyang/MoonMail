@@ -31,7 +31,7 @@ describe('UpdateImportStatusService', () => {
         expect(updateArgs[0]).to.equals('user-id');
         expect(updateArgs[1]).to.equals('list-id');
         expect(updateArgs[2]).to.equals('filename.csv');
-        expect(updateArgs[0]).to.deep.equals({
+        expect(updateArgs[3]).to.deep.equals({
           status: 'SUCCESS',
           updatedAt: '876876978676'
         });
