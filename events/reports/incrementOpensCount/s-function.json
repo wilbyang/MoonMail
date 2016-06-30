@@ -14,7 +14,7 @@
   "endpoints": [],
   "events": [
     {
-      "name": "${opensStreamName}",
+      "name": "incrementOpensStream",
       "type": "kinesisstream",
       "config": {
         "streamArn": "${opensStreamARN}",
