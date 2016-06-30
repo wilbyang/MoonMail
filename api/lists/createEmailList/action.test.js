@@ -11,7 +11,7 @@ const expect = chai.expect;
 describe('createEmailList', () => {
 
   const name = 'my list';
-  const list = {name};
+  const list = { name };
   let event;
 
   describe('#respond()', () => {
@@ -21,7 +21,7 @@ describe('createEmailList', () => {
 
     context('when the event is valid', () => {
       before(() => {
-        event = {list};
+        event = { list };
       });
 
       it('creates the list', (done) => {
@@ -30,6 +30,8 @@ describe('createEmailList', () => {
           expect(args).to.have.property('userId');
           expect(args).to.have.property('id');
           expect(args).to.have.property('isDeleted', false.toString());
+          expect(args).to.have.property('importStatus');
+          expect(args.importStatus).to.deep.equals({});
           expect(err).to.not.exist;
           expect(result).to.exist;
           done();
