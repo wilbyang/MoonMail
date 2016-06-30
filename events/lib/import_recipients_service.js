@@ -56,7 +56,6 @@ class ImportRecipientsService {
     return this.parseFile().then(recipients => {
       this.totalRecipientsCount = recipients.length || 0;
       this.recipients = recipients.filter(this.filterByEmail.bind(this));
-      console.log(recipients);
       return this.saveRecipients();
     });
   }
@@ -197,7 +196,7 @@ class ImportRecipientsService {
             };
             for (const key in headerMapping) {
               const newKey = headerMapping[key];
-              if (newKey) {
+              if (newKey && newKey !== 'false') {
                 newRecp.metadata[newKey] = item[key];
               }
             }
