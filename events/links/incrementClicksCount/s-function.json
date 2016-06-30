@@ -14,7 +14,7 @@
   "endpoints": [],
   "events": [
     {
-      "name": "${clicksStreamName}",
+      "name": "incrementCountClicksStream",
       "type": "kinesisstream",
       "config": {
         "streamArn": "${clicksStreamARN}",
