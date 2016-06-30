@@ -14,6 +14,7 @@ export function respond(event, cb) {
       list.userId = decoded.sub;
       list.id = cuid();
       list.isDeleted = false.toString();
+      list.importStatus = {};
       List.save(list).then(() => {
         return cb(null, list);
       }).catch(e => {
@@ -23,6 +24,5 @@ export function respond(event, cb) {
     } else {
       return cb(ApiErrors.response('No list specified'));
     }
-  })
-  .catch(err => cb(ApiErrors.response(err), null));
+  }).catch(err => cb(ApiErrors.response(err), null));
 }
