@@ -1,10 +1,10 @@
 {
-  "name": "getCampaignReport",
+  "name": "getLinks",
   "runtime": "babel",
   "description": "Serverless Lambda function for project: MoonMail-v2",
-  "customName": "${project}-reports-getCampaignReport",
+  "customName": "${project}-links-getLinks",
   "customRole": false,
-  "handler": "reports/getCampaignReport/handler.default",
+  "handler": "links/getLinks/handler.default",
   "timeout": 6,
   "memorySize": 1024,
   "authorizer": {},
@@ -14,7 +14,7 @@
   },
   "endpoints": [
     {
-      "path": "/campaigns/{campaignId}/report",
+      "path": "/campaigns/{campaignId}/links",
       "method": "GET",
       "type": "AWS",
       "authorizationType": "none",
@@ -24,11 +24,11 @@
       "requestTemplates": {
         "application/json": {
           "campaignId": "$input.params('campaignId')",
-          "authToken": "$input.params('Authorization')",
           "options": {
             "fields": "$input.params('fields')",
             "include_fields": "$input.params('include_fields')"
-          }
+          },
+          "authToken": "$input.params('Authorization')"
         }
       },
       "responses": "$${responses}"
@@ -39,8 +39,9 @@
     "SERVERLESS_PROJECT": "${project}",
     "SERVERLESS_STAGE": "${stage}",
     "SERVERLESS_REGION": "${region}",
-    "REPORTS_TABLE": "$${reportsTable}",
+    "LINKS_TABLE": "$${linksTable}",
     "DEBUG": "true"
+
   },
   "vpc": {
     "securityGroupIds": [],
