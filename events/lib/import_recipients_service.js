@@ -53,11 +53,24 @@ class ImportRecipientsService {
   }
 
   importAll() {
-    return this.parseFile().then(recipients => {
-      this.totalRecipientsCount = recipients.length || 0;
-      this.recipients = recipients.filter(this.filterByEmail.bind(this));
-      return this.saveRecipients();
-    });
+    const importStatus = {
+      listId: this.listId,
+      userId: this.userId,
+      fileName: this.fileKey,
+      totalRecipientsCount: this.totalRecipientsCount,
+      corruptedEmailsCount: this.corruptedEmails.length,
+      corruptedEmails: this.corruptedEmails,
+      importedCount: this.importOffset,
+      importStatus: 'importing',
+      createdAt: moment().unix()
+    };
+    return this._publishToSns(importStatus)
+      .then(() => this.parseFile())
+      .then(recipients => {
+        this.totalRecipientsCount = recipients.length || 0;
+        this.recipients = recipients.filter(this.filterByEmail.bind(this));
+        return this.saveRecipients();
+      });
   }
 
   saveRecipients() {
@@ -92,8 +105,8 @@ class ImportRecipientsService {
               corruptedEmailsCount: this.corruptedEmails.length,
               corruptedEmails: this.corruptedEmails,
               importedCount: this.importOffset,
-              importStatus: 'FAILED',
-              updatedAt: moment().unix(),
+              importStatus: 'failed',
+              finishedAt: moment().unix(),
               message: err.message,
               stackTrace: err.stack
             };
@@ -112,8 +125,8 @@ class ImportRecipientsService {
           importedCount: this.importOffset,
           corruptedEmailsCount: this.corruptedEmails.length,
           corruptedEmails: this.corruptedEmails,
-          importStatus: 'SUCCESS',
-          updatedAt: moment().unix()
+          importStatus: 'success',
+          finishedAt: moment().unix()
         };
         debug('= ImportRecipientsService.saveRecipients', 'Saved recipients successfully', importStatus);
         this._saveMetadataAttributes()
@@ -188,7 +201,6 @@ class ImportRecipientsService {
               id: base64url.encode(item[emailKey]),
               userId,
               listId,
-              email: item[emailKey],
               metadata: {},
               status: Recipient.statuses.subscribed,
               isConfirmed: true,
@@ -200,6 +212,7 @@ class ImportRecipientsService {
                 newRecp.metadata[newKey] = item[key];
               }
             }
+            newRecp.email = newRecp.metadata.email;
             delete newRecp.metadata.email;
             recipients.push(newRecp);
           }
