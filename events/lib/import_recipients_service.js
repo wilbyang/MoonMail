@@ -62,7 +62,7 @@ class ImportRecipientsService {
       corruptedEmails: this.corruptedEmails,
       importedCount: this.importOffset,
       importStatus: 'importing',
-      updatedAt: moment().unix()
+      createdAt: moment().unix()
     };
     return this._publishToSns(importStatus)
       .then(() => this.parseFile())
@@ -106,7 +106,7 @@ class ImportRecipientsService {
               corruptedEmails: this.corruptedEmails,
               importedCount: this.importOffset,
               importStatus: 'failed',
-              updatedAt: moment().unix(),
+              finishedAt: moment().unix(),
               message: err.message,
               stackTrace: err.stack
             };
@@ -126,7 +126,7 @@ class ImportRecipientsService {
           corruptedEmailsCount: this.corruptedEmails.length,
           corruptedEmails: this.corruptedEmails,
           importStatus: 'success',
-          updatedAt: moment().unix()
+          finishedAt: moment().unix()
         };
         debug('= ImportRecipientsService.saveRecipients', 'Saved recipients successfully', importStatus);
         this._saveMetadataAttributes()
