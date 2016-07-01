@@ -37,7 +37,10 @@ describe('duplicateCampaign', () => {
           expect(Campaign.get.lastCall.args).to.deep.equals(['my-user-id', 'campaign-id']);
           const args = Campaign.save.lastCall.args[0];
           expect(args).to.have.property('userId');
-          expect(args).to.not.have.property('id');
+          expect(args).to.have.property('id');
+          expect(args).to.have.property('status');
+          expect(args).to.have.property('subject', campaign.subject);
+          expect(args).to.have.property('body', campaign.body);
           expect(args).to.have.property('name', `${name} copy`);
           expect(err).to.not.exist;
           expect(result).to.exist;
