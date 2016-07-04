@@ -11,10 +11,14 @@ export function respond(event, cb) {
   decrypt(event.authToken).then((decoded) => {
     if (event.campaignId) {
       Campaign.get(decoded.sub, event.campaignId).then((campaign) => {
-        let newCampaign = Object.assign({}, campaign);
-        newCampaign.name = `${campaign.name} copy`;
-        delete newCampaign.id;
-        return newCampaign;
+        return {
+          id: cuid(),
+          userId: decoded.sub,
+          status: 'draft',
+          name: `${campaign.name} copy`,
+          subject: campaign.subject,
+          body: campaign.body
+        };
       }).then((campaign) => {
         return Campaign.save(campaign);
       }).then((campaign) => {
