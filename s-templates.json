@@ -72,7 +72,7 @@
   "linksTable": "${project}-${stage}-links",
   "campaignsTable": "${project}-${stage}-campaigns",
   "campaignsSentAtIndex": "${project}-${stage}-campaignsSentAtIndex",
-  "sendersTable": "${project}-${stage}-senders",
+  "usersTable": "${project}-${stage}-users",
   "sentEmailsTable": "${project}-${stage}-sentEmails",
   "listsTable": "${project}-${stage}-lists",
   "recipientsTable": "${project}-${stage}-recipients",
