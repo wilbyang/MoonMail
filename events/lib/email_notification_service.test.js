@@ -6,7 +6,7 @@ const expect = chai.expect;
 const sinonChai = require('sinon-chai');
 import * as sinon from 'sinon';
 import * as sinonAsPromised from 'sinon-as-promised';
-import { SentEmail, Report } from 'moonmail-models';
+import { SentEmail, Report, Recipient } from 'moonmail-models';
 import { EmailNotificationService } from './email_notification_service';
 import * as bounce from './fixtures/bounce_notification.json';
 import * as complaint from './fixtures/complaint_notification.json';
@@ -19,6 +19,7 @@ describe('EmailNotificationService', () => {
   let emailNotificationService;
   let getEmailStub;
   let updateEmailStub;
+  let updateRecipientStub;
   let incrementBouncesStub;
   let incrementComplaintsStub;
   let incrementDeliveriesStub;
@@ -33,6 +34,7 @@ describe('EmailNotificationService', () => {
     emailNotificationService = new EmailNotificationService(bounce);
     getEmailStub = sinon.stub(SentEmail, 'get').resolves(sentEmail);
     updateEmailStub = sinon.stub(SentEmail, 'update').resolves(bouncedEmail);
+    updateRecipientStub = sinon.stub(Recipient, 'update').resolves(true);
     incrementBouncesStub = sinon.stub(Report, 'incrementBounces').resolves(true);
     incrementComplaintsStub = sinon.stub(Report, 'incrementComplaints').resolves(true);
     incrementDeliveriesStub = sinon.stub(Report, 'incrementDeliveries').resolves(true);
@@ -45,6 +47,41 @@ describe('EmailNotificationService', () => {
         expect(args[0]).to.equal(bounce.mail.messageId);
         expect(email).to.deep.equal(sentEmail);
         done();
+      });
+    });
+  });
+
+  describe('#unsubscribeRecipient()', () => {
+    context('when the notification is a bounce', () => {
+      it('unsubscribes the recipient with bouncedAt timestamp', done => {
+        emailNotificationService.unsubscribeRecipient().then(() => {
+          const args = Recipient.update.lastCall.args;
+          const updateParams = args[0];
+          const listIdParam = args[1];
+          const recipientIdParam = args[2];
+          expect(updateParams).to.have.property('bouncedAt');
+          expect(updateParams).to.have.property('status', Recipient.statuses.bounced);
+          expect(listIdParam).to.equal(listId);
+          expect(recipientIdParam).to.equal(recipientId);
+          done();
+        });
+      });
+    });
+
+    context('when the notification is a complaint', () => {
+      it('unsubscribes the recipient with complainedAt timestamp', done => {
+        emailNotificationService = new EmailNotificationService(complaint);
+        emailNotificationService.unsubscribeRecipient().then(() => {
+          const args = Recipient.update.lastCall.args;
+          const updateParams = args[0];
+          const listIdParam = args[1];
+          const recipientIdParam = args[2];
+          expect(updateParams).to.have.property('complainedAt');
+          expect(updateParams).to.have.property('status', Recipient.statuses.complaint);
+          expect(listIdParam).to.equal(listId);
+          expect(recipientIdParam).to.equal(recipientId);
+          done();
+        });
       });
     });
   });
@@ -74,18 +111,6 @@ describe('EmailNotificationService', () => {
         emailNotificationService.updateStatus().then(() => {
           const args = SentEmail.update.lastCall.args;
           expect(args[0]).to.deep.equal({status: 'complained'});
-          expect(args[1]).to.equal(bounce.mail.messageId);
-          done();
-        });
-      });
-    });
-
-    context('when the notification is a delivery', () => {
-      it('changes the sent email status to delivered', (done) => {
-        emailNotificationService = new EmailNotificationService(delivery);
-        emailNotificationService.updateStatus().then(() => {
-          const args = SentEmail.update.lastCall.args;
-          expect(args[0]).to.deep.equal({status: 'delivered'});
           expect(args[1]).to.equal(bounce.mail.messageId);
           done();
         });
@@ -127,6 +152,7 @@ describe('EmailNotificationService', () => {
   afterEach(() => {
     getEmailStub.restore();
     updateEmailStub.restore();
+    updateRecipientStub.restore();
     incrementBouncesStub.restore();
     incrementComplaintsStub.restore();
     incrementDeliveriesStub.restore();

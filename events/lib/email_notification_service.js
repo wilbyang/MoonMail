@@ -1,7 +1,9 @@
 'use strict';
 
 import { debug } from './index';
-import { SentEmail, Report } from 'moonmail-models';
+import { SentEmail, Report, Recipient } from 'moonmail-models';
+import moment from 'moment';
+import omitEmpty from 'omit-empty';
 
 class EmailNotificationService {
 
@@ -13,13 +15,23 @@ class EmailNotificationService {
 
   process() {
     debug('= EmailNotificationService.process', JSON.stringify(this.messageId));
-    return this.updateStatus()
+    return this.unsubscribeRecipient()
+      .then(() => this.updateStatus())
       .then(updatedEmail => this.incrementReportCount(updatedEmail));
   }
 
   getSentEmail() {
     debug('= EmailNotificationService.getSentEmail', this.messageId);
     return SentEmail.get(this.messageId);
+  }
+
+  unsubscribeRecipient() {
+    return this.getSentEmail()
+      .then(sentEmail => {
+        const recipient = {status: this.newStatus};
+        recipient[`${this.newStatus}At`] = moment().unix();
+        return Recipient.update(omitEmpty(recipient), sentEmail.listId, sentEmail.recipientId);
+      });
   }
 
   updateStatus() {
@@ -47,11 +59,9 @@ class EmailNotificationService {
   get newStatus() {
     switch (this.notificationType) {
       case 'bounce':
-        return 'bounced';
+        return Recipient.statuses.bounced;
       case 'complaint':
-        return 'complained';
-      case 'delivery':
-        return 'delivered';
+        return Recipient.statuses.complaint;
       default:
         return null;
     }

@@ -28,6 +28,7 @@
     "SENT_EMAILS_TOPIC_ARN": "${sentEmailsTopicARN}",
     "SENT_EMAILS_TABLE": "$${sentEmailsTable}",
     "REPORTS_TABLE": "$${reportsTable}",
+    "RECIPIENTS_TABLE": "$${recipientsTable}",
     "DEBUG": "true"
   },
   "vpc": {
