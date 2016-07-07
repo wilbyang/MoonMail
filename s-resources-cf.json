@@ -257,7 +257,7 @@
     },
     "LinksTable": {
       "Type": "AWS::DynamoDB::Table",
-      "DeletionPolicy": "Delete",
+      "DeletionPolicy": "Retain",
       "Properties": {
         "AttributeDefinitions": [
           {
@@ -280,7 +280,7 @@
     },
     "SentEmailsTable": {
       "Type": "AWS::DynamoDB::Table",
-      "DeletionPolicy": "Delete",
+      "DeletionPolicy": "Retain",
       "Properties": {
         "AttributeDefinitions": [
           {
@@ -306,7 +306,7 @@
     },
     "ReportsTable": {
       "Type": "AWS::DynamoDB::Table",
-      "DeletionPolicy": "Delete",
+      "DeletionPolicy": "Retain",
       "Properties": {
         "AttributeDefinitions": [
           {
@@ -329,7 +329,7 @@
     },
     "CampaignsTable": {
       "Type": "AWS::DynamoDB::Table",
-      "DeletionPolicy": "Delete",
+      "DeletionPolicy": "Retain",
       "Properties": {
         "AttributeDefinitions": [
           {
@@ -380,35 +380,27 @@
         "TableName": "$${campaignsTable}"
       }
     },
-    "SendersTable": {
+    "UsersTable": {
       "Type": "AWS::DynamoDB::Table",
-      "DeletionPolicy": "Delete",
+      "DeletionPolicy": "Retain",
       "Properties": {
         "AttributeDefinitions": [
           {
             "AttributeName": "id",
             "AttributeType": "S"
-          },
-          {
-            "AttributeName": "userId",
-            "AttributeType": "S"
           }
         ],
         "KeySchema": [
           {
-            "AttributeName": "userId",
-            "KeyType": "HASH"
-          },
-          {
             "AttributeName": "id",
-            "KeyType": "RANGE"
+            "KeyType": "HASH"
           }
         ],
         "ProvisionedThroughput": {
           "ReadCapacityUnits": "${defaultRCU}",
           "WriteCapacityUnits": "${defaultWCU}"
         },
-        "TableName": "$${sendersTable}"
+        "TableName": "$${usersTable}"
       }
     },
     "OpensStream": {
@@ -425,7 +417,7 @@
     },
     "RecipientsTable": {
       "Type": "AWS::DynamoDB::Table",
-      "DeletionPolicy": "Delete",
+      "DeletionPolicy": "Retain",
       "Properties": {
         "AttributeDefinitions": [
           {
@@ -459,7 +451,7 @@
     },
     "ListsTable": {
       "Type": "AWS::DynamoDB::Table",
-      "DeletionPolicy": "Delete",
+      "DeletionPolicy": "Retain",
       "Properties": {
         "AttributeDefinitions": [
           {
