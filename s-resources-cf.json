@@ -388,20 +388,12 @@
           {
             "AttributeName": "id",
             "AttributeType": "S"
-          },
-          {
-            "AttributeName": "userId",
-            "AttributeType": "S"
           }
         ],
         "KeySchema": [
           {
-            "AttributeName": "userId",
-            "KeyType": "HASH"
-          },
-          {
             "AttributeName": "id",
-            "KeyType": "RANGE"
+            "KeyType": "HASH"
           }
         ],
         "ProvisionedThroughput": {
