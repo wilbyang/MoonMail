@@ -196,6 +196,12 @@
         "TopicName": "$${attachRecipientsTopic}"
       }
     },
+    "AttachListRecipientsTopic": {
+      "Type": "AWS::SNS::Topic",
+      "Properties": {
+        "TopicName": "$${attachListRecipientsTopic}"
+      }
+    },
     "AttachRecipientsCountTopic": {
       "Type": "AWS::SNS::Topic",
       "Properties": {
@@ -608,6 +614,12 @@
       "Description": "ARN of the AttachRecipients SNS topic",
       "Value": {
         "Ref": "AttachRecipientsTopic"
+      }
+    },
+    "AttachListRecipientsTopicARN": {
+      "Description": "ARN of the AttachListRecipients SNS topic",
+      "Value": {
+        "Ref": "AttachListRecipientsTopic"
       }
     },
     "AttachSenderTopicARN": {
