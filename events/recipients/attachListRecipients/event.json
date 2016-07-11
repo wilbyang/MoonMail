@@ -1,0 +1,13 @@
+{
+  "Records": [
+    {
+      "EventSource": "aws:sns",
+      "EventVersion": "1.0",
+      "Sns": {
+        "Type": "Notification",
+        "Subject": "SomeSubject",
+        "Message": "{\"userId\":\"google-oauth2|113373534076241986701\",\"campaign\":{\"id\":\"some_campaign_id\",\"body\":\"Hi {{ name }}, this is the body of the email\",\"subject\":\"Hi {{ name }} {{ surname }}\",\"listIds\":[\"ciqhrm8q5000001qjmarn9dln\"]}, \"listId\":\"ciqhrm8q5000001qjmarn9dln\"}"
+      }
+    }
+  ]
+}

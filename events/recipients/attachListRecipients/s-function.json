@@ -1,10 +1,10 @@
 {
-  "name": "attachRecipients",
+  "name": "attachListRecipients",
   "runtime": "babel",
   "description": "Serverless Lambda function for project: MoonMail-v2",
   "customName": false,
   "customRole": false,
-  "handler": "recipients/attachRecipients/handler.default",
+  "handler": "recipients/attachListRecipients/handler.default",
   "timeout": 300,
   "memorySize": 1536,
   "authorizer": {},
@@ -14,10 +14,10 @@
   "endpoints": [],
   "events": [
     {
-      "name": "attach-recipients-topic",
+      "name": "attach-list-recipients-topic",
       "type": "sns",
       "config": {
-        "topicName": "$${attachRecipientsTopic}"
+        "topicName": "$${attachListRecipientsTopic}"
       }
     }
   ],
@@ -25,9 +25,7 @@
     "SERVERLESS_PROJECT": "${project}",
     "SERVERLESS_STAGE": "${stage}",
     "SERVERLESS_REGION": "${region}",
-    "ATTACH_LIST_RECIPIENTS_TOPIC_ARN": "${attachListRecipientsTopicARN}",
-    "SEND_EMAILS_TOPIC_ARN": "${sendEmailsTopicARN}",
-    "UPDATE_CAMPAIGN_TOPIC_ARN": "${updateCampaignTopicARN}",
+    "PRECOMPILE_EMAIL_TOPIC_ARN": "${precompileEmailTopicARN}",
     "RECIPIENTS_TABLE": "$${recipientsTable}",
     "DEBUG": "true"
   },
