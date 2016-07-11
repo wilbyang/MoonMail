@@ -51,7 +51,7 @@ describe('DeliverCampaignService', () => {
     context('when the campaign is not ready to be sent', () => {
       before(() => {
         sinon.stub(Campaign, 'get').resolves(nonReadyCampaign);
-        deliverCampaignService = new DeliverCampaignService(snsClient, {campaignId, userId});
+        deliverCampaignService = new DeliverCampaignService(snsClient, {campaignId, userId, userPlan: 'plan'});
       });
 
       it('rejects the promise', done => {
@@ -67,7 +67,7 @@ describe('DeliverCampaignService', () => {
     context('when only campaign id and user id were provided', () => {
       before(() => {
         sinon.stub(Campaign, 'get').resolves(campaign);
-        deliverCampaignService = new DeliverCampaignService(snsClient, {campaignId, userId});
+        deliverCampaignService = new DeliverCampaignService(snsClient, {campaignId, userId, userPlan: 'plan'});
         sinon.stub(deliverCampaignService, '_updateCampaignStatus').resolves(true);
       });
 
@@ -98,7 +98,7 @@ describe('DeliverCampaignService', () => {
     context('when a campaign object was also provided', () => {
       before(() => {
         sinon.stub(Campaign, 'update').resolves(updatedCampaign);
-        deliverCampaignService = new DeliverCampaignService(snsClient, {campaign, campaignId, userId});
+        deliverCampaignService = new DeliverCampaignService(snsClient, {campaign, campaignId, userId, userPlan: 'plan'});
         sinon.stub(deliverCampaignService, '_updateCampaignStatus').resolves(true);
       });
 
