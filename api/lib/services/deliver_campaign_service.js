@@ -11,7 +11,7 @@ class DeliverCampaignService {
     this.campaign = campaign;
     this.campaignId = campaignId;
     this.userId = userId;
-    this.userPlan = userPlan;
+    this.userPlan = userPlan || 'free';
     this.sentCampaignsInMonth = 0;
     this.attachRecipientsCountTopicArn = process.env.ATTACH_RECIPIENTS_COUNT_TOPIC_ARN;
     this.updateCampaignStatusTopicArn = process.env.ATTACH_RECIPIENTS_COUNT_TOPIC_ARN;
