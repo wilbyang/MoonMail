@@ -15,7 +15,7 @@ class AttachRecipientsService {
     debug('= AttachRecipientsService.attachAllRecipients', this.listIds);
     const attachListPromises = this.listIds.map(listId => this._notifyAttachListRecipients(this._buildAttachListRecipientsMessage(listId)));
     return Promise.all(attachListPromises)
-      .then(() => this._wait())
+      .then(() => this._wait(5000))
       .then(() => this._notifyToUpdateCampaignStatus())
       .then(() => this._notifyToSendEmails());
   }
