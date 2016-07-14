@@ -67,7 +67,7 @@ class Email {
                       <a href="${unsubscribeUrl}" style="color:rgb(64,64,64)!important" target="_blank">Unsubscribe from this list</a>
                       <br />
                       <a href="https://moonmail.io" target="_blank">
-                        <img src="http://new.moonmail.io/wp-content/uploads/2016/05/Moon-logo-black-e1463485265510.png" border="0" alt="Email Marketing Powered by MoonMail" title="MoonMail Email Marketing" width="130" height="28" />
+                        <img src="https://s3-eu-west-1.amazonaws.com/static.moonmail.prod.eu-west-1/moonmail-logo.png" border="0" alt="Email Marketing Powered by MoonMail" title="MoonMail Email Marketing" width="130" height="28" />
                       </a>
                     </td>
                   </tr>

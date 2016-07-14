@@ -56,7 +56,8 @@ class PrecompileEmailService {
   }
 
   _needsFooter(emailParams) {
-    return (emailParams.userPlan === 'free');
+    const userPlan = emailParams.userPlan;
+    return (!userPlan) || (userPlan === 'free') || (userPlan === 'staff');
   }
 }
 
