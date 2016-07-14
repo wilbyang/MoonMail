@@ -55,12 +55,14 @@ describe('AttachRecipientsService', () => {
         expect(firstCall).to.include({ sender });
         expect(firstCall).to.include({ campaign });
         expect(firstCall).to.include({ userId });
+        expect(firstCall).to.include({ userPlan });
         expect(firstCall).to.include({ listId: listIds[0] });
 
         const lastCall = service._notifyAttachListRecipients.lastCall.args[0];
         expect(lastCall).to.include({ sender });
         expect(lastCall).to.include({ campaign });
         expect(lastCall).to.include({ userId });
+        expect(lastCall).to.include({ userPlan });
         expect(lastCall).to.include({ listId: listIds[1] });
 
         expect(service._notifyToUpdateCampaignStatus).to.have.been.calledOnce;

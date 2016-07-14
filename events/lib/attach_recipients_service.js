@@ -25,6 +25,7 @@ class AttachRecipientsService {
       sender: this.campaignMessage.sender,
       campaign: this.campaignMessage.campaign,
       userId: this.campaignMessage.userId,
+      userPlan: this.campaignMessage.userPlan || 'free',
       listId
     };
   }
