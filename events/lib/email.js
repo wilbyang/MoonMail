@@ -66,7 +66,7 @@ class Email {
                       <a href="mailto:${this.to}" style="color:rgb(64,64,64)!important" target="_blank">${this.to}</a><span>&nbsp;|&nbsp;</span>
                       <a href="${unsubscribeUrl}" style="color:rgb(64,64,64)!important" target="_blank">Unsubscribe from this list</a>
                       <br />
-                      <a href="https://moonmail.io" target="_blank">
+                      <a href="https://moonmail.io/?utm_source=newsletter&utm_medium=moonmail-user&utm_campaign=user-campaigns" target="_blank">
                         <img src="https://s3-eu-west-1.amazonaws.com/static.moonmail.prod.eu-west-1/moonmail-logo.png" border="0" alt="Email Marketing Powered by MoonMail" title="MoonMail Email Marketing" width="130" height="28" />
                       </a>
                     </td>
