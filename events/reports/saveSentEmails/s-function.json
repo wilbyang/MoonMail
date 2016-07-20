@@ -25,7 +25,6 @@
     "SERVERLESS_PROJECT": "${project}",
     "SERVERLESS_STAGE": "${stage}",
     "SERVERLESS_REGION": "${region}",
-    "DEBUG": "true",
     "SENT_EMAILS_TABLE": "$${sentEmailsTable}"
   },
   "vpc": {

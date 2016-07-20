@@ -5,6 +5,7 @@ const chaiAsPromised = require('chai-as-promised');
 const chaiThings = require('chai-things');
 const expect = chai.expect;
 import * as sinon from 'sinon';
+import * as sinonAsPromised from 'sinon-as-promised';
 const sinonChai = require('sinon-chai');
 const awsMock = require('aws-sdk-mock');
 const AWS = require('aws-sdk');
@@ -29,7 +30,6 @@ describe('SendEmailService', () => {
   let lambdaClient;
 
   before(() => {
-    awsMock.mock('SES', 'sendEmail', { MessageId: 'some_message_id' });
     awsMock.mock('SQS', 'receiveMessage', sqsMessages);
     awsMock.mock('SQS', 'deleteMessage', { ResponseMetadata: { RequestId: 'e21774f2-6974-5d8b-adb2-3ba82afacdfc' } });
     sqsClient = new AWS.SQS();
@@ -49,6 +49,7 @@ describe('SendEmailService', () => {
 
       before(() => {
         senderService = new SendEmailService(queue, null, contextStub);
+        awsMock.mock('SES', 'sendEmail', { MessageId: 'some_message_id' });
       });
 
       it('returns the sent emails message handles', (done) => {
@@ -69,7 +70,7 @@ describe('SendEmailService', () => {
             expect(sentEmail).to.have.property('status');
           }
           done();
-        });
+        }).catch(done);
       });
 
       it('delivers all the emails', (done) => {
@@ -79,6 +80,82 @@ describe('SendEmailService', () => {
           senderService.deliver.restore();
           done();
         });
+      });
+
+      context('when the sending rate is exceeded', () => {
+        before(() => {
+          sinon.stub(senderService, 'deliver').rejects({code: 'Throttling', message: 'Maximum sending rate exceeded'});
+        });
+
+        it('should leave the message in the queue', done => {
+          senderService.sendBatch().then(() => {
+            const emailsToDelete = JSON.parse(senderService.snsClient.publish.lastCall.args[0].Message);
+            expect(emailsToDelete.length).to.equal(0);
+            done();
+          });
+        });
+
+        after(() => senderService.deliver.restore());
+      });
+
+      context('when the message is rejected', () => {
+        before(() => {
+          const deliverStub = sinon.stub(senderService, 'deliver');
+          deliverStub
+            .onFirstCall().resolves({ MessageId: 'some_message_id' })
+            .onSecondCall().rejects({code: 'MessageRejected'});
+        });
+
+        it('should stop the execution', done => {
+          senderService.sendBatch().catch(err => {
+            expect(err).to.deep.equal({code: 'MessageRejected'});
+            const emailsToDelete = JSON.parse(senderService.snsClient.publish.lastCall.args[0].Message);
+            expect(emailsToDelete.length).to.equal(1);
+            done();
+          });
+        });
+
+        after(() => senderService.deliver.restore());
+      });
+
+      context('when the daily quota is exceeded', () => {
+        before(() => {
+          sinon.stub(senderService, 'deliver')
+            .onFirstCall().resolves({ MessageId: 'some_message_id' })
+            .onSecondCall().rejects({code: 'Throttling', message: 'Daily message quota exceeded'});
+        });
+
+        it('should stop the execution', done => {
+          senderService.sendBatch().catch(err => {
+            expect(err).to.have.property('code', 'Throttling');
+            const emailsToDelete = JSON.parse(senderService.snsClient.publish.lastCall.args[0].Message);
+            expect(emailsToDelete.length).to.equal(1);
+            done();
+          });
+        });
+
+        after(() => senderService.deliver.restore());
+      });
+
+      context('when an unexpected error occurs', () => {
+        before(() => {
+          sinon.stub(senderService, 'deliver').rejects({code: 'SomethingUnexpected'});
+        });
+
+        it('should delete the message from the queue', done => {
+          senderService.sendBatch().then(emailsToDelete => {
+            const emailsToSave = JSON.parse(senderService.snsClient.publish.lastCall.args[0].Message);
+            expect(emailsToSave.length).to.equal(0);
+            expect(emailsToDelete.length).to.equal(emailHandles.length);
+            done();
+          });
+        });
+
+        after(() => senderService.deliver.restore());
+      });
+
+      after(() => {
+        awsMock.restore('SES');
       });
     });
   });
@@ -94,6 +171,7 @@ describe('SendEmailService', () => {
 
   describe('#deliver()', () => {
     before(() => {
+      awsMock.mock('SES', 'sendEmail', { MessageId: 'some_message_id' });
       const sqsMessage = sqsMessages.Messages[0];
       email = new EnqueuedEmail(JSON.parse(sqsMessage.Body), sqsMessage.ReceiptHandle);
     });
@@ -103,10 +181,13 @@ describe('SendEmailService', () => {
       senderService.setEmailClient(email);
       expect(senderService.deliver(email)).to.eventually.have.keys('MessageId').notify(done);
     });
+
+    after(() => {
+      awsMock.restore('SES');
+    });
   });
 
   after(() => {
-    awsMock.restore('SES');
     awsMock.restore('SQS');
     awsMock.restore('SNS');
     awsMock.restore('Lambda');
