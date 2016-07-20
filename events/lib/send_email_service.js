@@ -80,17 +80,48 @@ class SendEmailService {
                 });
                 sentEmails.push(email.toSentEmail(result.MessageId));
                 callback();
-              }).catch(() => callback());
+              }).catch(err => {
+                debug('= SendEmailService.sendBatch', 'Error', err);
+                if (this._isAbortError(err)) {
+                  debug('= SendEmailService.sendBatch', 'Aborting...');
+                  this._publishSentEmails(sentEmails, () => reject(err));
+                } else if (this._isRetryableError(err)) {
+                  debug('= SendEmailService.sendBatch', 'Retry');
+                  callback();
+                } else {
+                  debug('= SendEmailService.sendBatch', 'Removing from queue');
+                  sentEmailsHandles.push({
+                    ReceiptHandle: email.receiptHandle,
+                    Id: email.messageId
+                  });
+                  callback();
+                }
+              });
           }, () => {
-            const snsParams = {
-              Message: JSON.stringify(sentEmails),
-              TopicArn: process.env.SENT_EMAILS_TOPIC_ARN
-            };
-            this.snsClient.publish(snsParams, () => resolve(sentEmailsHandles));
+            this._publishSentEmails(sentEmails, () => resolve(sentEmailsHandles));
           });
         })
         .catch(() => debug('= SendEmailService.sendBatch', `Sent ${this.counter} emails so far`));
     });
+  }
+
+  _publishSentEmails(sentEmails, callback) {
+    const snsParams = {
+      Message: JSON.stringify(sentEmails),
+      TopicArn: process.env.SENT_EMAILS_TOPIC_ARN
+    };
+    return this.snsClient.publish(snsParams, callback);
+  }
+
+  _isAbortError(error) {
+    debug('= SendEmailService._isAbortError', error);
+    return error.code && error.code === 'MessageRejected' ||
+      (error.code === 'Throttling' && error.message === 'Daily message quota exceeded');
+  }
+
+  _isRetryableError(error) {
+    debug('= SendEmailService._isRetryableError', error);
+    return error.code && error.code === 'Throttling' && error.message === 'Daily message quota exceeded';
   }
 
   deleteBatch(batch) {

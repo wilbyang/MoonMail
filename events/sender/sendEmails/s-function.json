@@ -36,7 +36,6 @@
     "SERVERLESS_PROJECT": "${project}",
     "SERVERLESS_STAGE": "${stage}",
     "SERVERLESS_REGION": "${region}",
-    "SENT_EMAILS_TOPIC_ARN": "${sentEmailsTopicARN}",
-    "DEBUG": "true"
+    "SENT_EMAILS_TOPIC_ARN": "${sentEmailsTopicARN}"
   }
 }

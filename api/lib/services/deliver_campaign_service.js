@@ -13,6 +13,7 @@ class DeliverCampaignService {
     this.userId = userId;
     this.userPlan = userPlan || 'free';
     this.sentCampaignsInMonth = 0;
+    this.sentCampaignsLastDay = 0;
     this.attachRecipientsCountTopicArn = process.env.ATTACH_RECIPIENTS_COUNT_TOPIC_ARN;
     this.updateCampaignStatusTopicArn = process.env.ATTACH_RECIPIENTS_COUNT_TOPIC_ARN;
   }
@@ -28,13 +29,19 @@ class DeliverCampaignService {
   }
 
   _checkUserQuota() {
+    debug('= DeliverCampaignService._checkUserQuota', this.userId);
+    return this._checkMonthlyQuota()
+      .then(() => this._checkDailyQuota());
+  }
+
+  _checkMonthlyQuota() {
     return new Promise((resolve, reject) => {
-      debug('= DeliverCampaignService._checkUserQuota', this.userId);
+      debug('= DeliverCampaignService._checMonthlyQuota', this.userId);
       if (this.maxMonthlyCampaigns) {
-        debug('= DeliverCampaignService._checkUserQuota', 'User has a limit of campaigns');
+        debug('= DeliverCampaignService._checMonthlyQuota', 'User has a limit of campaigns');
         Campaign.sentLastMonth(this.userId)
           .then(count => {
-            debug('= DeliverCampaignService._checkUserQuota', count);
+            debug('= DeliverCampaignService._checMonthlyQuota', count);
             if (count < this.maxMonthlyCampaigns) {
               this.sentCampaignsInMonth = count;
               resolve(true);
@@ -43,7 +50,29 @@ class DeliverCampaignService {
             }
           });
       } else {
-        debug('= DeliverCampaignService._checkUserQuota', 'User has no limit of campaigns');
+        debug('= DeliverCampaignService._checMonthlyQuota', 'User has no limit of campaigns');
+        resolve(true);
+      }
+    });
+  }
+
+  _checkDailyQuota() {
+    return new Promise((resolve, reject) => {
+      debug('= DeliverCampaignService._checkDailyQuota', this.userId);
+      if (this.maxDailyCampaigns) {
+        debug('= DeliverCampaignService._checkDailyQuota', 'User has a limit of campaigns');
+        Campaign.sentLastNDays(this.userId, 1)
+          .then(count => {
+            debug('= DeliverCampaignService._checkDailyQuota', count);
+            if (count < this.maxDailyCampaigns) {
+              this.sentCampaignsLastDay = count;
+              resolve(true);
+            } else {
+              reject(`You can send only ${this.maxDailyCampaigns} campaigns a day`);
+            }
+          });
+      } else {
+        debug('= DeliverCampaignService._checkDailyQuota', 'User has no limit of campaigns');
         resolve(true);
       }
     });
@@ -137,8 +166,14 @@ class DeliverCampaignService {
   }
 
   get maxMonthlyCampaigns() {
-    if (this.userPlan === 'free') {
+    if (!this.userPlan || this.userPlan === 'free') {
       return 5;
+    }
+  }
+
+  get maxDailyCampaigns() {
+    if (!this.userPlan || this.userPlan === 'free') {
+      return 1;
     }
   }
 }

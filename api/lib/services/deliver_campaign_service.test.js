@@ -35,7 +35,7 @@ describe('DeliverCampaignService', () => {
     context('when the user is not allowed to send more campaigns', () => {
       before(() => {
         deliverCampaignService = new DeliverCampaignService(snsClient, {campaignId, userId, userPlan: freeUserPlan});
-        sinon.stub(Campaign, 'sentLastMonth').resolves(deliverCampaignService.maxMonthlyCampaigns + 1);
+        sinon.stub(Campaign, 'sentLastNDays').resolves(deliverCampaignService.maxMonthlyCampaigns + 1);
       });
 
       it('rejects the promise', done => {
@@ -44,7 +44,23 @@ describe('DeliverCampaignService', () => {
       });
 
       after(() => {
-        Campaign.sentLastMonth.restore();
+        Campaign.sentLastNDays.restore();
+      });
+    });
+
+    context('when the user is not allowed to send more campaigns the same day', () => {
+      before(() => {
+        deliverCampaignService = new DeliverCampaignService(snsClient, {campaignId, userId, userPlan: freeUserPlan});
+        sinon.stub(Campaign, 'sentLastNDays').resolves(deliverCampaignService.maxDailyCampaigns + 1);
+      });
+
+      it('rejects the promise', done => {
+        const sendCampaignPromise = deliverCampaignService.sendCampaign();
+        expect(sendCampaignPromise).to.be.rejectedWith(`You can send only ${deliverCampaignService.maxDailyCampaigns} campaigns a day`).notify(done);
+      });
+
+      after(() => {
+        Campaign.sentLastNDays.restore();
       });
     });
 
