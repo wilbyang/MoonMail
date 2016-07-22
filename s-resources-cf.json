@@ -104,6 +104,12 @@
         ]
       }
     },
+    "EmailAdminsTopic": {
+      "Type": "AWS::SNS::Topic",
+      "Properties": {
+        "TopicName": "$${emailAdminsTopic}"
+      }
+    },
     "SendEmailsTopic": {
       "Type": "AWS::SNS::Topic",
       "Properties": {
@@ -566,6 +572,12 @@
           "FreeUsersSendEmailQueue",
           "QueueName"
         ]
+      }
+    },
+    "EmailAdminsTopicARN": {
+      "Description": "ARN of the EmailAdmins SNS topic",
+      "Value": {
+        "Ref": "EmailAdminsTopic"
       }
     },
     "PrecompileCampaignTopicARN": {

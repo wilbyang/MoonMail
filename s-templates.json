@@ -64,6 +64,7 @@
     ]
   },
   "sendEmailsTopic": "${project}-${stage}-sendEmails",
+  "emailAdminsTopic": "${project}-${stage}-emailAdmins",
   "sentEmailsTopic": "${project}-${stage}-sentEmails",
   "emailNotificationsTopic": "${project}-${stage}-emailNotifications",
   "precompileCampaignTopic": "${project}-${stage}-precompileCampaign",
