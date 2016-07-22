@@ -18,6 +18,7 @@ describe('Email', () => {
   const bodyTemplate = 'Hi {{ name }} {{ surname }}, this email is for you!';
   const bodyNoTags = 'Hey you, check this out';
   const bodyParsed = `Hi ${metadata.name} ${metadata.surname}, this email is for you!`;
+  const bodyUnsubscribe = 'Hi {{ name }} {{ surname }}, this email is for you!{{ unsubscribe_url }}';
   const subjectTemplate = 'Hi {{ name }}!';
   const subjectNoTags = 'Hey you!';
   const subjectParsed = `Hi ${metadata.name}!`;
@@ -30,10 +31,12 @@ describe('Email', () => {
   const listId = 'list-id';
   const campaignId = 'campaign-id';
   const emailWithTagsParams = Object.assign({body: bodyTemplate, subject: subjectTemplate, recipientId, listId, campaignId}, emailParams);
+  const emailUnsubscribeParams = Object.assign({body: bodyUnsubscribe, subject: subjectTemplate, recipientId, listId, campaignId}, emailParams);
   const emailNoTagsParams = Object.assign({body: bodyNoTags, subject: subjectNoTags, recipientId, listId, campaignId}, emailParams);
   const emailWithTags = new Email(emailWithTagsParams, {footer: false});
   const emailNoTags = new Email(emailNoTagsParams, {footer: false});
   const emailWithFooter = new Email(emailNoTagsParams, {footer: true});
+  const emailUnsubscribe = new Email(emailUnsubscribeParams, {footer: false});
   const footer = '<p>some footer</p>';
 
   describe('#renderBody()', () => {
@@ -53,6 +56,12 @@ describe('Email', () => {
         expect(emailWithFooter.renderBody()).to.eventually.contain(footer).notify(done);
       });
       after(() => emailWithFooter._buildFooter.restore());
+    });
+    context('when the body contains unsubscribeUrl tag', () => {
+      it('should reder the unsubscribe url', done => {
+        const unsubscribeUrl = emailWithTags._buildUnsubscribeUrl();
+        expect(emailUnsubscribe.renderBody()).to.eventually.contain(unsubscribeUrl).notify(done);
+      });
     });
   });
 
