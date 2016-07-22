@@ -13,11 +13,13 @@ chai.use(chaiAsPromised);
 chai.use(chaiCheerio);
 
 describe('LinksParser', () => {
-
   const linkUrls = ['http://example.com', 'http://anotherexample.com'];
-  const linksText = ['some link', 'another link'];
+  const unsubscribeUrl = '{{ unsubscribe_url }}';
+  const unsubscribeText = 'unsubscribe here';
+  const linksText = ['some link', 'another link', 'unsubscribe from this list'];
+  const unsubscribeLink = `<a href="${unsubscribeUrl}">${unsubscribeText}</a>`;
   const htmlLinks = [`<a href="${linkUrls[0]}">${linksText[0]}</a>`, `<a href="${linkUrls[1]}">${linksText[1]}</a>`];
-  const htmlBody = `This piece of HTML contains not only ${htmlLinks[0]} but ${htmlLinks[1]}`;
+  const htmlBody = `This piece of HTML contains not only ${htmlLinks[0]} but ${htmlLinks[1]}, and this is the unsubscribe ${unsubscribeLink}`;
   const campaignId = 'some_campaign_id';
   const linkId = 'some_link_id';
   const apiHost = 'fakeapi.com';
@@ -57,13 +59,21 @@ describe('LinksParser', () => {
         const $ = cheerio.load(result.parsedBody);
         const parsedLinks = $('a');
         parsedLinks.each((i, parsedLink) => {
-          let parsedUrl = $(parsedLink).attr('href');
-          let encodedLinkUrl = encodeURIComponent(linkUrls[i]);
-          expect(parsedUrl).to.contain(apiHost);
-          expect(parsedUrl).to.contain(encodedLinkUrl);
+          const parsedUrl = $(parsedLink).attr('href');
+          if (parsedUrl !== unsubscribeUrl) {
+            const encodedLinkUrl = encodeURIComponent(linkUrls[i]);
+            expect(parsedUrl).to.contain(apiHost);
+            expect(parsedUrl).to.contain(encodedLinkUrl);
+          }
         });
         done();
-      });
+      }).catch(done);
+    });
+    it('skips the unsubscribe_url link', done => {
+      links.parseLinks(htmlBody).then((result) => {
+        expect(result.parsedBody).to.contain(unsubscribeLink);
+        done();
+      }).catch(done);
     });
     it('returns the links data', (done) => {
       links.parseLinks(htmlBody).then((result) => {
@@ -71,8 +81,9 @@ describe('LinksParser', () => {
         const linksData = result.campaignLinks.links;
         expect(linksData).to.containOneLike({url: linkUrls[0], text: linksText[0]});
         expect(linksData).to.containOneLike({url: linkUrls[1], text: linksText[1]});
+        expect(linksData).not.to.containOneLike({url: unsubscribeUrl, text: unsubscribeText});
         done();
-      });
+      }).catch(done);
     });
   });
 });

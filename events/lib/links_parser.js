@@ -43,12 +43,14 @@ class LinksParser {
         links: {}
       };
       $('a').each((i, link) => {
-        let linkUrl = $(link).attr('href');
-        let linkText = $(link).text() || '-';
-        let linkId = cuid();
-        let clickTrackUrl = this.clicksTrackUrl(linkId, linkUrl);
-        $(link).attr('href', clickTrackUrl);
-        campaignLinks.links[linkId] = {url: linkUrl, text: linkText};
+        const linkUrl = $(link).attr('href');
+        if (!this._isUnsubscribeLink(linkUrl)) {
+          const linkText = $(link).text() || '-';
+          const linkId = cuid();
+          const clickTrackUrl = this.clicksTrackUrl(linkId, linkUrl);
+          $(link).attr('href', clickTrackUrl);
+          campaignLinks.links[linkId] = {url: linkUrl, text: linkText};
+        }
       });
       const result = {
         parsedBody: $.html(),
@@ -56,6 +58,10 @@ class LinksParser {
       };
       resolve(result);
     });
+  }
+
+  _isUnsubscribeLink(linkUrl) {
+    return linkUrl.indexOf('unsubscribe_url') > -1;
   }
 
   clicksTrackUrl(linkId, linkUrl) {
