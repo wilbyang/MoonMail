@@ -22,7 +22,9 @@ class Email {
 
   renderBody() {
     debug('= Email.renderBody', 'Rendering body with template', this.body, 'and metadata', this.metadata);
-    return liquid.parseAndRender(this.body, this.metadata)
+    const unsubscribeUrl = this._buildUnsubscribeUrl();
+    const metadata = Object.assign({}, this.metadata, {unsubscribe_url: unsubscribeUrl});
+    return liquid.parseAndRender(this.body, metadata)
       .then(parsedBody => this._appendFooter(parsedBody));
   }
 
