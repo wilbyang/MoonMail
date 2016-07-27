@@ -58,3 +58,5 @@ api/lib/auth-token-decryptor.js.bak
 
 /.vscode/settings.json
 private/
+api/lib/get_*
+api/lib/models/

@@ -88,6 +88,20 @@
   "staticDataBucket": "static.moonmail.${stage}.${region}",
   "recipientsImportBucket": "recipients.moonmail.${stage}.${region}",
   "responses": {
+    "302": {
+      "statusCode": "302",
+      "selectionPattern": "http.*",
+      "responseParameters": {
+        "method.response.header.Location" : "integration.response.body.errorMessage"
+      },
+      "responseModels": {
+        "application/json": "Empty"
+      },
+      "responseTemplates": {
+        "application/json": "$input.path('$')",
+        "application/x-www-form-urlencoded": "$input.path('$')"
+      }
+    },
     "400": {
       "statusCode": "400",
       "selectionPattern": ".*\"status\":400.*",
