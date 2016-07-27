@@ -28,6 +28,7 @@
     "eslint-config-airbnb": "^7.0.0",
     "eslint-config-react": "^1.1.1",
     "eslint-plugin-react": "^4.3.0",
+    "serverless-meta-sync": "^0.1.0",
     "serverless-runtime-babel": "0.0.6",
     "uuid": "^2.0.1"
   }

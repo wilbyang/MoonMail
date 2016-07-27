@@ -1,9 +1,15 @@
 {
   "name": "MoonMail-v2",
-  "custom": {},
+  "custom": {
+    "meta": {
+      "name": "${projectBucket}",
+      "region": "${region}"
+    }
+  },
   "plugins": [
     "serverless-runtime-babel",
-    "serverless-cors-plugin"
+    "serverless-cors-plugin",
+    "serverless-meta-sync"
   ],
   "version": "0.0.1",
   "profile": "serverless-v0.4.1",
