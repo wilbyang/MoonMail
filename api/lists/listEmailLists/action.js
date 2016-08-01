@@ -9,20 +9,16 @@ import omitEmpty from 'omit-empty';
 export function respond(event, cb) {
   debug('= listEmailLists.action', JSON.stringify(event));
   decrypt(event.authToken).then((decoded) => {
-    const options = {
-      limit: 10
-    };
-    if (event.options) {
-      Object.assign(options, omitEmpty(event.options));
-    }
-    List.allBy('userId', decoded.sub, options).then(list => {
+    let cleanOptions = omitEmpty(event.options);
+    cleanOptions.limit = cleanOptions.limit ? parseInt(cleanOptions.limit, 10) : 10;
+    List.allBy('userId', decoded.sub, cleanOptions).then(list => {
       debug('= listEmailLists.action', 'Success');
       return cb(null, list);
     })
-    .catch(e => {
-      debug('= listEmailLists.action', e);
-      return cb(ApiErrors.response(e));
-    });
+      .catch(e => {
+        debug('= listEmailLists.action', e);
+        return cb(ApiErrors.response(e));
+      });
   })
-  .catch(err => cb(ApiErrors.response(err), null));
+    .catch(err => cb(ApiErrors.response(err), null));
 }
