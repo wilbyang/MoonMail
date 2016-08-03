@@ -3,3 +3,9 @@ export default function decrypt(authToken) {
     resolve({sub: 'my-user-id', plan: 'gold'});
   });
 }
+
+export function getUserContext(userId) {
+  return new Promise((resolve) => {
+    resolve({id: 'my-user-id', plan: 'gold'});
+  });
+}
