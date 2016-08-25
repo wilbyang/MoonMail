@@ -7,7 +7,7 @@ import { expect } from 'chai';
 import * as sinon from 'sinon';
 import { PrecompileEmailService } from './precompile_email_service';
 import { Email } from './email';
-import * as emailParams from './send_email_topic_canonical_message.json';
+import * as canonicalMessage from './send_email_topic_canonical_message.json';
 const awsMock = require('aws-sdk-mock');
 const AWS = require('aws-sdk-promise');
 
@@ -15,14 +15,16 @@ chai.use(chaiAsPromised);
 chai.use(sinonChai);
 
 describe('PrecompileEmailService', () => {
-  const userApiKey = emailParams.sender.apiKey;
+  const userApiKey = canonicalMessage.sender.apiKey;
   const fakeQueueUrl = 'https://somefakeurl.com/';
   const linksServiceHost = 'fakeapi.com';
   const linksServiceUrl = `https://${linksServiceHost}/links`;
   let sqsClient;
   let precompileService;
+  let emailParams;
 
   before(() => {
+    emailParams = JSON.parse(JSON.stringify(canonicalMessage));
     sqsClient = new AWS.SQS();
     precompileService = new PrecompileEmailService(sqsClient, emailParams, linksServiceHost);
   });
@@ -35,11 +37,11 @@ describe('PrecompileEmailService', () => {
 
     it('initializes an Email object', (done) => {
       expect(precompileService.email).to.be.an.instanceOf(Email);
-      expect(precompileService.email.from).to.equal(emailParams.sender.emailAddress);
-      expect(precompileService.email.to).to.equal(emailParams.recipient.email);
-      expect(precompileService.email.body).to.equal(emailParams.campaign.body);
-      expect(precompileService.email.subject).to.equal(emailParams.campaign.subject);
-      expect(precompileService.email.metadata).to.deep.equal(emailParams.recipient.metadata);
+      expect(precompileService.email.from).to.equal(canonicalMessage.sender.emailAddress);
+      expect(precompileService.email.to).to.equal(canonicalMessage.recipient.email);
+      expect(precompileService.email.body).to.equal(canonicalMessage.campaign.body);
+      expect(precompileService.email.subject).to.equal(canonicalMessage.campaign.subject);
+      expect(precompileService.email.metadata).to.deep.equal(canonicalMessage.recipient.metadata);
       done();
     });
   });
@@ -47,14 +49,15 @@ describe('PrecompileEmailService', () => {
   describe('#composeEmail()', () => {
     it('returns an object with the SendEmail queue canonical format', (done) => {
       precompileService.composeEmail().then((composedEmail) => {
-        expect(composedEmail.userId).to.equal(emailParams.userId);
-        expect(composedEmail.sender).to.deep.equal(emailParams.sender);
-        expect(composedEmail.recipient).to.deep.equal(emailParams.recipient);
-        expect(composedEmail.campaign.id).to.equal(emailParams.campaign.id);
-        expect(composedEmail.campaign.body).to.contain(emailParams.recipient.metadata.name);
-        expect(composedEmail.campaign.subject).to.contain(emailParams.recipient.metadata.name);
+        expect(composedEmail.userId).to.equal(canonicalMessage.userId);
+        expect(composedEmail.sender).to.deep.equal(canonicalMessage.sender);
+        expect(composedEmail.campaign.id).to.equal(canonicalMessage.campaign.id);
+        expect(composedEmail.recipient).to.have.property('email', canonicalMessage.recipient.email);
+        expect(composedEmail.recipient).to.have.property('unsubscribeUrl');
+        expect(composedEmail.campaign.body).to.contain(canonicalMessage.recipient.metadata.name);
+        expect(composedEmail.campaign.subject).to.contain(canonicalMessage.recipient.metadata.name);
         done();
-      });
+      }).catch(done);
     });
   });
 
