@@ -33,6 +33,10 @@ class Email {
     return liquid.parseAndRender(this.subject, this.metadata);
   }
 
+  get unsubscribeUrl() {
+    return this._buildUnsubscribeUrl();
+  }
+
   _appendFooter(body) {
     return new Promise((resolve) => {
       if (this.options.footer) {

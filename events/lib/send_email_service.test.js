@@ -171,15 +171,20 @@ describe('SendEmailService', () => {
 
   describe('#deliver()', () => {
     before(() => {
-      awsMock.mock('SES', 'sendEmail', { MessageId: 'some_message_id' });
+      awsMock.mock('SES', 'sendRawEmail', { MessageId: 'some_message_id' });
       const sqsMessage = sqsMessages.Messages[0];
       email = new EnqueuedEmail(JSON.parse(sqsMessage.Body), sqsMessage.ReceiptHandle);
+      sinon.stub(email, 'toSesRawParams').resolves('test data');
     });
 
     it('sends the email', (done) => {
       const senderService = new SendEmailService(queue, null, contextStub);
-      senderService.setEmailClient(email);
-      expect(senderService.deliver(email)).to.eventually.have.keys('MessageId').notify(done);
+      const emailClient = senderService.setEmailClient(email);
+      senderService.deliver(email).then(res => {
+        expect(emailClient.sendRawEmail).to.have.been.calledOnce;
+        expect(emailClient.sendRawEmail).to.have.been.calledWith('test data');
+        done();
+      }).catch(done);
     });
 
     after(() => {

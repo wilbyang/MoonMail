@@ -3,10 +3,14 @@
 import * as chai from 'chai';
 const chaiAsPromised = require('chai-as-promised');
 const chaiThings = require('chai-things');
+import sinonChai from 'sinon-chai';
 import { expect } from 'chai';
 import { EnqueuedEmail } from './enqueued_email';
 import * as sqsMessages from './sqs_receive_messages_response.json';
+import * as sinon from 'sinon';
+import mailcomposer from 'mailcomposer';
 
+chai.use(sinonChai);
 chai.use(chaiAsPromised);
 chai.use(chaiThings);
 
@@ -25,6 +29,15 @@ describe('EnqueuedEmail', () => {
       expect(sesEmail).to.have.deep.property('Message.Body.Html.Data', email.message.campaign.body);
       expect(sesEmail).to.have.deep.property('Message.Subject.Data', email.message.campaign.subject);
       done();
+    });
+  });
+
+  describe('#toSesRawParams()', () => {
+    it('builds SES raw params', (done) => {
+      email.toSesRawParams().then(sesRawEmail => {
+        expect(sesRawEmail).to.have.deep.property('RawMessage.Data');
+        done();
+      }).catch(done);
     });
   });
 

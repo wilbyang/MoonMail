@@ -1,7 +1,7 @@
 'use strict';
 
 import { debug } from './index';
-
+import mailcomposer from 'mailcomposer';
 
 class EnqueuedEmail {
   constructor(message, receiptHandle, messageId) {
@@ -23,6 +23,29 @@ class EnqueuedEmail {
       },
       Source: this.message.sender.emailAddress
     };
+  }
+
+  toSesRawParams() {
+    return new Promise((resolve, reject) => {
+      const mailOptions = {
+        from: this.message.sender.emailAddress,
+        subject: this.message.campaign.subject,
+        html: this.message.campaign.body,
+        to: this.message.recipient.email,
+        headers: [{key: 'List-Unsubscribe', value: this._listUnsubscribeHeaderValue()}]
+      };
+      const mail = mailcomposer(mailOptions);
+      mail.build((err, message) => {
+        if (err) return reject(err);
+        else return resolve({RawMessage: {Data: message}});
+      });
+    });
+  }
+
+  _listUnsubscribeHeaderValue() {
+    if (this.message.recipient.unsubscribeUrl) {
+      return `<${this.message.recipient.unsubscribeUrl}>`;
+    }
   }
 
   toSentEmail(messageId) {

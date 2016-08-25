@@ -131,8 +131,13 @@ class SendEmailService {
 
   deliver(enqueuedEmail) {
     debug('= SendEmailService.deliver', 'Sending email', enqueuedEmail.receiptHandle);
+    return enqueuedEmail.toSesRawParams()
+      .then(params => this._deliverRawEmail(params));
+  }
+
+  _deliverRawEmail(params) {
     return new Promise((resolve, reject) => {
-      this.emailClient.sendEmail(enqueuedEmail.toSesParams(), (err, data) => {
+      this.emailClient.sendRawEmail(params, (err, data) => {
         if (err) {
           debug('= SendEmailService.deliver', 'Error sending email', err, err.stack);
           reject(err);

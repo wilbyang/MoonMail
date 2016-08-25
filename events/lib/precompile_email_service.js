@@ -33,6 +33,7 @@ class PrecompileEmailService {
           const parsedSubject = values[1];
           let composedEmail = Object.assign({}, this.emailParams);
           Object.assign(composedEmail.campaign, { subject: parsedSubject, body: parsedBody});
+          Object.assign(composedEmail.recipient, { unsubscribeUrl: this.email.unsubscribeUrl});
           debug('= PrecompileEmailService.composeEmail', 'Composed email', composedEmail);
           resolve(composedEmail);
         })
