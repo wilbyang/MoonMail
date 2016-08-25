@@ -61,7 +61,7 @@ class LinksParser {
   }
 
   _isUnsubscribeLink(linkUrl) {
-    return linkUrl.indexOf('unsubscribe_url') > -1;
+    return linkUrl && linkUrl.indexOf('unsubscribe_url') > -1;
   }
 
   clicksTrackUrl(linkId, linkUrl) {
