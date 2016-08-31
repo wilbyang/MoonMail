@@ -15,7 +15,7 @@ class DeliverCampaignService {
     this.sentCampaignsInMonth = 0;
     this.sentCampaignsLastDay = 0;
     this.attachRecipientsCountTopicArn = process.env.ATTACH_RECIPIENTS_COUNT_TOPIC_ARN;
-    this.updateCampaignStatusTopicArn = process.env.ATTACH_RECIPIENTS_COUNT_TOPIC_ARN;
+    this.updateCampaignStatusTopicArn = process.env.UPDATE_CAMPAIGN_TOPIC_ARN;
   }
 
   sendCampaign() {
