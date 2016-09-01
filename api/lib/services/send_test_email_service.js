@@ -58,7 +58,7 @@ class SendTestEmailService {
         },
         Message: {
           Body: {Html: {Data: this.body}},
-          Subject: {Data: `[TEST] ${this.subject}`}
+          Subject: {Data: `[MoonMail-TEST] ${this.subject}`}
         }
       });
     });

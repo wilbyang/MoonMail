@@ -33,7 +33,7 @@ describe('SendTestEmailService', () => {
           expect(sesArgs).to.have.property('Source', fromEmail);
           expect(sesArgs).to.have.deep.property('Destination.ToAddresses', emails);
           expect(sesArgs).to.have.deep.property('Message.Body.Html.Data', body);
-          expect(sesArgs).to.have.deep.property('Message.Subject.Data', `[TEST] ${subject}`);
+          expect(sesArgs).to.have.deep.property('Message.Subject.Data', `[MoonMail-TEST] ${subject}`);
           done();
         })
         .catch(err => done(err));
