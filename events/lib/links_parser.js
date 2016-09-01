@@ -44,12 +44,14 @@ class LinksParser {
       };
       $('a').each((i, link) => {
         const linkUrl = $(link).attr('href');
-        if (!this._isUnsubscribeLink(linkUrl)) {
-          const linkText = $(link).text() || '-';
-          const linkId = cuid();
-          const clickTrackUrl = this.clicksTrackUrl(linkId, linkUrl);
-          $(link).attr('href', clickTrackUrl);
-          campaignLinks.links[linkId] = {url: linkUrl, text: linkText};
+        if (linkUrl) {
+          if (!this._isUnsubscribeLink(linkUrl)) {
+            const linkText = $(link).text() || '-';
+            const linkId = cuid();
+            const clickTrackUrl = this.clicksTrackUrl(linkId, linkUrl);
+            $(link).attr('href', clickTrackUrl);
+            campaignLinks.links[linkId] = {url: linkUrl, text: linkText};
+          }
         }
       });
       const result = {
