@@ -355,6 +355,10 @@
           {
             "AttributeName": "sentAt",
             "AttributeType": "N"
+          },
+          {
+            "AttributeName": "scheduledAt",
+            "AttributeType": "N"
           }
         ],
         "KeySchema": [
@@ -365,6 +369,23 @@
           {
             "AttributeName": "id",
             "KeyType": "RANGE"
+          }
+        ],
+        "GlobalSecondaryIndexes": [
+          {
+            "IndexName" : "$${campaignsScheduledAtIndex}",
+            "KeySchema" : [{
+              "AttributeName": "scheduledAt",
+              "KeyType": "HASH"
+            }],
+            "Projection" : {
+              "NonKeyAttributes" : ["sentAt", "status"],
+              "ProjectionType": "INCLUDE"
+            },
+            "ProvisionedThroughput" : {
+              "ReadCapacityUnits": "${scheduledAtIndexRCU}",
+              "WriteCapacityUnits": "${scheduledAtIndexWCU}"
+            }
           }
         ],
         "LocalSecondaryIndexes": [
