@@ -13,7 +13,7 @@ export function respond(event, cb) {
       if (event.options) {
         Object.assign(options, event.options);
       }
-      Link.allBy('id', event.campaignId, options).then(links => {
+      Link.get(event.campaignId, null, options).then(links => {
         debug('= getLinks.action', 'Success');
         return cb(null, links);
       })

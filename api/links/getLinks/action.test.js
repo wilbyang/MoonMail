@@ -20,11 +20,11 @@ describe('getLinks', () => {
         url: 'linkurl.com'
       }
     }
-  }
+  };
 
   describe('#respond()', () => {
     beforeEach(() => {
-      sinon.stub(Link, 'allBy').resolves(links);
+      sinon.stub(Link, 'get').resolves(links);
     });
 
     context('when the event is valid', () => {
@@ -34,9 +34,8 @@ describe('getLinks', () => {
 
       it('gets the links', (done) => {
         respond(event, (err, result) => {
-          const args = Link.allBy.lastCall.args;
-          expect(args[0]).to.equal('id');
-          expect(args[1]).to.equal(campaignId);
+          const args = Link.get.lastCall.args;
+          expect(args[0]).to.equal(campaignId);
           expect(err).to.not.exist;
           expect(result).to.deep.equal(links);
           done();
@@ -56,7 +55,7 @@ describe('getLinks', () => {
     });
 
     afterEach(() => {
-      Link.allBy.restore();
+      Link.get.restore();
     });
   });
 });
