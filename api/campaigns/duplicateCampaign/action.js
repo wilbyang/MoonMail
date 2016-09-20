@@ -16,13 +16,13 @@ export function respond(event, cb) {
         campaign.userId = decoded.sub;
         campaign.status = 'draft';
         campaign.name = `${existingCampaign.name} copy`;
-
-        Campaign.save(campaign).then(() => {
-          return cb(null, campaign);
-        }).catch(e => {
-          debug(e);
-          return cb(ApiErrors.response(e));
-        });
+        delete campaign.sentAt;
+        Campaign.save(campaign)
+          .then(() => cb(null, campaign))
+          .catch(e => {
+            debug(e);
+            return cb(ApiErrors.response(e));
+          });
       }).catch(e => {
         debug('= getCampaign.action', 'Error getting campaign', e);
         return cb(ApiErrors.response(e));
