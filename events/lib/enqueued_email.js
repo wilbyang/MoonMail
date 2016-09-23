@@ -21,14 +21,14 @@ class EnqueuedEmail {
         },
         Subject: { Data: this.message.campaign.subject }
       },
-      Source: this.message.sender.emailAddress
+      Source: this.composeFromPart()
     };
   }
 
   toSesRawParams() {
     return new Promise((resolve, reject) => {
       const mailOptions = {
-        from: this.message.sender.emailAddress,
+        from: this.composeFromPart(),
         subject: this.message.campaign.subject,
         html: this.message.campaign.body,
         to: this.message.recipient.email,
@@ -57,6 +57,15 @@ class EnqueuedEmail {
       listId: this.message.recipient.listId,
       status: 'sent'
     };
+  }
+
+  composeFromPart() {
+    const name = this.message.sender.fromName;
+    const email = this.message.sender.emailAddress;
+    if (name) {
+      return `"${name}" <${email}>`;
+    }
+    return email;
   }
 
 }
