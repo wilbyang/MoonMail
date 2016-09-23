@@ -16,15 +16,17 @@ chai.use(chaiThings);
 
 describe('EnqueuedEmail', () => {
   let email;
+  let expectedFrom;
 
   before(() => {
     email = new EnqueuedEmail(JSON.parse(sqsMessages.Messages[0].Body), 'some_handler');
+    expectedFrom = `"${email.message.sender.fromName}" <${email.message.sender.emailAddress}>`;
   });
 
   describe('#toSesParams()', () => {
     it('builds SES params', (done) => {
       const sesEmail = email.toSesParams();
-      expect(sesEmail).to.have.property('Source', email.message.sender.emailAddress);
+      expect(sesEmail).to.have.property('Source', expectedFrom);
       expect(sesEmail).to.have.deep.property('Destination.ToAddresses');
       expect(sesEmail).to.have.deep.property('Message.Body.Html.Data', email.message.campaign.body);
       expect(sesEmail).to.have.deep.property('Message.Subject.Data', email.message.campaign.subject);
@@ -52,6 +54,12 @@ describe('EnqueuedEmail', () => {
       expect(sesEmail).to.have.property('listId', email.message.recipient.listId);
       expect(sesEmail).to.have.property('status', 'sent');
       done();
+    });
+  });
+
+  describe('#composeFromPart()', () => {
+    it('builds the from part using fromName and emailAddress', () => {
+      expect(email.composeFromPart()).to.eq(expectedFrom);
     });
   });
 });
