@@ -11,7 +11,7 @@
   },
   "scripts": {
     "install-all": "npm install --loglevel error && npm install ./events --prefix ./events --loglevel error && npm install ./api --prefix ./api --loglevel error",
-    "remove-all": "echo not implemented"
+    "remove-all": "rm -rf node_modules && rm -rf ./events/node_modules && rm -rf ./api/node_modules"
   },
   "dependencies": {
     "babelify": "^7.2.0",
