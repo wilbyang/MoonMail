@@ -9,6 +9,10 @@
     "type": "git",
     "url": "git://github.com/"
   },
+  "scripts": {
+    "install-all": "npm install --loglevel error && npm install ./events --prefix ./events --loglevel error && npm install ./api --prefix ./api --loglevel error",
+    "remove-all": "rm -rf node_modules && rm -rf ./events/node_modules && rm -rf ./api/node_modules"
+  },
   "dependencies": {
     "babelify": "^7.2.0",
     "base64-url": "^1.2.2",
