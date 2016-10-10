@@ -22,6 +22,14 @@ export default (event, context) => {
     } else {
       debug('= linkClick.handler', 'Message successfully pushed to buffer');
     }
-    return context.done(null, {url: event.linkUrl});
+    return context.done(null, {url: addHttp(event.linkUrl)});
   });
 };
+
+function addHttp(url) {
+  let uri = url;
+  if (!/^(?:f|ht)tps?\:\/\//.test(uri)) {
+    uri = `http://${uri}`;
+  }
+  return uri;
+}
