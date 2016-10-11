@@ -121,7 +121,7 @@ class SendEmailService {
 
   _isRetryableError(error) {
     debug('= SendEmailService._isRetryableError', error);
-    return error.code && error.code === 'Throttling' && error.message === 'Daily message quota exceeded';
+    return error.code && error.code === 'Throttling' && error.message === 'Maximum sending rate exceeded';
   }
 
   deleteBatch(batch) {
