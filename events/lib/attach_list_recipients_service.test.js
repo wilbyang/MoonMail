@@ -60,6 +60,7 @@ describe('AttachListRecipientsService', () => {
     awsMock.mock('Lambda', 'invoke', 'ok');
     lambdaClient = new AWS.Lambda();
     snsClient = new AWS.SNS();
+    sinon.stub(AttachListRecipientsService, '_buildRedisClient').returns(true);
     service = new AttachListRecipientsService(snsClient, attachListRecipientsMessage, lambdaClient, lambdaContext);
     nonPaginatedList = listIds[0];
     paginatedList = listIds[1];
@@ -67,6 +68,10 @@ describe('AttachListRecipientsService', () => {
     sinon.stub(Recipient, 'allBy')
       .withArgs('listId', nonPaginatedList).resolves(dbResponse)
       .withArgs('listId', paginatedList).resolves(paginatedDbResponse);
+
+    // Force not to use cache in the suite
+    sinon.stub(service, '_disconnectRedis').returns(true);
+    sinon.stub(service, '_cache').resolves(true); // Always execute code, simulate a cache miss
   });
 
   describe('#attachRecipientsList', () => {
@@ -214,14 +219,44 @@ describe('AttachListRecipientsService', () => {
   });
 
   describe('#_publishRecipients()', () => {
-    it('publishes the campaign message with the recipient info for every recipient', done => {
-      const publishStub = sinon.stub(service, '_publishRecipient').resolves(true);
-      service._publishRecipients(dbResponse.items).then(() => {
-        expect(publishStub.callCount).to.equal(dbResponse.items.length);
-        expect(publishStub.firstCall).to.be.calledWith(dbResponse.items[0]);
-        done();
+    context('when not using cache', () => {
+      it('publishes the campaign message with the recipient info for every recipient', done => {
+        const publishStub = sinon.stub(service, '_publishRecipient').resolves(true);
+        service._publishRecipients(dbResponse.items).then(() => {
+          expect(publishStub.callCount).to.equal(dbResponse.items.length);
+          expect(publishStub.firstCall).to.be.calledWith(dbResponse.items[0]);
+          done();
+        });
+        publishStub.restore();
       });
-      publishStub.restore();
+    });
+
+    context('when using cache', () => {
+      let publishStub;
+      let cacheStub;
+
+      before(() => {
+        sinon.stub(service, '_attachRecipientsBatch').resolves(true);
+        publishStub = sinon.stub(service, '_doPublishRecipient').resolves(true);
+        service._cache.restore(); // Restore from global scope
+        cacheStub = sinon.stub(service, '_cache');
+        // Fake 1 cache hit
+        cacheStub.withArgs(campaign.id, 'david.garcia+1@microapps.com').resolves(false);
+        cacheStub.resolves(true);
+      });
+      it('publishes the campaign message with the recipient info for every recipient', done => {
+        service._publishRecipients(dbResponse.items).then(() => {
+          // there is a cache hit on the recipients, 1 publish recipient should be skipped
+          expect(publishStub.callCount).to.equal(dbResponse.items.length - 1);
+          expect(cacheStub.callCount).to.be.equal(dbResponse.items.length);
+          done();
+        });
+      });
+      after(() => {
+        service._attachRecipientsBatch.restore();
+        publishStub.restore();
+        cacheStub.restore();
+      });
     });
   });
 
@@ -237,11 +272,11 @@ describe('AttachListRecipientsService', () => {
     });
   });
 
-  describe('#_publishRecipient()', () => {
+  describe('#_doPublishRecipient()', () => {
     it('publishes the campaign message to SNS for certain recipient', done => {
       const recipient = dbResponse.items[0];
       snsClient.publish.reset();
-      service._publishRecipient(recipient).then(() => {
+      service._doPublishRecipient(recipient).then(() => {
         expect(snsClient.publish).to.have.been.calledOnce;
         const snsParams = snsClient.publish.lastCall.args[0];
         const expectedMessage = JSON.stringify(service._buildRecipientMessage(recipient));
@@ -277,8 +312,54 @@ describe('AttachListRecipientsService', () => {
     });
   });
 
+  describe('#_cache', () => {
+    let redisClient;
+    class RedisClient {
+      sadd() {}
+      expire() {}
+    }
+    before(() => {
+      redisClient = new RedisClient();
+      sinon.stub(redisClient, 'sadd')
+        .onFirstCall().resolves(1)
+        .onSecondCall().resolves(0)
+        .onThirdCall().rejects('Error');
+      sinon.stub(redisClient, 'expire').returns(true);
+      sinon.stub(service, 'getRedisClient').returns(redisClient);
+    });
+
+    it('caches per campaign id and recipient email', done => {
+      service._cache('some-campaign', 'some_recipient').then((shouldExecute) => {
+        expect(shouldExecute).to.equal(true);
+        expect(redisClient.expire).to.have.been.called;
+      })
+      .catch(err => done(err));
+
+
+      service._cache('some-campaign', 'some_recipient').then((shouldExecute) => {
+        expect(shouldExecute).to.equal(false);
+      })
+      .catch(err => done(err));
+
+      service._cache('some-campaign', 'some_recipient').then((shouldExecute) => {
+        expect(shouldExecute).to.equal(true);
+      })
+      .catch(err => done(err));
+
+      done();
+   });
+
+    after(() => {
+      redisClient.sadd.restore();
+      redisClient.expire.restore();
+    });
+  });
+
   after(() => {
     Recipient.allBy.restore();
     awsMock.restore('SNS');
+    service._disconnectRedis.restore();
+    //service._cache.restore();
+    AttachListRecipientsService._buildRedisClient.restore();
   });
 });
