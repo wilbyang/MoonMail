@@ -1,4 +1,4 @@
-# MoonMail (BETA)
+# MoonMail
 
 [![Build Status](https://travis-ci.org/microapps/MoonMail.svg?branch=master)](https://travis-ci.org/microapps/MoonMail)
 [![serverless](http://public.serverless.com/badges/v3.svg)](http://www.serverless.com)
@@ -25,13 +25,8 @@ With MoonMail you can: create & edit lists of recipients (email addresses) and s
 * Extend the recipient fields with extra values like: gender, country... [(Liquid powered)](https://shopify.github.io/liquid/)
 * Update the recipient status with any of the following: Unsubscribed, Bounced, Complaint-Spam, Suppresion-list
 * [React powered frontend / UI to send campaigns](https://microapps.github.io/MoonMail-UI/)
-* Apply [liquid](https://shopify.github.io/liquid/) syntax within the campaigns and autoresponders
+* Apply [liquid](https://shopify.github.io/liquid/) syntax within the campaigns
 * [Public API to interact with the SAAS version](http://microapps.github.io/MoonMail/)
-
-## Upcoming Features
-
-* Create, edit and delete autoresponders
-* Attach files
 
 ## Getting Started
 
