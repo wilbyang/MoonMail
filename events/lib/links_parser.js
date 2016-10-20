@@ -6,9 +6,10 @@ import * as cheerio from 'cheerio';
 import cuid from 'cuid';
 
 class LinksParser {
-  constructor({ campaignId, apiHost } = {}) {
+  constructor({ campaignId, apiHost, recipientId } = {}) {
     this.campaignId = campaignId;
     this.apiHost = apiHost;
+    this.recipientId = recipientId;
     this.opensPath = 'links/open';
     this.clicksPath = 'links/click';
   }
@@ -20,6 +21,7 @@ class LinksParser {
         hostname: this.apiHost,
         pathname: `${this.opensPath}/${this.campaignId}`
       };
+      if (this.recipientId) opensUrlObj.query = {r: this.recipientId};
       return url.format(opensUrlObj);
     }
   }
@@ -62,8 +64,34 @@ class LinksParser {
     });
   }
 
+  appendRecipientIdToLinks(body) {
+    if (this.recipientId) {
+      return new Promise((resolve, reject) => {
+        const $ = cheerio.load(body);
+        $('a').each((i, link) => this._appendRecipientId(link, $));
+        return resolve($.html());
+      });
+    } else {
+      return Promise.resolve(body);
+    }
+  }
+
+  _appendRecipientId(link, $) {
+    const linkUrl = $(link).attr('href');
+    const uri = url.parse(linkUrl, true);
+    if (linkUrl && !this._isUnsubscribeLink(linkUrl) && this._isRedirectionLink(uri)) {
+      delete uri.search;
+      uri.query.r = this.recipientId;
+      $(link).attr('href', uri.format());
+    }
+  }
+
   _isUnsubscribeLink(linkUrl) {
     return linkUrl && linkUrl.indexOf('unsubscribe_url') > -1;
+  }
+
+  _isRedirectionLink(uri) {
+    return uri.protocol === 'https:' && this.apiHost.includes(uri.hostname);
   }
 
   clicksTrackUrl(linkId, linkUrl) {

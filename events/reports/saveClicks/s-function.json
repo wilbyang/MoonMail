@@ -1,12 +1,11 @@
 {
-  "name": "incrementClicksCount",
+  "name": "saveClicks",
   "runtime": "babel",
   "description": "Serverless Lambda function for project: MoonMail-v2",
-  "customName": "${project}-links-incrementClicksCount",
+  "customName": "${project}-reports-saveClicks",
   "customRole": false,
-  "handler": "links/incrementClicksCount/handler.default",
+  "handler": "reports/saveClicks/handler.default",
   "timeout": 60,
-  "memorySize": 1024,
   "authorizer": {},
   "custom": {
     "excludePatterns": []
@@ -14,10 +13,10 @@
   "endpoints": [],
   "events": [
     {
-      "name": "incrementClicksStream",
-      "type": "dynamodbstream",
+      "name": "saveClicksStream",
+      "type": "kinesisstream",
       "config": {
-        "streamArn": "${clicksTableStreamARN}",
+        "streamArn": "${clicksStreamARN}",
         "enabled": true
       }
     }
@@ -26,7 +25,7 @@
     "SERVERLESS_PROJECT": "${project}",
     "SERVERLESS_STAGE": "${stage}",
     "SERVERLESS_REGION": "${region}",
-    "LINKS_TABLE": "$${linksTable}",
+    "CLICKS_TABLE": "$${clicksTable}",
     "DEBUG": "true"
   },
   "vpc": {

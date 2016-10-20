@@ -14,6 +14,7 @@
     "subject": "Hi {{ name }} {{ surname }}"
   },
   "recipient": {
+    "id": "recipient-id",
     "email": "success@simulator.amazonses.com",
     "metadata": {
       "name": "John",

@@ -71,6 +71,8 @@
   "precompileEmailTopic": "${project}-${stage}-precompileEmail",
   "sendCampaignTopic": "${project}-${stage}-sendCampaign",
   "linksTable": "${project}-${stage}-links",
+  "opensTable": "${project}-${stage}-opens",
+  "clicksTable": "${project}-${stage}-clicks",
   "scheduledCampaignsTable": "${project}-${stage}-scheduledCampaigns",
   "campaignsTable": "${project}-${stage}-campaigns",
   "campaignsSentAtIndex": "${project}-${stage}-campaignsSentAtIndex",

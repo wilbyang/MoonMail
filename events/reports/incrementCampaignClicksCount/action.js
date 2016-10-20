@@ -1,16 +1,16 @@
 'use strict';
 
 import { debug } from '../../lib/index';
-import { IncrementCampaignsClicksService } from '../../lib/increment_campaigns_clicks_service';
+import { CampaignClicksAggregatorService } from '../../lib/campaign_clicks_aggregator_service';
 
 export function respond(event, cb) {
-  debug('= incrementCampaignsClicksCount.action', event);
-  const incrementService = new IncrementCampaignsClicksService(event.Records);
-  incrementService.incrementAll()
+  debug('= incrementCampaignsClicksCount.action', JSON.stringify(event));
+  const incrementService = CampaignClicksAggregatorService.create(event);
+  incrementService.increment()
     .then(data => {
       cb(null, 'ok');
     })
     .catch(err => {
       cb(err);
     });
-};
+}

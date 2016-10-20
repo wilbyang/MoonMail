@@ -1,0 +1,7 @@
+{
+  "Records": [
+    {"kinesis": {"kinesisSchemaVersion": "1.0"}},
+    {"kinesis": {"kinesisSchemaVersion": "1.0"}},
+    {"kinesis": {"kinesisSchemaVersion": "1.0"}}
+  ]
+}

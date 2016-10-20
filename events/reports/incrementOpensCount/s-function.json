@@ -15,9 +15,9 @@
   "events": [
     {
       "name": "incrementOpensStream",
-      "type": "kinesisstream",
+      "type": "dynamodbstream",
       "config": {
-        "streamArn": "${opensStreamARN}",
+        "streamArn": "${opensTableStreamARN}",
         "enabled": true
       }
     }
