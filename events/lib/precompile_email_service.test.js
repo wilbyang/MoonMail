@@ -17,16 +17,18 @@ chai.use(sinonChai);
 describe('PrecompileEmailService', () => {
   const userApiKey = canonicalMessage.sender.apiKey;
   const fakeQueueUrl = 'https://somefakeurl.com/';
-  const linksServiceHost = 'fakeapi.com';
-  const linksServiceUrl = `https://${linksServiceHost}/links`;
+  const apiHost = 'myapi.com';
+  const opensTrackingUrl = `https://${apiHost}/links/open/${canonicalMessage.campaign.id}?r=${canonicalMessage.recipient.id}`;
+  const imgTrackingTag = `<img src="${opensTrackingUrl}" width="1" height="1" />`;
   let sqsClient;
   let precompileService;
   let emailParams;
+  process.env.API_HOST = apiHost;
 
   before(() => {
     emailParams = JSON.parse(JSON.stringify(canonicalMessage));
     sqsClient = new AWS.SQS();
-    precompileService = new PrecompileEmailService(sqsClient, emailParams, linksServiceHost);
+    precompileService = new PrecompileEmailService(sqsClient, emailParams);
   });
 
   describe('#constructor()', () => {
@@ -59,6 +61,13 @@ describe('PrecompileEmailService', () => {
         done();
       }).catch(done);
     });
+
+    it('appends the tracking pixel', (done) => {
+      precompileService.composeEmail().then(composedEmail => {
+        expect(composedEmail.campaign.body).to.contain(imgTrackingTag);
+        done();
+      }).catch(done);
+    });
   });
 
   describe('#enqueueEmail()', () => {
@@ -75,7 +84,7 @@ describe('PrecompileEmailService', () => {
         });
         awsMock.mock('SQS', 'sendMessage', {ReceiptHandle: 'some_handle'});
         sqsClient = new AWS.SQS();
-        precompileService = new PrecompileEmailService(sqsClient, emailParams, linksServiceHost);
+        precompileService = new PrecompileEmailService(sqsClient, emailParams);
       });
 
       it('creates a queue named after the user\'s api key', (done) => {
@@ -105,7 +114,7 @@ describe('PrecompileEmailService', () => {
         awsMock.mock('SQS', 'sendMessage', {ReceiptHandle: 'some_handle'});
         sqsClient = new AWS.SQS();
         sinon.spy(sqsClient, 'createQueue');
-        precompileService = new PrecompileEmailService(sqsClient, emailParams, linksServiceHost);
+        precompileService = new PrecompileEmailService(sqsClient, emailParams);
       });
 
       it('enqueues the composed email in the queue named after the user\'s api key', (done) => {

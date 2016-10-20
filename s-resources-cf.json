@@ -513,6 +513,74 @@
         "TableName": "$${recipientsTable}"
       }
     },
+    "OpensTable": {
+      "Type": "AWS::DynamoDB::Table",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "campaignId",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "recipientId",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "recipientId",
+            "KeyType": "HASH"
+          },
+          {
+            "AttributeName": "campaignId",
+            "KeyType": "RANGE"
+          }
+        ],
+        "StreamSpecification": {
+          "StreamViewType": "NEW_IMAGE"
+        },
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": "${opensRCU}",
+          "WriteCapacityUnits": "${opensWCU}"
+        },
+        "TableName": "$${opensTable}"
+      }
+    },
+    "ClicksTable": {
+      "Type": "AWS::DynamoDB::Table",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "linkId",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "recipientId",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "recipientId",
+            "KeyType": "HASH"
+          },
+          {
+            "AttributeName": "linkId",
+            "KeyType": "RANGE"
+          }
+        ],
+        "StreamSpecification": {
+          "StreamViewType": "NEW_IMAGE"
+        },
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": "${clicksRCU}",
+          "WriteCapacityUnits": "${clicksWCU}"
+        },
+        "TableName": "$${clicksTable}"
+      }
+    },
     "ListsTable": {
       "Type": "AWS::DynamoDB::Table",
       "DeletionPolicy": "Retain",
@@ -760,6 +828,24 @@
       "Value": {
         "Fn::GetAtt": [
           "SentEmailsTable",
+          "StreamArn"
+        ]
+      }
+    },
+    "ClicksTableStreamARN": {
+      "Description": "Arn of the ClicksTable DynamoDB Table Stream",
+      "Value": {
+        "Fn::GetAtt": [
+          "ClicksTable",
+          "StreamArn"
+        ]
+      }
+    },
+    "OpensTableStreamARN": {
+      "Description": "Arn of the OpensTable DynamoDB Table Stream",
+      "Value": {
+        "Fn::GetAtt": [
+          "OpensTable",
           "StreamArn"
         ]
       }

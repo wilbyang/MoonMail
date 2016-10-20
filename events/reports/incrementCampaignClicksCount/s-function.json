@@ -15,9 +15,9 @@
   "events": [
     {
       "name": "campaignClicksStream",
-      "type": "kinesisstream",
+      "type": "dynamodbstream",
       "config": {
-        "streamArn": "${clicksStreamARN}",
+        "streamArn": "${clicksTableStreamARN}",
         "enabled": true
       }
     }

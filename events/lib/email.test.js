@@ -9,7 +9,7 @@ import { Email } from './email';
 chai.use(chaiAsPromised);
 
 describe('Email', () => {
-  const apiHost = 'the-api.com';
+  const apiHost = 'myapi.com';
   process.env.API_HOST = apiHost;
   const metadata = {
     name: 'John',

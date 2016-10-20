@@ -1,12 +1,12 @@
 'use strict';
 
 import { debug } from '../../lib/index';
-import { IncrementClicksService } from '../../lib/increment_clicks_service';
+import { LinkClicksAggregatorService } from '../../lib/link_clicks_aggregator_service';
 
 export function respond(event, cb) {
-  debug('= incrementClicksCount.action', event);
-  const incrementService = new IncrementClicksService(event.Records);
-  incrementService.incrementAll()
+  debug('= incrementClicksCount.action', JSON.stringify(event));
+  const incrementService = LinkClicksAggregatorService.create(event);
+  incrementService.increment()
     .then(data => {
       cb(null, 'ok');
     })

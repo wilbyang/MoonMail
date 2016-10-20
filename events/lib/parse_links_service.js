@@ -34,9 +34,7 @@ class ParseLinksService {
       campaignId: this.campaignParams.campaign.id,
       apiHost: this.apiHost
     });
-    return linksParser
-      .appendOpensPixel(this.campaignParams.campaign.body)
-      .then((htmlBody) => linksParser.parseLinks(htmlBody));
+    return linksParser.parseLinks(this.campaignParams.campaign.body);
   }
 
   saveLinks(campaignLinks) {

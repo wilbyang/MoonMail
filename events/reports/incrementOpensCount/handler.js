@@ -1,12 +1,15 @@
 'use strict';
 
 import { debug } from '../../lib/index';
-import { IncrementOpensService } from '../../lib/increment_opens_service';
+import { OpensAggregatorService } from '../../lib/opens_aggregator_service';
 
 export default (event, context) => {
-  debug('= incrementOpensCount.handler');
-  const incrementService = new IncrementOpensService(event.Records);
-  incrementService.incrementAll()
+  debug('= incrementOpensCount.handler', JSON.stringify(event));
+  const incrementService = OpensAggregatorService.create(event);
+  incrementService.increment()
     .then(() => context.done(null, 'ok'))
-    .catch(err => context.done(err));
+    .catch(err => {
+      debug('= incrementOpensCount.handler', 'Some error occured', err);
+      context.done(err);
+    });
 };

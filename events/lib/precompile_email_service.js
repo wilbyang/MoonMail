@@ -3,11 +3,13 @@
 import { debug } from './index';
 import { EmailQueue } from './email_queue';
 import { Email } from './email';
+import { LinksParser } from './links_parser';
 
 class PrecompileEmailService {
 
   constructor(sqsClient, emailParams) {
     this.emailParams = emailParams;
+    this.apiHost = process.env.API_HOST;
     this.queue = new EmailQueue(sqsClient, {name: emailParams.sender.apiKey});
     this.email = new Email({
       fromEmail: emailParams.sender.emailAddress,
@@ -25,7 +27,7 @@ class PrecompileEmailService {
   composeEmail() {
     return new Promise((resolve, reject) => {
       debug('= PrecompileEmailService.composeEmail', 'Composing email');
-      const parsedBodyPromise = this.email.renderBody();
+      const parsedBodyPromise = this.composeBody();
       const parsedSubjectPromise = this.email.renderSubject();
       Promise.all([parsedBodyPromise, parsedSubjectPromise])
         .then((values) => {
@@ -39,6 +41,17 @@ class PrecompileEmailService {
         })
         .catch(reject);
     });
+  }
+
+  composeBody() {
+    return this.email.renderBody()
+      .then(body => this._addTracking(body, this.emailParams.campaign.id, this.emailParams.recipient.id));
+  }
+
+  _addTracking(body, campaignId, recipientId) {
+    const linksParser = new LinksParser({apiHost: this.apiHost, campaignId, recipientId});
+    return linksParser.appendRecipientIdToLinks(body)
+      .then(parsedBody => linksParser.appendOpensPixel(parsedBody));
   }
 
   enqueueEmail() {

@@ -2,6 +2,7 @@
 
 import { Kinesis } from 'aws-sdk';
 import { debug } from '../../lib/logger';
+import moment from 'moment';
 
 const buffer = new Kinesis({region: process.env.SERVERLESS_REGION});
 
@@ -9,7 +10,9 @@ export default (event, context) => {
   debug('= linkClick.handler', JSON.stringify(event));
   const payload = {
     campaignId: event.campaignId,
-    linkId: event.linkId
+    linkId: event.linkId,
+    recipientId: event.recipientId,
+    timestamp: moment().unix()
   };
   const params = {
     Data: JSON.stringify(payload),
