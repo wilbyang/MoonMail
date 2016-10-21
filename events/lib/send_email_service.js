@@ -89,7 +89,7 @@ class SendEmailService {
                   debug('= SendEmailService.sendBatch', 'Retry');
                   callback();
                 } else {
-                  debug('= SendEmailService.sendBatch', 'Removing from queue');
+                  debug('= SendEmailService.sendBatch', 'Removing from queue', err);
                   sentEmailsHandles.push({
                     ReceiptHandle: email.receiptHandle,
                     Id: email.messageId
@@ -116,12 +116,12 @@ class SendEmailService {
   _isAbortError(error) {
     debug('= SendEmailService._isAbortError', error);
     return error.code && error.code === 'MessageRejected' ||
-      (error.code === 'Throttling' && error.message === 'Daily message quota exceeded');
+      (error.code === 'Throttling' && !!error.message.toLowerCase().match('daily message quota exceeded'));
   }
 
   _isRetryableError(error) {
     debug('= SendEmailService._isRetryableError', error);
-    return error.code && error.code === 'Throttling' && error.message === 'Maximum sending rate exceeded';
+    return error.code && error.code === 'Throttling' && !!error.message.toLowerCase().match('maximum sending rate exceeded');
   }
 
   deleteBatch(batch) {
