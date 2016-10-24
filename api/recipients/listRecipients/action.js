@@ -16,6 +16,10 @@ export function respond(event, cb) {
       if (event.options) {
         Object.assign(options, omitEmpty(event.options));
       }
+      const filters = {};
+      if (!!event.email) filters.email = {bw: event.email};
+      if (!!event.status) filters.status = {eq: event.status};
+      Object.assign(options, omitEmpty({filters}));
       Recipient.allBy('listId', event.listId, options).then(recipients => {
         debug('= listRecipients.action', 'Success');
         return cb(null, recipients);

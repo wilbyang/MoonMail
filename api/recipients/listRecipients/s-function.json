@@ -29,6 +29,8 @@
             "fields": "$input.params('fields')",
             "include_fields": "$input.params('include_fields')"
           },
+          "email": "$input.params('email')",
+          "status": "$input.params('status')",
           "listId": "$input.params('listId')",
           "authToken": "$input.params('Authorization')"
         }
