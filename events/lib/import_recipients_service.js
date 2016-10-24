@@ -194,8 +194,8 @@ class ImportRecipientsService {
           if (results.errors.length > 0) {
             debug('= ImportRecipientsService.parseCSV', 'Error parsing line', JSON.stringify(results.errors));
           } else {
-            debug('= ImportRecipientsService.parseCSV', 'Parsing recipient', JSON.stringify(item), headerMapping);
             const item = results.data[0];
+            debug('= ImportRecipientsService.parseCSV', 'Parsing recipient', JSON.stringify(item), headerMapping);
             const emailKey = Object.keys(item)[0];
             let newRecp = {
               id: base64url.encode(item[emailKey]),

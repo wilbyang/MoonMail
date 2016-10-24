@@ -20,24 +20,51 @@ const tsReduceOperations = {
   COUNT: (groupedData, options) => {
     const timeColumn = options.timeColumn || 'time';
     const eventName = options.eventName || 'event';
+    const groupByAttrs = options.groupByAttrs || [];
     const aggregatedData = [];
     Object.keys(groupedData).forEach((groupId) => {
-      const record = {
-        count: groupedData[groupId].length,
-        eventName
-      };
-      record[timeColumn] = groupId;
-      aggregatedData.push(record);
+      if (!groupByAttrs.length) {
+        const record = {
+          count: groupedData[groupId].length,
+          eventName
+        };
+        record[timeColumn] = groupId;
+        aggregatedData.push(record);
+      } else {
+        const groups = R.groupBy((row) => {
+          return groupByAttrs.map(e => row[e]).join('____');
+        })(groupedData[groupId]);
+
+        groupedData[groupId] = groups;
+
+        Object.keys(groups).forEach((subGroupId) => {
+          const record = {
+            count: groups[subGroupId].length,
+            eventName
+          };
+          groupByAttrs.forEach((column) => {
+            //
+            // Since keepColumns should be used to retrieve
+            // unique tuples across the same group we can take
+            // as reference the first element in group groupedData[groupId][0]
+            //
+            record[column] = groups[subGroupId][0][column];
+          });
+          record[timeColumn] = groupId;
+          aggregatedData.push(record);
+        });
+      }
     });
     return aggregatedData;
   }
 };
 
-class StreamAggregatorService {
+class TimeAggregatorService {
 
   static aggregate(events, timeWindow, options) {
-    return new StreamAggregatorService(events,
+    return new TimeAggregatorService(events,
         timeWindow,
+        options.groupByAttrs || [],
         options.eventName || 'event',
         options.deduplicationFunc,
         options.aggregateOperation || 'COUNT',
@@ -45,12 +72,13 @@ class StreamAggregatorService {
       .aggregate();
   }
 
-  constructor(events, timeWindow, eventName, deduplicationFunc, aggregateOperation, timestampAttribute) {
+  constructor(events, timeWindow, groupByAttrs, eventName, deduplicationFunc, aggregateOperation, timestampAttribute) {
     this.events = events;
     // time windows is an array of 2 positions representing
     // a duration (moment.js) ex: [5, 'm']
     this.timeWindow = timeWindow;
     this.timeWindowObject = moment.duration(...timeWindow);
+    this.groupByAttrs = groupByAttrs;
     this.deduplicationFunc = deduplicationFunc;
     this.aggregateOperation = aggregateOperation;
     this.timestampAttribute = timestampAttribute;
@@ -74,6 +102,7 @@ class StreamAggregatorService {
 
   _reduce(groups) {
     return tsReduceOperations[this.aggregateOperation](groups, {
+      groupByAttrs: this.groupByAttrs,
       timeColumn: this.timestampAttribute,
       eventName: this.eventName
     });
@@ -128,4 +157,4 @@ class StreamAggregatorService {
 
 }
 
-module.exports.StreamAggregatorService = StreamAggregatorService;
+module.exports.TimeAggregatorService = TimeAggregatorService;
