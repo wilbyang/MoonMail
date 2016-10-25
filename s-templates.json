@@ -92,6 +92,7 @@
   "updateListImportStatusTopic": "${project}-${stage}-updateListImportStatus",
   "staticDataBucket": "static.moonmail.${stage}.${region}",
   "recipientsImportBucket": "recipients.moonmail.${stage}.${region}",
+  "listsExportBucket": "list-exports.moonmail.${stage}.${region}",
   "responses": {
     "302": {
       "statusCode": "302",

@@ -65,6 +65,24 @@
             },
             {
               "Effect": "Allow",
+              "Action": [
+                "s3:*"
+              ],
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:s3:::",
+                    {
+                      "Ref": "ListExportS3Bucket"
+                    },
+                    "/*"
+                  ]
+                ]
+              }
+            },
+            {
+              "Effect": "Allow",
               "Action": "dynamodb:*",
               "Resource": {
                 "Fn::Join": [
@@ -636,6 +654,12 @@
             }
           ]
         }
+      }
+    },
+    "ListExportS3Bucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "BucketName": "$${listsExportBucket}"
       }
     },
     "StaticDataBucket": {
