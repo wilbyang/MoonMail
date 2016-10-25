@@ -1,0 +1,29 @@
+{
+  "name": "exportList",
+  "runtime": "babel",
+  "description": "Serverless Lambda function for project: MoonMail-v2",
+  "customName": "${project}-lists-exportList",
+  "customRole": false,
+  "handler": "lists/exportList/handler.default",
+  "timeout": 300,
+  "memorySize": 1024,
+  "authorizer": {},
+  "custom": {
+    "excludePatterns": []
+  },
+  "endpoints": [],
+  "events": [],
+  "environment": {
+    "SERVERLESS_PROJECT": "${project}",
+    "SERVERLESS_STAGE": "${stage}",
+    "SERVERLESS_REGION": "${region}",
+    "DEBUG": true,
+    "LISTS_TABLE": "$${listsTable}",
+    "RECIPIENTS_TABLE": "$${recipientsTable}",
+    "EXPORTS_BUCKET_NAME": "$${listsExportBucket}"
+  },
+  "vpc": {
+    "securityGroupIds": [],
+    "subnetIds": []
+  }
+}
