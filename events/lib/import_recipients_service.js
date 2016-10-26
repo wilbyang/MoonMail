@@ -7,7 +7,9 @@ import { Recipient, List } from 'moonmail-models';
 import base64url from 'base64-url';
 import querystring from 'querystring';
 import moment from 'moment';
+import _ from 'lodash';
 
+// TODO: Refactor me!
 class ImportRecipientsService {
 
   constructor({s3Event, importOffset = 0 }, s3Client, snsClient, lambdaClient, context) {
@@ -76,7 +78,8 @@ class ImportRecipientsService {
   saveRecipients() {
     if (this.importOffset < this.recipients.length) {
       const recipientsBatch = this.recipients.slice(this.importOffset, this.importOffset + this.maxBatchSize);
-      return Recipient.saveAll(recipientsBatch)
+      const deduplicatedRecipientsBatch = _.uniqBy(recipientsBatch, 'email');
+      return Recipient.saveAll(deduplicatedRecipientsBatch)
         .then(data => {
           if (this.timeEnough()) {
             if (data.UnprocessedItems && data.UnprocessedItems instanceof Array) {
