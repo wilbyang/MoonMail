@@ -4,7 +4,6 @@ import { debug } from './index';
 import { Recipient } from 'moonmail-models';
 import * as async from 'async';
 import Promise from 'bluebird';
-import Redis from 'ioredis';
 
 class AttachListRecipientsService {
   constructor(snsClient, attachRecipientsListMessage, lambdaClient, context) {
@@ -14,7 +13,6 @@ class AttachListRecipientsService {
     this.lambdaClient = lambdaClient;
     this.lambdaName = context.functionName;
     this.context = context;
-    this.redisClient = AttachListRecipientsService._buildRedisClient();
   }
 
   get executionThreshold() {
@@ -54,12 +52,10 @@ class AttachListRecipientsService {
           resolve(this.attachRecipientsList(next));
         } else {
           debug('= AttachListRecipientsService._attachNextBatch', 'Not time enough for next batch, invoking lambda...');
-          this._disconnectRedis();
           return this._invokeLambda(next);
         }
       } else {
         debug('= AttachListRecipientsService._attachNextBatch', 'No more batches');
-        this._disconnectRedis();
         resolve(true);
       }
     });
@@ -89,21 +85,9 @@ class AttachListRecipientsService {
   }
 
   _publishRecipient(recipient) {
-    const recipientEmail = recipient.email;
-    const campaignId = this.attachRecipientsListMessage.campaign.id;
-    return this._cache(campaignId, recipientEmail).then((shouldExecute) => {
-      if (shouldExecute) {
-        return this._doPublishRecipient(recipient);
-      }
-      return Promise.resolve({});
-    });
-  }
-
-
-  _doPublishRecipient(recipient) {
-    debug('= AttachListRecipientsService._doPublishRecipient', JSON.stringify(recipient));
     return new Promise((resolve, reject) => {
       const recipientMessage = this._buildRecipientMessage(recipient);
+      debug('= AttachListRecipientsService._publishRecipient', JSON.stringify(recipientMessage));
       const params = {
         TopicArn: process.env.PRECOMPILE_EMAIL_TOPIC_ARN,
         Message: JSON.stringify(recipientMessage)
@@ -128,6 +112,7 @@ class AttachListRecipientsService {
               sender: this.attachRecipientsListMessage.sender,
               campaign: this.attachRecipientsListMessage.campaign,
               userId: this.attachRecipientsListMessage.userId,
+              userPlan: this.attachRecipientsListMessage.userPlan,
               listId: this.listId
             }
           }
@@ -159,52 +144,6 @@ class AttachListRecipientsService {
   _buildRecipientMessage(recipient) {
     debug('= AttachListRecipientsService._buildRecipientMessage', JSON.stringify(recipient));
     return Object.assign({}, this.attachRecipientsListMessage, { recipient });
-  }
-
-  // TODO: Consider to move to it's own class if need to be used elsewhere
-  _cache(campaignId, recipientEmail) {
-    debug('= AttachListRecipientsService._cache()', campaignId, recipientEmail);
-    const client = this.getRedisClient();
-    return client.sadd(campaignId, recipientEmail)
-      .then((addedToSet) => {
-        if (addedToSet === 1) {
-          debug('= AttachListRecipientsService._cache()', 'Cache miss', campaignId, recipientEmail);
-          // Expire keyin 20 minutes
-          client.expire(campaignId, 60 * 20);
-          return Promise.resolve(true);
-        }
-        debug('= AttachListRecipientsService._cache()', 'Cache hit', campaignId, recipientEmail);
-        return Promise.resolve(false);
-      }).catch((_) => {
-        debug('= AttachListRecipientsService._cache()', 'Error with redis, skipping');
-        return Promise.resolve(true);
-      });
-  }
-
-  getRedisClient() {
-    return this.redisClient;
-  }
-
-  static _buildRedisClient() {
-    return new Redis({host: process.env.REDIS_ENDPOINT_ADDRESS,
-      port: process.env.REDIS_ENDPOINT_PORT,
-      password: process.env.REDIS_PASSWORD,
-      connectTimeout: 50,
-      keyPrefix: 'campaign:rcpt_cache:',
-      dropBufferSupport: true,
-      //showFriendlyErrorStack: true,
-      retryStrategy: (_) => {
-        // Not to reconnect on errors
-        return false;
-      },
-      reconnectOnError: (_) => {
-        return false;
-      }
-    });
-  }
-
-  _disconnectRedis() {
-    this.redisClient.disconnect();
   }
 }
 
