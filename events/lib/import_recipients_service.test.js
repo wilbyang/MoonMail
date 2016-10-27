@@ -26,6 +26,7 @@ describe('ImportRecipientsService', () => {
     awsMock.mock('S3', 'getObject', {
       Body: `email address;first name;last name
 em1@examplemail.com;firstName1;lastName1
+em1@examplemail.com;firstName12;lastName12
 em2@examplemail.com;firstName2;lastName2`,
       Metadata: {
         headers: '{"email address":"email", "first name":"name","last name":"surname", "some-header":"false", "other-header":false}'
