@@ -89,7 +89,7 @@ describe('PrecompileEmailService', () => {
 
       it('creates a queue named after the user\'s api key', (done) => {
         precompileService.enqueueEmail().then(() => {
-          expect(sqsClient.createQueue).to.have.been.calledWith({QueueName: userApiKey});
+          expect(sqsClient.createQueue).to.have.been.calledWith({QueueName: userApiKey, Attributes: { MessageRetentionPeriod: 1209600 }});
           done();
         });
       });

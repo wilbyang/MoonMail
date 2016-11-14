@@ -68,6 +68,10 @@ class EnqueuedEmail {
     return email;
   }
 
+  getEmailUserId() {
+    return this.message.userId;
+  }
+
 }
 
 module.exports.EnqueuedEmail = EnqueuedEmail;

@@ -1,5 +1,6 @@
 'use strict';
 
+import axios from 'axios';
 import * as chai from 'chai';
 const chaiAsPromised = require('chai-as-promised');
 const chaiThings = require('chai-things');
@@ -190,6 +191,81 @@ describe('SendEmailService', () => {
     after(() => {
       awsMock.restore('SES');
     });
+  });
+
+  describe('#_checkReputation()', () => {
+    before(() => {
+      process.env.API_HOST = 'my.host.com';
+    });
+
+    context('it is been too long since the last reputation check', () => {
+      let senderService;
+
+      beforeEach(() => {
+        senderService = new SendEmailService(queue, null, contextStub, { sentEmails: 120, lastReputationCheckedOn: 0, lastPausedOn: 0 });
+      });
+
+      context('user has good reputation', () => {
+        before(() => {
+          sinon.stub(axios, 'get').resolves({data: { totalComplaints: 2, maximumAllowedBounceRate: 5, sentEmails: 3519, maximumAllowedComplaintsRate: 0.1, minimumAllowedReputation: 15, complaintsRate: 0.057, reputation: 43.17, totalBounces: 3, bounceRate: 0.085 }});
+        });
+
+        it('resolves to continue the execution', (done) => {
+          senderService._checkReputation().then(() => {
+            expect(axios.get).to.have.been.called;
+            expect(senderService.lastReputationCheckedOn).to.equal(120);
+            done();
+          }).catch(error => done(error));
+        });
+
+        after(() => {
+          axios.get.restore();
+        });
+      });
+
+      context('user has bad reputation', () => {
+        before(() => {
+          sinon.stub(axios, 'get').resolves({data: { totalComplaints: 2, maximumAllowedBounceRate: 5, sentEmails: 10, maximumAllowedComplaintsRate: 0.1, minimumAllowedReputation: 15, complaintsRate: 0.057, reputation: 14, totalBounces: 3, bounceRate: 0.085 }});
+        });
+
+        it('rejects to stop the execution', (done) => {
+          senderService._checkReputation().catch((error) => {
+            expect(axios.get).to.have.been.called;
+            expect(senderService.lastReputationCheckedOn).to.equal(120);
+            expect(error).to.equal('Bad reputation');
+            done();
+          });
+        });
+
+        after(() => {
+          axios.get.restore();
+        });
+      });
+
+    });
+
+    context('no need to check reputation', () => {
+      let senderService;
+
+      beforeEach(() => {
+        senderService = new SendEmailService(queue, null, contextStub, { sentEmails: 120, lastReputationCheckedOn: 100, lastPausedOn: 0 });
+        sinon.stub(axios, 'get').resolves({});
+      });
+
+
+      it('resolves to continue the execution without checking reputation', (done) => {
+        senderService._checkReputation().then(() => {
+          expect(axios.get).to.have.not.been.called;
+          expect(senderService.lastReputationCheckedOn).to.equal(100);
+          done();
+        }).catch(error => done(error));
+      });
+
+      after(() => {
+        axios.get.restore();
+      });
+    });
+
   });
 
   after(() => {

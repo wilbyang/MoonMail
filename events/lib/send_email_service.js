@@ -1,19 +1,25 @@
 'use strict';
 
+import { Promise } from 'bluebird';
+import axios from 'axios';
+import * as url from 'url';
 import { debug } from './index';
 import * as async from 'async';
 import { SES, SNS } from 'aws-sdk';
 
 class SendEmailService {
 
-  constructor(queue, lambdaClient, context) {
+  constructor(queue, lambdaClient, context, state = {}) {
     this.queue = queue;
     this.emailClient = null;
     this.sns = null;
     this.lambdaClient = lambdaClient;
     this.lambdaName = context.functionName;
     this.context = context;
-    this.counter = 0;
+    this.counter = state.sentEmails || 0;
+    this.lastReputationCheckedOn = state.lastReputationCheckedOn || 0;
+    this.lastPausedOn = state.lastPausedOn || 0;
+    this.userId = null;
   }
 
   get executionThreshold() {
@@ -30,7 +36,7 @@ class SendEmailService {
   sendNextBatch() {
     if (this.timeEnough()) {
       debug('= SendEmailService.sendNextBatch', 'Time enough for another batch');
-      return this.sendEnqueuedEmails();
+      return this._checkReputation().then(() => this.sendEnqueuedEmails());
     } else {
       debug('= SendEmailService.sendNextBatch', 'Not time enough for next batch, invoking lambda...');
       return this.invokeLambda();
@@ -40,7 +46,7 @@ class SendEmailService {
   invokeLambda() {
     return new Promise((resolve, reject) => {
       debug('= SendEmailService.invokeLambda', 'Invoking function again', this.lambdaName);
-      const payload = { QueueUrl: this.queue.url };
+      const payload = { QueueUrl: this.queue.url, state: { sentEmails: this.counter, lastReputationCheckedOn: this.lastReputationCheckedOn, lastPausedOn: this.lastPausedOn } };
       const params = {
         FunctionName: this.lambdaName,
         InvocationType: 'Event',
@@ -71,6 +77,7 @@ class SendEmailService {
         .then((enqueuedEmails) => {
           debug('= SendEmailService.sendBatch', 'Got', enqueuedEmails.length, 'messages');
           this.setEmailClient(enqueuedEmails[0]);
+          this.setUserId(enqueuedEmails[0]);
           async.each(enqueuedEmails, (email, callback) => {
             this.deliver(email)
               .then((result) => {
@@ -174,6 +181,42 @@ class SendEmailService {
       secretAccessKey: enqueuedEmail.message.sender.apiSecret,
       region: enqueuedEmail.message.sender.region
     };
+  }
+
+  setUserId(enqueuedEmail) {
+    this.userId = enqueuedEmail.getEmailUserId();
+  }
+
+  _checkReputation() {
+    if (this.counter - this.lastReputationCheckedOn >= 100) {
+      this.lastReputationCheckedOn = this.counter;
+      debug('= SendEmailService._checkReputation called, be ware!!!!!');
+      const userReputationPath = `account/${this.userId}/reputation`;
+      const getUserReputationUrl = {
+        protocol: 'https',
+        hostname: process.env.API_HOST,
+        pathname: userReputationPath
+      };
+      const repUrl = url.format(getUserReputationUrl);
+      return axios.get(repUrl, { timeout: 1000 }).then((response) => {
+        const reputationData = response.data;
+        debug('= SendEmailService._checkReputation user reputation:', reputationData);
+        if (reputationData.reputation < reputationData.minimumAllowedReputation) {
+          debug('= SendEmailService._checkReputation, Bad reputation detected stopping the line!!!!');
+          return Promise.reject('Bad reputation');
+        }
+        return Promise.resolve({});
+      }).catch((error) => {
+        debug('= SendEmailService._checkReputation error ocurred:', error);
+        if (error === 'Bad reputation') {
+          return Promise.reject(error);
+        }
+        // Being conservative since this should not break send emails proccess
+        return Promise.resolve({});
+      });
+    }
+
+    return Promise.resolve({});
   }
 }
 
