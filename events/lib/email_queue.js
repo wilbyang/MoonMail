@@ -165,7 +165,7 @@ class EmailQueue {
       // Increase retention period to 14 days
       // For more details visit:
       // http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/SQS.html#createQueue-property
-      const params = { QueueName: this.name, Attributes: { MessageRetentionPeriod: 1209600 } };
+      const params = { QueueName: this.name, Attributes: { "MessageRetentionPeriod": "1209600" } };
       this.client.createQueue(params, (err, data) => {
         if (err) {
           debug('= EmailQueue._createQueue', 'Error creating queue with name', this.name, err, err.stack);
