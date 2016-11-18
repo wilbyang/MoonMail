@@ -19,7 +19,6 @@
       "config": {
         "streamArn": "${recipientsTableStreamARN}",
         "startingPosition": "LATEST",
-        "batchSize": 5,
         "enabled": true
       }
     }
