@@ -144,13 +144,13 @@ class TimeAggregatorService {
     }
   }
 
-  _validateTimeWindow () {
+  _validateTimeWindow() {
     if (!['m', 'minutes',
-        'h', 'hours',
-        'd', 'days',
-        'w', 'weeks',
-        'M', 'months',
-        'y', 'years'].find((e) => e === this.timeWindow[1])) {
+      'h', 'hours',
+      'd', 'days',
+      'w', 'weeks',
+      'M', 'months',
+      'y', 'years'].find(e => e === this.timeWindow[1])) {
       throw new Error('Unsupported time window');
     }
   }
