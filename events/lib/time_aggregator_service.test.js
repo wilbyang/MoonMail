@@ -16,12 +16,12 @@ describe('TimeAggregatorService', () => {
   describe('#aggregate()', () => {
     it('groups by minutes intervals', (done) => {
       const events = [
-        { id: 1, value: 1, timestamp: moment().startOf('day').valueOf() },
-        { id: 2, value: 2, timestamp: moment().startOf('day').add(10, 'seconds').valueOf() },
-        { id: 3, value: 3, timestamp: moment().startOf('day').add(6, 'minutes').valueOf() },
-        { id: 4, value: 4, timestamp: moment().startOf('day').add(7, 'minutes').valueOf() },
-        { id: 5, value: 5, timestamp: moment().startOf('day').add(11, 'minutes').valueOf() },
-        { id: 6, value: 5, timestamp: moment().startOf('day').add(12, 'minutes').valueOf() }
+        { id: 1, value: 1, timestamp: moment().startOf('day').unix() },
+        { id: 2, value: 2, timestamp: moment().startOf('day').add(10, 'seconds').unix() },
+        { id: 3, value: 3, timestamp: moment().startOf('day').add(6, 'minutes').unix() },
+        { id: 4, value: 4, timestamp: moment().startOf('day').add(7, 'minutes').unix() },
+        { id: 5, value: 5, timestamp: moment().startOf('day').add(11, 'minutes').unix() },
+        { id: 6, value: 5, timestamp: moment().startOf('day').add(12, 'minutes').unix() }
       ];
       const expectedGroups = 3;
       const result = TimeAggregatorService.aggregate(events, [5, 'm'], { eventName: 'valCount' });
@@ -31,12 +31,12 @@ describe('TimeAggregatorService', () => {
 
     it('groups by hours intervals', (done) => {
       const events = [
-        { id: 1, value: 1, timestamp: moment().startOf('day').valueOf() },
-        { id: 2, value: 2, timestamp: moment().startOf('day').add(10, 'minute').valueOf() },
-        { id: 3, value: 3, timestamp: moment().startOf('day').add(6, 'hours').valueOf() },
-        { id: 4, value: 4, timestamp: moment().startOf('day').add(7, 'hours').valueOf() },
-        { id: 5, value: 5, timestamp: moment().startOf('day').add(11, 'hours').valueOf() },
-        { id: 6, value: 5, timestamp: moment().startOf('day').add(12, 'hours').valueOf() }
+        { id: 1, value: 1, timestamp: moment().startOf('day').unix() },
+        { id: 2, value: 2, timestamp: moment().startOf('day').add(10, 'minute').unix() },
+        { id: 3, value: 3, timestamp: moment().startOf('day').add(6, 'hours').unix() },
+        { id: 4, value: 4, timestamp: moment().startOf('day').add(7, 'hours').unix() },
+        { id: 5, value: 5, timestamp: moment().startOf('day').add(11, 'hours').unix() },
+        { id: 6, value: 5, timestamp: moment().startOf('day').add(12, 'hours').unix() }
       ];
       const expectedGroups = 3;
       const result = TimeAggregatorService.aggregate(events, [5, 'h'], { eventName: 'valCount' });
@@ -46,12 +46,12 @@ describe('TimeAggregatorService', () => {
 
     it('groups by days intervals', (done) => {
       const events = [
-        { id: 1, value: 1, timestamp: moment().startOf('month').valueOf() },
-        { id: 2, value: 2, timestamp: moment().startOf('month').add(10, 'hours').valueOf() },
-        { id: 3, value: 3, timestamp: moment().startOf('month').add(6, 'days').valueOf() },
-        { id: 4, value: 4, timestamp: moment().startOf('month').add(7, 'days').valueOf() },
-        { id: 5, value: 5, timestamp: moment().startOf('month').add(11, 'days').valueOf() },
-        { id: 6, value: 5, timestamp: moment().startOf('month').add(12, 'days').valueOf() }
+        { id: 1, value: 1, timestamp: moment().startOf('month').unix() },
+        { id: 2, value: 2, timestamp: moment().startOf('month').add(10, 'hours').unix() },
+        { id: 3, value: 3, timestamp: moment().startOf('month').add(6, 'days').unix() },
+        { id: 4, value: 4, timestamp: moment().startOf('month').add(7, 'days').unix() },
+        { id: 5, value: 5, timestamp: moment().startOf('month').add(11, 'days').unix() },
+        { id: 6, value: 5, timestamp: moment().startOf('month').add(12, 'days').unix() }
       ];
       const expectedGroups = 3;
       const result = TimeAggregatorService.aggregate(events, [5, 'd'], { eventName: 'valCount' });
@@ -61,12 +61,12 @@ describe('TimeAggregatorService', () => {
 
     it('groups by month intervals', (done) => {
       const events = [
-        { id: 1, value: 1, timestamp: moment().startOf('year').valueOf() },
-        { id: 2, value: 2, timestamp: moment().startOf('year').add(10, 'days').valueOf() },
-        { id: 3, value: 3, timestamp: moment().startOf('year').add(5, 'month').valueOf() },
-        { id: 4, value: 4, timestamp: moment().startOf('year').add(5, 'month').valueOf() },
-        { id: 5, value: 5, timestamp: moment().startOf('year').add(6, 'month').valueOf() },
-        { id: 6, value: 5, timestamp: moment().startOf('year').add(10, 'month').valueOf() }
+        { id: 1, value: 1, timestamp: moment().startOf('year').unix() },
+        { id: 2, value: 2, timestamp: moment().startOf('year').add(10, 'days').unix() },
+        { id: 3, value: 3, timestamp: moment().startOf('year').add(5, 'month').unix() },
+        { id: 4, value: 4, timestamp: moment().startOf('year').add(5, 'month').unix() },
+        { id: 5, value: 5, timestamp: moment().startOf('year').add(6, 'month').unix() },
+        { id: 6, value: 5, timestamp: moment().startOf('year').add(10, 'month').unix() }
       ];
       const expectedGroups = 2;
       const result = TimeAggregatorService.aggregate(events, [6, 'M'], { eventName: 'valCount' });
@@ -76,12 +76,12 @@ describe('TimeAggregatorService', () => {
 
     it('groups by year intervals', (done) => {
       const events = [
-        { id: 1, value: 1, timestamp: moment().startOf('year').valueOf() },
-        { id: 2, value: 2, timestamp: moment().startOf('year').add(10, 'month').valueOf() },
-        { id: 3, value: 3, timestamp: moment().startOf('year').add(1, 'year').valueOf() },
-        { id: 4, value: 4, timestamp: moment().startOf('year').add(3, 'year').valueOf() },
-        { id: 5, value: 5, timestamp: moment().startOf('year').add(6, 'year').valueOf() },
-        { id: 6, value: 5, timestamp: moment().startOf('year').add(10, 'year').valueOf() }
+        { id: 1, value: 1, timestamp: moment().startOf('year').unix() },
+        { id: 2, value: 2, timestamp: moment().startOf('year').add(10, 'month').unix() },
+        { id: 3, value: 3, timestamp: moment().startOf('year').add(1, 'year').unix() },
+        { id: 4, value: 4, timestamp: moment().startOf('year').add(3, 'year').unix() },
+        { id: 5, value: 5, timestamp: moment().startOf('year').add(6, 'year').unix() },
+        { id: 6, value: 5, timestamp: moment().startOf('year').add(10, 'year').unix() }
       ];
       const expectedGroups = 4;
       const result = TimeAggregatorService.aggregate(events, [2, 'y'], { eventName: 'valCount' });
@@ -91,12 +91,12 @@ describe('TimeAggregatorService', () => {
 
     it('groups by intervals and deduplicates', (done) => {
       const events = [
-        { id: 1, id2: 1, timestamp: moment().startOf('day').valueOf() },
-        { id: 1, id2: 1, timestamp: moment().startOf('day').add(10, 'seconds').valueOf() },
-        { id: 2, id2: 2, timestamp: moment().startOf('day').add(6, 'minutes').valueOf() },
-        { id: 2, id2: 3, timestamp: moment().startOf('day').add(7, 'minutes').valueOf() },
-        { id: 3, id2: 4, timestamp: moment().startOf('day').add(11, 'minutes').valueOf() },
-        { id: 4, id2: 4, timestamp: moment().startOf('day').add(12, 'minutes').valueOf() }
+        { id: 1, id2: 1, timestamp: moment().startOf('day').unix() },
+        { id: 1, id2: 1, timestamp: moment().startOf('day').add(10, 'seconds').unix() },
+        { id: 2, id2: 2, timestamp: moment().startOf('day').add(6, 'minutes').unix() },
+        { id: 2, id2: 3, timestamp: moment().startOf('day').add(7, 'minutes').unix() },
+        { id: 3, id2: 4, timestamp: moment().startOf('day').add(11, 'minutes').unix() },
+        { id: 4, id2: 4, timestamp: moment().startOf('day').add(12, 'minutes').unix() }
       ];
       const expectedGroups = 3;
       const result = TimeAggregatorService.aggregate(events, [5, 'm'], {
@@ -112,12 +112,12 @@ describe('TimeAggregatorService', () => {
 
     it('groups by intervals and groups by attributes', (done) => {
       const events = [
-        { id: 1, id2: 1, timestamp: moment().startOf('day').valueOf() },
-        { id: 1, id2: 1, timestamp: moment().startOf('day').add(10, 'seconds').valueOf() },
-        { id: 2, id2: 2, timestamp: moment().startOf('day').add(6, 'minutes').valueOf() },
-        { id: 2, id2: 3, timestamp: moment().startOf('day').add(7, 'minutes').valueOf() },
-        { id: 3, id2: 4, timestamp: moment().startOf('day').add(11, 'minutes').valueOf() },
-        { id: 4, id2: 4, timestamp: moment().startOf('day').add(12, 'minutes').valueOf() }
+        { id: 1, id2: 1, timestamp: moment().startOf('day').unix() },
+        { id: 1, id2: 1, timestamp: moment().startOf('day').add(10, 'seconds').unix() },
+        { id: 2, id2: 2, timestamp: moment().startOf('day').add(6, 'minutes').unix() },
+        { id: 2, id2: 3, timestamp: moment().startOf('day').add(7, 'minutes').unix() },
+        { id: 3, id2: 4, timestamp: moment().startOf('day').add(11, 'minutes').unix() },
+        { id: 4, id2: 4, timestamp: moment().startOf('day').add(12, 'minutes').unix() }
       ];
       const expectedGroups = 5;
       // const expectedResult = [

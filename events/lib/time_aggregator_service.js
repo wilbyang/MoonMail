@@ -109,7 +109,7 @@ class TimeAggregatorService {
   }
 
   _floorDate(event) {
-    const dateTime = moment(event[this.timestampAttribute]);
+    const dateTime = moment.unix(event[this.timestampAttribute]);
     // returns a valid momentjs time unit m, minutes => minute
     const timeUnit = _timeWindowToTimeUnit[this.timeWindow[1]];
     // convert minutes, hours, days, etc to the beginning of grouping interval
@@ -126,7 +126,7 @@ class TimeAggregatorService {
     // ex: 12:01:10 in 5m interval returns 12:00:00
     // 12:07:50 in 5m interval returns 12:05:00
     const newDateTime = dateTime.set(timeUnit, newTimeUnit).startOf(timeUnit);
-    return newDateTime.valueOf();
+    return newDateTime.unix();
   }
 
   // @deprecated
