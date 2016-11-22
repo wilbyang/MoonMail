@@ -1,8 +1,5 @@
-'use strict';
-
-import { debug } from './index';
-import { IncrementerService } from './incrementer_service';
 import { Report } from 'moonmail-models';
+import { IncrementerService } from './incrementer_service';
 
 class IncrementCampaignsUnsubscriptionsService extends IncrementerService {
   constructor(records) {

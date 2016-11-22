@@ -1,7 +1,5 @@
-'use strict';
-
-import { debug } from './index';
 import * as async from 'async';
+import { debug } from './index';
 
 class IncrementerService {
   constructor(model, attribute, records) {

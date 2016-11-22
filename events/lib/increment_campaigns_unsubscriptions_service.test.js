@@ -1,12 +1,10 @@
-'use strict';
-
 import * as chai from 'chai';
 const sinonChai = require('sinon-chai');
-import { expect } from 'chai';
 import * as sinon from 'sinon';
 import { IncrementCampaignsUnsubscriptionsService } from './increment_campaigns_unsubscriptions_service';
 import * as sinonAsPromised from 'sinon-as-promised';
 
+const expect = chai.expect;
 chai.use(sinonChai);
 
 describe('IncrementCampaignsUnsubscriptionsService', () => {
@@ -22,7 +20,7 @@ describe('IncrementCampaignsUnsubscriptionsService', () => {
   });
 
   describe('#countByItem()', () => {
-    it('should return a multidimensional array of capaign occurences count', done => {
+    it('should return a multidimensional array of campaign occurences count', done => {
       const countByItem = incrementerService.countByItem;
       expect(countByItem).to.have.lengthOf(1);
       const firstItem = countByItem[0];
