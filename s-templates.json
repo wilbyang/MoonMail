@@ -89,6 +89,7 @@
   "attachListRecipientsTopic": "${project}-${stage}-attachListRecipients",
   "attachRecipientsCountTopic": "${project}-${stage}-attachRecipientsCount",
   "attachSenderTopic": "${project}-${stage}-attachSender",
+  "updateUserRepuationTopic": "${project}-${stage}-updateUserReputation",
   "updateCampaignTopic": "${project}-${stage}-updateCampaign",
   "unsubscribedRecipientTopic": "${project}-${stage}-unsubscribedRecipient",
   "updateListImportStatusTopic": "${project}-${stage}-updateListImportStatus",

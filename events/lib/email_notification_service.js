@@ -1,5 +1,6 @@
 'use strict';
 
+import { Promise } from 'bluebird';
 import { debug } from './index';
 import { SentEmail, Report, Recipient } from 'moonmail-models';
 import moment from 'moment';
@@ -9,7 +10,7 @@ class EmailNotificationService {
 
   constructor(notification) {
     this.messageId = notification.mail.messageId;
-    this.notificationType = notification.notificationType.toLowerCase();
+    this.notification = notification;
     this.sentEmail = null;
   }
 
@@ -28,9 +29,14 @@ class EmailNotificationService {
   unsubscribeRecipient() {
     return this.getSentEmail()
       .then(sentEmail => {
-        const recipient = {status: this.newStatus};
-        recipient[`${this.newStatus}At`] = moment().unix();
-        return Recipient.update(omitEmpty(recipient), sentEmail.listId, sentEmail.recipientId);
+        // There is no need to unubscribe recipient if
+        // it is not a complaint or a hard bounce
+        if (this._shouldUnsubscribe()) {
+          const recipient = {status: this.newStatus};
+          recipient[`${this.newStatus}At`] = moment().unix();
+          return Recipient.update(omitEmpty(recipient), sentEmail.listId, sentEmail.recipientId);
+        }
+        return Promise.resolve({});
       });
   }
 
@@ -41,10 +47,15 @@ class EmailNotificationService {
 
   incrementReportCount(sentEmail) {
     debug('= EmailNotificationService.incrementReportCount', JSON.stringify(sentEmail));
-    switch (this.notificationType) {
+    switch (this.notification.notificationType.toLowerCase()) {
       case 'bounce':
-        debug('= EmailNotificationService.incrementReportCount', 'Bounce');
-        return Report.incrementBounces(sentEmail.campaignId);
+        const bounceType = this.notification.bounce.bounceType.toLowerCase();
+        if (bounceType === 'permanent' || bounceType === 'undetermined') {
+            debug('= EmailNotificationService.incrementReportCount', 'Bounce');
+            return Report.incrementBounces(sentEmail.campaignId);
+        }
+        debug('= EmailNotificationService.incrementReportCount', 'Bounce', bounceType);
+        return Report.incrementSoftBounces(sentEmail.campaignId);
       case 'complaint':
         debug('= EmailNotificationService.incrementReportCount', 'Complaint');
         return Report.incrementComplaints(sentEmail.campaignId);
@@ -57,15 +68,38 @@ class EmailNotificationService {
   }
 
   get newStatus() {
-    switch (this.notificationType) {
-      case 'bounce':
-        return Recipient.statuses.bounced;
+    switch (this.notification.notificationType.toLowerCase()) {
+      case 'bounce': {
+        const bounceType = this.notification.bounce.bounceType.toLowerCase();
+        if (bounceType === 'permanent' || bounceType === 'undetermined') {
+          return Recipient.statuses.bounced;
+        }
+        return `${Recipient.statuses.bounced}::${bounceType}`;
+      }
       case 'complaint':
         return Recipient.statuses.complaint;
       default:
         return null;
     }
   }
+
+  _isHardBounce() {
+    if (this.notification.notificationType.toLowerCase() === 'bounce') {
+      if (this.notification.bounce.bounceType.toLowerCase() === 'permanent') {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  _isComplaint() {
+    return this.notification.notificationType.toLowerCase() === 'complaint';
+  }
+
+  _shouldUnsubscribe() {
+    return this._isHardBounce() || this._isComplaint();
+  }
+
 }
 
 module.exports.EmailNotificationService = EmailNotificationService;

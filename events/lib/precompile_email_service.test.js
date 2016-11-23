@@ -32,8 +32,8 @@ describe('PrecompileEmailService', () => {
   });
 
   describe('#constructor()', () => {
-    it('initializes an EmailQueue object with the user\'s api key as name', (done) => {
-      expect(precompileService.queue.name).to.equal(userApiKey);
+    it('initializes an EmailQueue object with the user\'s id as name', (done) => {
+      expect(precompileService.queue.name).to.equal(canonicalMessage.userId);
       done();
     });
 
@@ -87,9 +87,9 @@ describe('PrecompileEmailService', () => {
         precompileService = new PrecompileEmailService(sqsClient, emailParams);
       });
 
-      it('creates a queue named after the user\'s api key', (done) => {
+      it('creates a queue named after the user\'s id', (done) => {
         precompileService.enqueueEmail().then(() => {
-          expect(sqsClient.createQueue).to.have.been.calledWith({QueueName: userApiKey, Attributes: { "MessageRetentionPeriod": "1209600" }});
+          expect(sqsClient.createQueue).to.have.been.calledWith({ QueueName: canonicalMessage.userId.replace('|', '_') });
           done();
         });
       });
@@ -119,7 +119,7 @@ describe('PrecompileEmailService', () => {
 
       it('enqueues the composed email in the queue named after the user\'s api key', (done) => {
         precompileService.enqueueEmail().then((value) => {
-          expect(sqsClient.getQueueUrl).to.have.been.calledWith({QueueName: userApiKey});
+          expect(sqsClient.getQueueUrl).to.have.been.calledWith({QueueName: canonicalMessage.userId.replace('|', '_')});
           expect(sqsClient.createQueue).to.have.callCount(0);
           expect(value).to.have.property('ReceiptHandle');
           done();
@@ -132,5 +132,4 @@ describe('PrecompileEmailService', () => {
       });
     });
   });
-
 });

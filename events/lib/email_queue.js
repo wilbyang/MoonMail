@@ -133,6 +133,22 @@ class EmailQueue {
     });
   }
 
+  purgeQueue() {
+    return new Promise((resolve, reject) => {
+      this.getOrCreateQueue().then((queueUrl) => {
+        this.client.purgeQueue({ QueueUrl: queueUrl}, (err, data) => {
+          if (err) {
+            debug('= EmailQueue.purgeQueue', 'Error purging the queue', err);
+            reject(err);
+          } else {
+            debug('= EmailQueue.purgeQueue', 'Queue purged successfully');
+            resolve(data);
+          }
+        });
+      });
+    });
+  }
+
   _retrieveMessageParams(queueUrl) {
     return {
       QueueUrl: queueUrl,
@@ -162,10 +178,12 @@ class EmailQueue {
   _createQueue() {
     return new Promise((resolve, reject) => {
       debug('= EmailQueue._createQueue', 'Creating queue with name', this.name);
-      // Increase retention period to 14 days
+      // Increase retention period to 14 days dafault is 4 days
       // For more details visit:
       // http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/SQS.html#createQueue-property
-      const params = { QueueName: this.name, Attributes: { "MessageRetentionPeriod": "1209600" } };
+      // const params = { QueueName: this.name, Attributes: { "MessageRetentionPeriod": "1209600" } };
+
+      const params = { QueueName: this.name };
       this.client.createQueue(params, (err, data) => {
         if (err) {
           debug('= EmailQueue._createQueue', 'Error creating queue with name', this.name, err, err.stack);

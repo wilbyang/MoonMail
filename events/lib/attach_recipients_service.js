@@ -76,7 +76,7 @@ class AttachRecipientsService {
     return new Promise((resolve, reject) => {
       const snsParams = {
         TopicArn: process.env.SEND_EMAILS_TOPIC_ARN,
-        Message: JSON.stringify({ QueueName: this.campaignMessage.sender.apiKey })
+        Message: JSON.stringify({ QueueName: this.campaignMessage.userId.replace('|', '_') })
       };
       this.snsClient.publish(snsParams, (err, result) => {
         if (err) {

@@ -195,43 +195,41 @@ describe('SendEmailService', () => {
   });
 
   describe('#_checkReputation()', () => {
-    before(() => {
-      process.env.API_HOST = 'my.host.com';
-    });
-
-    context('it is been too long since the last reputation check', () => {
+    context('it is time to check reputation', () => {
       let senderService;
 
-      beforeEach(() => {
-        senderService = new SendEmailService(queue, null, contextStub, { sentEmails: 120, lastReputationCheckedOn: 0, lastPausedOn: 0 });
-      });
-
-      context('user has good reputation', () => {
+      context('the user has good reputation', () => {
         before(() => {
-          sinon.stub(axios, 'get').resolves({data: { totalComplaints: 2, maximumAllowedBounceRate: 5, sentEmails: 3519, maximumAllowedComplaintsRate: 0.1, minimumAllowedReputation: 15, complaintsRate: 0.057, reputation: 43.17, totalBounces: 3, bounceRate: 0.085 }});
+          senderService = new SendEmailService(queue, null, contextStub, { sentEmails: 120, lastReputationCheckedOn: 0, lastPausedOn: 0 });
+          const reputationData = { totalComplaints: 2, maximumAllowedBounceRate: 5, sentEmails: 3519, maximumAllowedComplaintsRate: 0.1, minimumAllowedReputation: 15, complaintsRate: 0.057, reputation: 43.17, totalBounces: 3, bounceRate: 0.085 };
+          sinon.stub(senderService, '_invokeGetUserData').resolves({ Payload: JSON.stringify(reputationData) });
         });
 
         it('resolves to continue the execution', (done) => {
           senderService._checkReputation().then(() => {
-            expect(axios.get).to.have.been.called;
+            expect(senderService._invokeGetUserData).to.have.been.called;
             expect(senderService.lastReputationCheckedOn).to.equal(120);
             done();
           }).catch(error => done(error));
         });
 
         after(() => {
-          axios.get.restore();
+          senderService._invokeGetUserData.restore();
         });
       });
 
-      context('user has bad reputation', () => {
+      context('the user has bad reputation', () => {
         before(() => {
-          sinon.stub(axios, 'get').resolves({data: { totalComplaints: 2, maximumAllowedBounceRate: 5, sentEmails: 10, maximumAllowedComplaintsRate: 0.1, minimumAllowedReputation: 15, complaintsRate: 0.057, reputation: 14, totalBounces: 3, bounceRate: 0.085 }});
+          senderService = new SendEmailService(queue, null, contextStub, { sentEmails: 120, lastReputationCheckedOn: 0, lastPausedOn: 0 });
+          const reputationData = { totalComplaints: 2, maximumAllowedBounceRate: 5, sentEmails: 10, maximumAllowedComplaintsRate: 0.1, minimumAllowedReputation: 15, complaintsRate: 0.057, reputation: 14, totalBounces: 3, bounceRate: 0.085 };
+          sinon.stub(senderService, '_invokeGetUserData').resolves({ Payload: JSON.stringify(reputationData) });
+          sinon.stub(senderService.queue, 'purgeQueue').resolves({});
         });
 
         it('rejects to stop the execution', (done) => {
           senderService._checkReputation().catch((error) => {
-            expect(axios.get).to.have.been.called;
+            expect(senderService._invokeGetUserData).to.have.been.called;
+            expect(senderService.queue.purgeQueue).to.have.been.called;
             expect(senderService.lastReputationCheckedOn).to.equal(120);
             expect(error).to.equal('Bad reputation');
             done();
@@ -239,7 +237,27 @@ describe('SendEmailService', () => {
         });
 
         after(() => {
-          axios.get.restore();
+          senderService._invokeGetUserData.restore();
+          senderService.queue.purgeQueue.restore();
+        });
+      });
+
+      context('an error ocurred calling to the getUserDataFunction', () => {
+        before(() => {
+          senderService = new SendEmailService(queue, null, contextStub, { sentEmails: 120, lastReputationCheckedOn: 0, lastPausedOn: 0 });
+          sinon.stub(senderService, '_invokeGetUserData').rejects('Unknown error');
+        });
+
+        it('rejects to stop the execution', (done) => {
+          senderService._checkReputation().then(() => {
+            expect(senderService._invokeGetUserData).to.have.been.called;
+            expect(senderService.lastReputationCheckedOn).to.equal(120);
+            done();
+          });
+        });
+
+        after(() => {
+          senderService._invokeGetUserData.restore();
         });
       });
 
@@ -250,20 +268,20 @@ describe('SendEmailService', () => {
 
       beforeEach(() => {
         senderService = new SendEmailService(queue, null, contextStub, { sentEmails: 120, lastReputationCheckedOn: 100, lastPausedOn: 0 });
-        sinon.stub(axios, 'get').resolves({});
+        sinon.stub(senderService, '_invokeGetUserData').resolves({});
       });
 
 
       it('resolves to continue the execution without checking reputation', (done) => {
         senderService._checkReputation().then(() => {
-          expect(axios.get).to.have.not.been.called;
+          expect(senderService._invokeGetUserData).to.have.not.been.called;
           expect(senderService.lastReputationCheckedOn).to.equal(100);
           done();
         }).catch(error => done(error));
       });
 
       after(() => {
-        axios.get.restore();
+        senderService._invokeGetUserData.restore();
       });
     });
 
