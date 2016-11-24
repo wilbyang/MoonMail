@@ -32,8 +32,7 @@ module.exports.respond = (event, cb, context) => {
     }
   };
 
-  handlePauses(state).then((lastPausedOn) => {
-    state.lastPausedOn = lastPausedOn;
+  handlePauses(state).then(() => {
     const senderService = new SendEmailService(emailQueue, lambda, context, state);
     senderService.sendEnqueuedEmails()
       .then((result) => cb(null, result))
@@ -42,16 +41,20 @@ module.exports.respond = (event, cb, context) => {
 };
 
 function handlePauses(state) {
-  let lastPausedOn = state.lastPausedOn;
-  const sentEmails = state.sentEmails;
-  debug('= sender._handlePauses called', sentEmails);
-  let delay = 0;
-  if (sentEmails - lastPausedOn >= 1000) {
-    lastPausedOn = sentEmails;
-    // Take a 2 mins pause.
-    delay = 2 * 60 * 1000;
-    debug('= sender._handlePauses', `${sentEmails} emails sent, let's take a break`);
+  debug('= sender._handlePauses called', state);
+  if (state.reputation) {
+    const reputation = state.reputation;
+
+    const maximumDelay = 120; // 120 secs
+    let reference = maximumDelay;
+    if (reputation <= 15) {
+      reference += 18;
+    }
+    let delay = reference - (maximumDelay * reputation / 100);
+    if (delay < 10) delay = 0;
+    debug('= sender._handlePauses delaying', delay, 'ms');
+    return Promise.delay(delay * 1000);
   }
-  return Promise.delay(delay, lastPausedOn);
+  return Promise.resolve({});
 }
 module.exports.handlePauses = handlePauses;

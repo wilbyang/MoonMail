@@ -18,7 +18,7 @@ class SendEmailService {
     this.context = context;
     this.counter = state.sentEmails || 0;
     this.lastReputationCheckedOn = state.lastReputationCheckedOn || 0;
-    this.lastPausedOn = state.lastPausedOn || 0;
+    this.reputation = state.reputation || 15;
     this.userId = null;
   }
 
@@ -40,13 +40,13 @@ class SendEmailService {
       return this.sendEnqueuedEmails();
     } else {
       debug('= SendEmailService.sendNextBatch', 'Not time enough for next batch, invoking lambda...');
-      return this.invokeLambda();
+      return this._checkReputation().then(() => this.invokeLambda());
     }
   }
 
   invokeLambda() {
     debug('= SendEmailService.invokeLambda', 'Invoking function again', this.lambdaName);
-    const payload = { QueueUrl: this.queue.url, state: { sentEmails: this.counter, lastReputationCheckedOn: this.lastReputationCheckedOn, lastPausedOn: this.lastPausedOn } };
+    const payload = { QueueUrl: this.queue.url, state: { sentEmails: this.counter, lastReputationCheckedOn: this.lastReputationCheckedOn, reputation: this.reputation } };
     const params = {
       FunctionName: this.lambdaName,
       InvocationType: 'Event',
@@ -210,9 +210,10 @@ class SendEmailService {
       return this._invokeGetUserData().then((response) => {
         const userData = JSON.parse(response.Payload);
         const reputationData = userData.reputationData;
+        this.reputation = reputationData.reputation;
         debug('= SendEmailService._checkReputation user reputation:', reputationData);
         if (reputationData.reputation < reputationData.minimumAllowedReputation) {
-          debug('= SendEmailService._checkReputation, Bad Reputation detected, stopping...');
+          debug('= SendEmailService._checkReputation, Bad Reputation detected', reputationData.reputation, 'stopping...');
           return Promise.reject('Bad reputation');
         }
         return Promise.resolve({});
