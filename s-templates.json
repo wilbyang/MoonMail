@@ -19,7 +19,8 @@
       "sqs:GetQueueUrl",
       "sqs:ReceiveMessage",
       "sqs:CreateQueue",
-      "sqs:SendMessage"
+      "sqs:SendMessage",
+      "sqs:PurgeQueue"
     ],
     "Resource": "arn:aws:sqs:${region}:*:*"
   },
