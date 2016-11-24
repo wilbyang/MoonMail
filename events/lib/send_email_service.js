@@ -18,7 +18,7 @@ class SendEmailService {
     this.context = context;
     this.counter = state.sentEmails || 0;
     this.lastReputationCheckedOn = state.lastReputationCheckedOn || 0;
-    this.lastPausedOn = state.lastPausedOn || 0;
+    this.reputation = state.reputation || 15;
     this.userId = null;
   }
 
@@ -27,7 +27,8 @@ class SendEmailService {
   }
 
   sendEnqueuedEmails() {
-    return this.sendBatch()
+    return this._checkReputation()
+      .then(() => this.sendBatch())
       .then((batch) => this.deleteBatch(batch))
       .then(() => this.sendNextBatch())
       .catch(err => debug('= SendEmailService.sendEnqueuedEmails', `Sent ${this.counter} emails so far`));
@@ -36,32 +37,22 @@ class SendEmailService {
   sendNextBatch() {
     if (this.timeEnough()) {
       debug('= SendEmailService.sendNextBatch', 'Time enough for another batch');
-      return this._checkReputation().then(() => this.sendEnqueuedEmails());
+      return this.sendEnqueuedEmails();
     } else {
       debug('= SendEmailService.sendNextBatch', 'Not time enough for next batch, invoking lambda...');
-      return this.invokeLambda();
+      return this._checkReputation().then(() => this.invokeLambda());
     }
   }
 
   invokeLambda() {
-    return new Promise((resolve, reject) => {
-      debug('= SendEmailService.invokeLambda', 'Invoking function again', this.lambdaName);
-      const payload = { QueueUrl: this.queue.url, state: { sentEmails: this.counter, lastReputationCheckedOn: this.lastReputationCheckedOn, lastPausedOn: this.lastPausedOn } };
-      const params = {
-        FunctionName: this.lambdaName,
-        InvocationType: 'Event',
-        Payload: JSON.stringify(payload)
-      };
-      this.lambdaClient.invoke(params, (err, data) => {
-        if (err) {
-          debug('= SendEmailService.invokeLambda', 'Error invoking lambda', err, err.stack);
-          reject(err);
-        } else {
-          debug('= SendEmailService.invokeLambda', 'Invoked successfully');
-          resolve(data);
-        }
-      });
-    });
+    debug('= SendEmailService.invokeLambda', 'Invoking function again', this.lambdaName);
+    const payload = { QueueUrl: this.queue.url, state: { sentEmails: this.counter, lastReputationCheckedOn: this.lastReputationCheckedOn, reputation: this.reputation } };
+    const params = {
+      FunctionName: this.lambdaName,
+      InvocationType: 'Event',
+      Payload: JSON.stringify(payload)
+    };
+    return this._invokeLambda(params);
   }
 
   timeEnough() {
@@ -109,6 +100,20 @@ class SendEmailService {
           });
         })
         .catch(() => debug('= SendEmailService.sendBatch', `Sent ${this.counter} emails so far`));
+    });
+  }
+
+  _invokeLambda(params) {
+    return new Promise((resolve, reject) => {
+      this.lambdaClient.invoke(params, (err, data) => {
+        if (err) {
+          debug('= SendEmailService._invokeLambda', 'Error invoking lambda', err, err.stack);
+          reject(err);
+        } else {
+          debug('= SendEmailService._invokeLambda', 'Invoked successfully', params);
+          resolve(data);
+        }
+      });
     });
   }
 
@@ -187,29 +192,35 @@ class SendEmailService {
     this.userId = enqueuedEmail.getEmailUserId();
   }
 
+  _invokeGetUserData() {
+    debug('= SendEmailService._invokeGetUserData');
+    const payload = { userId: this.userId };
+    const params = {
+      FunctionName: process.env.GET_USER_DATA_FUNCTION_NAME,
+      InvocationType: 'RequestResponse',
+      Payload: JSON.stringify(payload)
+    };
+    return this._invokeLambda(params);
+  }
+
   _checkReputation() {
-    if (this.counter - this.lastReputationCheckedOn >= 100) {
+    if (this.counter - this.lastReputationCheckedOn >= 500) {
       this.lastReputationCheckedOn = this.counter;
-      debug('= SendEmailService._checkReputation called, be ware!!!!!');
-      const userReputationPath = `account/${this.userId}/reputation`;
-      const getUserReputationUrl = {
-        protocol: 'https',
-        hostname: process.env.API_HOST,
-        pathname: userReputationPath
-      };
-      const repUrl = url.format(getUserReputationUrl);
-      return axios.get(repUrl, { timeout: 1000 }).then((response) => {
-        const reputationData = response.data;
+      debug('= SendEmailService._checkReputation, working...');
+      return this._invokeGetUserData().then((response) => {
+        const userData = JSON.parse(response.Payload);
+        const reputationData = userData.reputationData;
+        this.reputation = reputationData.reputation;
         debug('= SendEmailService._checkReputation user reputation:', reputationData);
         if (reputationData.reputation < reputationData.minimumAllowedReputation) {
-          debug('= SendEmailService._checkReputation, Bad reputation detected stopping the line!!!!');
+          debug('= SendEmailService._checkReputation, Bad Reputation detected', reputationData.reputation, 'stopping...');
           return Promise.reject('Bad reputation');
         }
         return Promise.resolve({});
       }).catch((error) => {
         debug('= SendEmailService._checkReputation error ocurred:', error);
         if (error === 'Bad reputation') {
-          return Promise.reject(error);
+          return this.queue.purgeQueue().then(() => Promise.reject(error));
         }
         // Being conservative since this should not break send emails proccess
         return Promise.resolve({});

@@ -10,7 +10,7 @@ class PrecompileEmailService {
   constructor(sqsClient, emailParams) {
     this.emailParams = emailParams;
     this.apiHost = process.env.API_HOST;
-    this.queue = new EmailQueue(sqsClient, {name: emailParams.sender.apiKey});
+    this.queue = new EmailQueue(sqsClient, { name: this.queueName });
     this.email = new Email({
       fromEmail: emailParams.sender.emailAddress,
       to: emailParams.recipient.email,
@@ -73,6 +73,10 @@ class PrecompileEmailService {
     const userPlan = emailParams.userPlan;
     const freePlanRegex = /free/;
     return (!userPlan) || (userPlan.match(freePlanRegex)) || (userPlan === 'staff');
+  }
+
+  get queueName() {
+    return this.emailParams.userId.replace('|', '_');
   }
 }
 

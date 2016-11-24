@@ -8,6 +8,7 @@ import * as sinon from 'sinon';
 import * as sinonAsPromised from 'sinon-as-promised';
 import { SentEmail, Report, Recipient } from 'moonmail-models';
 import { EmailNotificationService } from './email_notification_service';
+import * as softBounce from './fixtures/soft_bounce_notification.json';
 import * as bounce from './fixtures/bounce_notification.json';
 import * as complaint from './fixtures/complaint_notification.json';
 import * as delivery from './fixtures/delivery_notification.json';
@@ -23,6 +24,7 @@ describe('EmailNotificationService', () => {
   let incrementBouncesStub;
   let incrementComplaintsStub;
   let incrementDeliveriesStub;
+  let incrementSoftBouncesStub;
   const messageId = 'some-message-id';
   const recipientId = 'thatUserId';
   const listId = 'some-list-id';
@@ -36,6 +38,7 @@ describe('EmailNotificationService', () => {
     updateEmailStub = sinon.stub(SentEmail, 'update').resolves(bouncedEmail);
     updateRecipientStub = sinon.stub(Recipient, 'update').resolves(true);
     incrementBouncesStub = sinon.stub(Report, 'incrementBounces').resolves(true);
+    incrementSoftBouncesStub = sinon.stub(Report, 'incrementSoftBounces').resolves(true);
     incrementComplaintsStub = sinon.stub(Report, 'incrementComplaints').resolves(true);
     incrementDeliveriesStub = sinon.stub(Report, 'incrementDeliveries').resolves(true);
   });
@@ -147,6 +150,16 @@ describe('EmailNotificationService', () => {
         });
       });
     });
+
+    context('when the notification is a soft bounce', () => {
+      it('increments the soft bounces count', (done) => {
+        emailNotificationService = new EmailNotificationService(softBounce);
+        emailNotificationService.incrementReportCount(sentEmail).then(() => {
+          expect(incrementSoftBouncesStub).to.have.been.calledWith(sentEmail.campaignId);
+          done();
+        });
+      });
+    });
   });
 
   afterEach(() => {
@@ -156,5 +169,6 @@ describe('EmailNotificationService', () => {
     incrementBouncesStub.restore();
     incrementComplaintsStub.restore();
     incrementDeliveriesStub.restore();
+    incrementSoftBouncesStub.restore();
   });
 });

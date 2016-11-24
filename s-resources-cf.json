@@ -146,6 +146,12 @@
         "TopicName": "$${attachSenderTopic}"
       }
     },
+    "UpdateUserReputationTopic": {
+      "Type": "AWS::SNS::Topic",
+      "Properties": {
+        "TopicName": "$${updateUserReputationTopic}"
+      }
+    },
     "EmailNotificationsTopic": {
       "Type": "AWS::SNS::Topic",
       "Properties": {
@@ -844,6 +850,12 @@
       "Description": "ARN of the AttachSender SNS topic",
       "Value": {
         "Ref": "AttachSenderTopic"
+      }
+    },
+    "UpdateUserReputationTopicARN": {
+      "Description": "ARN of the UpdateUserReputation SNS topic",
+      "Value": {
+        "Ref": "UpdateUserReputationTopic"
       }
     },
     "AttachRecipientsCountTopicARN": {

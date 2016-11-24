@@ -13,15 +13,15 @@ describe('sendEmails', () => {
   let state;
   describe('#handlePauses()', () => {
 
-    context('it is been too long since the last pause', () => {
+    context('the sender has very poor reputation', () => {
       before(() => {
-        state = { sentEmails: 1001, lastPausedOn: 0};
+        state = { reputation: 15 };
         sinon.stub(Promise, 'delay').resolves({});
       });
 
-      it('pauses the execution for a while', (done) => {
-        handlePauses(state).then((lastPausedOn) => {
-          expect(Promise.delay.lastCall.args).to.deep.equals([120000, 1001]); // 2m pause, update lastPausedOn
+      it('pauses the execution for 120 secs', (done) => {
+        handlePauses(state).then(() => {
+          expect(Promise.delay.lastCall.args).to.deep.equals([120000]); // 2m pause
           done();
         }).catch(error => done(error));
       });
@@ -30,15 +30,32 @@ describe('sendEmails', () => {
       });
     });
 
-    context('not need to make a pause', () => {
+    context('the sender has very good reputation', () => {
       before(() => {
-        state = { sentEmails: 1001, lastPausedOn: 10};
+        state = { reputation: 92 };
         sinon.stub(Promise, 'delay').resolves({});
       });
 
-      it('pauses the execution for a while', (done) => {
-        handlePauses(state).then((lastPausedOn) => {
-          expect(Promise.delay.lastCall.args).to.deep.equals([0, 10]); // No pause, keep previous lastPausedOn
+      it('pauses the execution for a few seconds', (done) => {
+        handlePauses(state).then(() => {
+          expect(Promise.delay.lastCall.args).to.deep.equals([0]);
+          done();
+        }).catch(error => done(error));
+      });
+      after(() => {
+        Promise.delay.restore();
+      });
+    });
+
+    context('the sender has perfect reputation', () => {
+      before(() => {
+        state = { reputation: 100 };
+        sinon.stub(Promise, 'delay').resolves({});
+      });
+
+      it('pauses the execution for a few seconds', (done) => {
+        handlePauses(state).then(() => {
+          expect(Promise.delay.lastCall.args).to.deep.equals([0]);
           done();
         }).catch(error => done(error));
       });
