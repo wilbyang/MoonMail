@@ -46,6 +46,7 @@ describe('sendTestEmail', () => {
       });
 
       it('sends an error message', (done) => {
+        serviceInstanceStub.sendEmail.reset();
         respond(event, (err) => {
           expect(serviceInstanceStub.sendEmail).not.to.have.been.called;
           const error = JSON.parse(err);

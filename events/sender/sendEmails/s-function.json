@@ -38,6 +38,6 @@
     "SERVERLESS_REGION": "${region}",
     "SENT_EMAILS_TOPIC_ARN": "${sentEmailsTopicARN}",
     "GET_USER_DATA_FUNCTION_NAME": "${project}-users-getUserData",
-    "DEBUG": "true"
+    "API_HOST": "${apiHost}"
   }
 }
