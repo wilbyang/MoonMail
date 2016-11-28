@@ -199,9 +199,7 @@ class ImportRecipientsService {
           } else {
             const item = results.data[0];
             debug('= ImportRecipientsService.parseCSV', 'Parsing recipient', JSON.stringify(item), headerMapping);
-            const emailKey = Object.keys(item)[0];
             let newRecp = {
-              id: base64url.encode(item[emailKey]),
               userId,
               listId,
               metadata: {},
@@ -217,6 +215,7 @@ class ImportRecipientsService {
             }
             newRecp.email = newRecp.metadata.email;
             delete newRecp.metadata.email;
+            newRecp.id = base64url.encode(newRecp.email);
             recipients.push(newRecp);
           }
         },
