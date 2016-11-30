@@ -10,7 +10,7 @@
     "url": "git://github.com/"
   },
   "scripts": {
-    "test": "mocha --require babel-register $(find . -name '*.test.js' -not -path './node_modules/*')"
+    "test": "NODE_ENV=test mocha --require babel-register $(find . -name '*.test.js' -not -path './node_modules/*')"
   },
   "keywords": [],
   "devDependencies": {
