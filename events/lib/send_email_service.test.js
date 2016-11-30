@@ -230,7 +230,7 @@ describe('SendEmailService', () => {
         it('rejects to stop the execution', (done) => {
           senderService._checkReputation().catch((error) => {
             expect(senderService._invokeGetUserData).to.have.been.called;
-            expect(senderService.queue.purgeQueue).to.have.been.called;
+            // expect(senderService.queue.purgeQueue).to.have.been.called;
             expect(senderService.lastReputationCheckedOn).to.equal(520);
             expect(senderService.reputation).to.equal(14);
             expect(error).to.equal('Bad reputation');

@@ -38,6 +38,7 @@
     "SERVERLESS_REGION": "${region}",
     "SENT_EMAILS_TOPIC_ARN": "${sentEmailsTopicARN}",
     "GET_USER_DATA_FUNCTION_NAME": "${project}-users-getUserData",
-    "API_HOST": "${apiHost}"
+    "API_HOST": "${apiHost}",
+    "LOG_LEVEL": "info"
   }
 }

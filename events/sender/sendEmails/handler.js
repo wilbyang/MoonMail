@@ -9,11 +9,12 @@ require('babel-polyfill');
  */
 
 // Require Logic
+var logger = require('../../lib/index');
 var action = require('./action');
 
 // Lambda Handler
 module.exports.handler = function(event, context) {
-
+  logger.configureLogger(event, context);
   action.respond(event, function(error, response) {
     return context.done(error, response);
   }, context);
