@@ -26,8 +26,7 @@
     "SERVERLESS_STAGE": "${stage}",
     "SERVERLESS_REGION": "${region}",
     "CAMPAIGNS_TABLE": "$${campaignsTable}",
-    "UPDATE_CAMPAIGN_TOPIC_ARN": "${updateCampaignTopicARN}",
-    "DEBUG": "true"
+    "UPDATE_CAMPAIGN_TOPIC_ARN": "${updateCampaignTopicARN}"
   },
   "vpc": {
     "securityGroupIds": [],

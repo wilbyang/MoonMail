@@ -44,7 +44,9 @@
     "SERVERLESS_STAGE": "${stage}",
     "SERVERLESS_REGION": "${region}",
     "DEBUG": "true",
-    "RECIPIENTS_TABLE": "$${recipientsTable}"
+    "RECIPIENTS_TABLE": "$${recipientsTable}",
+    "EMAIL_INDEX_NAME": "$${recipientsEmailIndex}",
+    "RECIPIENT_STATUS_INDEX_NAME": "$${recipientsStatusIndex}"
   },
   "vpc": {
     "securityGroupIds": [],

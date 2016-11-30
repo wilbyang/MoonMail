@@ -515,6 +515,14 @@
           {
             "AttributeName": "listId",
             "AttributeType": "S"
+          },
+          {
+            "AttributeName": "email",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "status",
+            "AttributeType": "S"
           }
         ],
         "KeySchema": [
@@ -534,7 +542,45 @@
           "ReadCapacityUnits": "${recipientsRCU}",
           "WriteCapacityUnits": "${recipientsWCU}"
         },
-        "TableName": "$${recipientsTable}"
+        "TableName": "$${recipientsTable}",
+        "GlobalSecondaryIndexes": [
+          {
+            "IndexName" : "$${recipientsEmailIndex}",
+            "KeySchema" : [
+              {
+                "AttributeName": "listId",
+                "KeyType": "HASH"
+              },
+              {
+                "AttributeName": "email",
+                "KeyType": "RANGE"
+              }
+            ],
+            "Projection" : {"ProjectionType": "ALL"},
+            "ProvisionedThroughput" : {
+              "ReadCapacityUnits": "${defaultRCU}",
+              "WriteCapacityUnits": "${defaultWCU}"
+            }
+          },
+          {
+            "IndexName" : "$${recipientsStatusIndex}",
+            "KeySchema" : [
+              {
+                "AttributeName": "listId",
+                "KeyType": "HASH"
+              },
+              {
+                "AttributeName": "status",
+                "KeyType": "RANGE"
+              }
+            ],
+            "Projection" : {"ProjectionType": "ALL"},
+            "ProvisionedThroughput" : {
+              "ReadCapacityUnits": "${defaultRCU}",
+              "WriteCapacityUnits": "${defaultWCU}"
+            }
+          }
+        ]
       }
     },
     "OpensTable": {
