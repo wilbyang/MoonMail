@@ -1,4 +1,7 @@
 {
-  "campaignId": "123",
-  "linkId": "4567"
+  "campaignId": "ciw69c4d1000001p9hunzxt9a",
+  "linkId": "ciw69dafj000001owxl3ex80d",
+  "linkUrl": "https://www.facebook.com/Escola-Nàutica-Port-Olímpic-1543869665911322/",
+  "recipientId": "ZGF2aWQuZ2FyY2lhKzEwMTAwQG1pY3JvYXBwcy5jb20",
+  "headers": "{\"Accept\": \"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8\" ,\"Accept-Encoding\": \"gzip, deflate, sdch, br\" ,\"Accept-Language\": \"en,es;q=0.8,en-US;q=0.6,it;q=0.4,pt;q=0.2,fr;q=0.2\" ,\"CloudFront-Forwarded-Proto\": \"https\" ,\"CloudFront-Is-Desktop-Viewer\": \"true\" ,\"CloudFront-Is-Mobile-Viewer\": \"false\" ,\"CloudFront-Is-SmartTV-Viewer\": \"false\" ,\"CloudFront-Is-Tablet-Viewer\": \"false\" ,\"CloudFront-Viewer-Country\": \"ES\" ,\"Host\": \"mkre901l1e.execute-api.us-east-1.amazonaws.com\" ,\"Upgrade-Insecure-Requests\": \"1\" ,\"User-Agent\": \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.98 Safari/537.36\" ,\"Via\": \"1.1 c674a4b29d26cde0a435cefba1a6c2e0.cloudfront.net (CloudFront)\" ,\"X-Amz-Cf-Id\": \"V5GIuF36YvuRSREygzQpU5N8fKSw8brduU8S34xFTDQjrdt48-3-XA==\" ,\"X-Forwarded-For\": \"89.140.96.126, 54.240.157.64\" ,\"X-Forwarded-Port\": \"443\" ,\"X-Forwarded-Proto\": \"https\" }"
 }

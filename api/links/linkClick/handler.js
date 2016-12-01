@@ -1,8 +1,6 @@
-'use strict';
-
 import { Kinesis } from 'aws-sdk';
-import { debug } from '../../lib/logger';
 import moment from 'moment';
+import { debug } from '../../lib/logger';
 
 const buffer = new Kinesis({region: process.env.SERVERLESS_REGION});
 
@@ -25,7 +23,7 @@ export default (event, context) => {
     } else {
       debug('= linkClick.handler', 'Message successfully pushed to buffer');
     }
-    return context.done(null, {url: addHttp(event.linkUrl)});
+    return context.done(null, {url: addHttp(encodeURI(event.linkUrl))});
   });
 };
 
