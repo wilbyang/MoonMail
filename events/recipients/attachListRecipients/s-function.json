@@ -29,8 +29,7 @@
     "RECIPIENTS_TABLE": "$${recipientsTable}",
     "REDIS_ENDPOINT_PORT": "${redisEndpointPort}",
     "REDIS_ENDPOINT_ADDRESS": "${redisEndpointAddress}",
-    "REDIS_PASSWORD": "${redisPassword}",
-    "DEBUG": "true"
+    "REDIS_PASSWORD": "${redisPassword}"
   },
   "vpc": {
     "securityGroupIds": [],

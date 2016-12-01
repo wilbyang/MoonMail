@@ -26,8 +26,7 @@
     "SERVERLESS_PROJECT": "${project}",
     "SERVERLESS_STAGE": "${stage}",
     "SERVERLESS_REGION": "${region}",
-    "LINKS_TABLE": "$${linksTable}",
-    "DEBUG": "true"
+    "LINKS_TABLE": "$${linksTable}"
   },
   "vpc": {
     "securityGroupIds": [],

@@ -17,7 +17,6 @@
     "SERVERLESS_PROJECT": "${project}",
     "SERVERLESS_STAGE": "${stage}",
     "SERVERLESS_REGION": "${region}",
-    "DEBUG": true,
     "LISTS_TABLE": "$${listsTable}",
     "RECIPIENTS_TABLE": "$${recipientsTable}",
     "EXPORTS_BUCKET_NAME": "$${listsExportBucket}"

@@ -40,8 +40,7 @@
     "SERVERLESS_PROJECT": "${project}",
     "SERVERLESS_STAGE": "${stage}",
     "SERVERLESS_REGION": "${region}",
-    "TEMPLATES_TABLE": "$${templatesTable}",
-    "DEBUG": "true"
+    "TEMPLATES_TABLE": "$${templatesTable}"
   },
   "vpc": {
     "securityGroupIds": [],
