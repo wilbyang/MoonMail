@@ -38,6 +38,7 @@
     "SERVERLESS_REGION": "${region}",
     "CAMPAIGNS_TABLE": "$${campaignsTable}",
     "USERS_TABLE": "$${usersTable}",
+    "LISTS_TABLE": "$${listsTable}",
     "UPDATE_CAMPAIGN_TOPIC_ARN": "${updateCampaignTopicARN}",
     "ATTACH_RECIPIENTS_COUNT_TOPIC_ARN": "${attachRecipientsCountTopicARN}",
     "SENT_AT_INDEX_NAME": "$${campaignsSentAtIndex}",
