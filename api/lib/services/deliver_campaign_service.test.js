@@ -3,8 +3,9 @@
 import * as chai from 'chai';
 import * as sinon from 'sinon';
 import { expect } from 'chai';
+import Promise from 'bluebird';
 import { DeliverCampaignService } from './deliver_campaign_service';
-import { Campaign } from 'moonmail-models';
+import { Campaign, List } from 'moonmail-models';
 const awsMock = require('aws-sdk-mock');
 const AWS = require('aws-sdk');
 const chaiAsPromised = require('chai-as-promised');
@@ -64,10 +65,34 @@ describe('DeliverCampaignService', () => {
       });
     });
 
+    context('when the user is not allowed to send to the total of recipients', () => {
+      before(() => {
+        deliverCampaignService = new DeliverCampaignService(snsClient, {campaignId, userId, userPlan: freeUserPlan});
+        sinon.stub(Campaign, 'sentLastNDays').resolves(deliverCampaignService.maxDailyCampaigns - 1);
+        sinon.stub(Campaign, 'get').resolves(campaign);
+        sinon.stub(List, 'get').resolves({userId, id: listIds[0], name: 'Some list', subscribedCount: 251});
+      });
+
+      it('rejects the promise', done => {
+        deliverCampaignService.sendCampaign().catch((error) => {
+          expect(error).to.equal('You can send campaigns up to 250 subscribers');
+          done();
+        });
+      });
+
+      after(() => {
+        List.get.restore();
+        Campaign.get.restore();
+        Campaign.sentLastNDays.restore();
+      });
+    });
+
     context('when the campaign is not ready to be sent', () => {
       before(() => {
+        deliverCampaignService = new DeliverCampaignService(snsClient, {campaignId, userId, userPlan: freeUserPlan});
+        sinon.stub(Campaign, 'sentLastNDays').resolves(deliverCampaignService.maxDailyCampaigns - 1);
         sinon.stub(Campaign, 'get').resolves(nonReadyCampaign);
-        deliverCampaignService = new DeliverCampaignService(snsClient, {campaignId, userId, userPlan: 'plan'});
+        sinon.stub(List, 'get').resolves({userId, id: listIds[0], name: 'Some list', subscribedCount: 25});
       });
 
       it('rejects the promise', done => {
@@ -77,14 +102,18 @@ describe('DeliverCampaignService', () => {
 
       after(() => {
         Campaign.get.restore();
+        List.get.restore();
+        Campaign.sentLastNDays.restore();
       });
     });
 
     context('when only campaign id and user id were provided', () => {
       before(() => {
         sinon.stub(Campaign, 'get').resolves(campaign);
-        deliverCampaignService = new DeliverCampaignService(snsClient, {campaignId, userId, userPlan: 'plan'});
+        deliverCampaignService = new DeliverCampaignService(snsClient, {campaignId, userId, userPlan: freeUserPlan});
         sinon.stub(deliverCampaignService, '_updateCampaignStatus').resolves(true);
+        sinon.stub(Campaign, 'sentLastNDays').resolves(deliverCampaignService.maxDailyCampaigns - 1);
+        sinon.stub(List, 'get').resolves({userId, id: listIds[0], name: 'Some list', subscribedCount: 25});
       });
 
       it('fetches the campaign from DB and sends it to the topic', done => {
@@ -107,6 +136,8 @@ describe('DeliverCampaignService', () => {
 
       after(() => {
         Campaign.get.restore();
+        Campaign.sentLastNDays.restore();
+        List.get.restore();
         deliverCampaignService._updateCampaignStatus.restore();
       });
     });
@@ -116,6 +147,8 @@ describe('DeliverCampaignService', () => {
         sinon.stub(Campaign, 'update').resolves(updatedCampaign);
         deliverCampaignService = new DeliverCampaignService(snsClient, {campaign, campaignId, userId, userPlan: 'plan'});
         sinon.stub(deliverCampaignService, '_updateCampaignStatus').resolves(true);
+        sinon.stub(Campaign, 'sentLastNDays').resolves(deliverCampaignService.maxDailyCampaigns - 1);
+        sinon.stub(List, 'get').resolves({userId, id: listIds[0], name: 'Some list', subscribedCount: 25});
       });
 
       it('fetches the campaign from DB and sends it to the topic', (done) => {
@@ -137,6 +170,8 @@ describe('DeliverCampaignService', () => {
       });
 
       after(() => {
+        Campaign.sentLastNDays.restore();
+        List.get.restore();
         Campaign.update.restore();
       });
     });

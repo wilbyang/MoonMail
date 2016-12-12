@@ -1,7 +1,8 @@
 'use strict';
 
+import Promise from 'bluebird';
 import { debug } from '../logger';
-import { Campaign } from 'moonmail-models';
+import { Campaign, List } from 'moonmail-models';
 import inlineCss from 'inline-css';
 
 class DeliverCampaignService {
@@ -20,7 +21,7 @@ class DeliverCampaignService {
 
   sendCampaign() {
     debug('= DeliverCampaignService.sendCampaign', `Sending campaign with id ${this.campaignId}`);
-    return this._checkUserQuota()
+    return this.checkUserQuota()
       .then(() => this._getCampaign())
       .then(campaign => this._checkCampaign(campaign))
       .then(campaign => this._buildCampaignMessage(campaign))
@@ -28,20 +29,21 @@ class DeliverCampaignService {
       .then(() => this._updateCampaignStatus());
   }
 
-  _checkUserQuota() {
+  checkUserQuota() {
     debug('= DeliverCampaignService._checkUserQuota', this.userId);
     return this._checkMonthlyQuota()
-      .then(() => this._checkDailyQuota());
+      .then(() => this._checkDailyQuota())
+      .then(() => this._checkRecipientsLimits());
   }
 
   _checkMonthlyQuota() {
     return new Promise((resolve, reject) => {
-      debug('= DeliverCampaignService._checMonthlyQuota', this.userId);
+      debug('= DeliverCampaignService._checkMonthlyQuota', this.userId);
       if (this.maxMonthlyCampaigns) {
-        debug('= DeliverCampaignService._checMonthlyQuota', 'User has a limit of campaigns');
+        debug('= DeliverCampaignService._checkMonthlyQuota', 'User has a limit of campaigns');
         Campaign.sentLastMonth(this.userId)
           .then(count => {
-            debug('= DeliverCampaignService._checMonthlyQuota', count);
+            debug('= DeliverCampaignService._checkMonthlyQuota', count);
             if (count < this.maxMonthlyCampaigns) {
               this.sentCampaignsInMonth = count;
               resolve(true);
@@ -50,7 +52,7 @@ class DeliverCampaignService {
             }
           });
       } else {
-        debug('= DeliverCampaignService._checMonthlyQuota', 'User has no limit of campaigns');
+        debug('= DeliverCampaignService._checkMonthlyQuota', 'User has no limit of campaigns');
         resolve(true);
       }
     });
@@ -76,6 +78,33 @@ class DeliverCampaignService {
         resolve(true);
       }
     });
+  }
+
+  _checkRecipientsLimits() {
+    return this._getLists()
+      .then((lists) => this._checkRecipients(lists));
+  }
+
+  _getLists() {
+    return this._getCampaign()
+      .then(campaign => {
+        const listIds = campaign.listIds;
+        if (listIds) {
+          const getListPromises = listIds.map(listId => List.get(this.userId, listId));
+          return Promise.all(getListPromises);
+        }
+        return Promise.resolve();
+      });
+  }
+
+  _checkRecipients(lists) {
+    if (lists) {
+      const count = lists.reduce((accum, next) => (accum + next.subscribedCount), 0);
+      if (count > this.maxRecipients) {
+        return Promise.reject(`You can send campaigns up to ${this.maxRecipients} subscribers`);
+      }
+    }
+    return Promise.resolve({});
   }
 
   _getCampaign() {
@@ -107,7 +136,7 @@ class DeliverCampaignService {
   _buildCampaignMessage(campaign) {
     debug('= DeliverCampaignService._buildCampaignMessage', campaign);
     return new Promise((resolve) => {
-      inlineCss(campaign.body, {url: './'})
+      inlineCss(campaign.body, { url: './' })
         .then(inlinedBody => {
           resolve({
             userId: campaign.userId,
@@ -148,7 +177,7 @@ class DeliverCampaignService {
   _updateCampaignStatus() {
     return new Promise((resolve, reject) => {
       debug('= DeliverCampaignService._updateCampaignStatus');
-      const campaignStatus = {campaignId: this.campaignId, userId: this.userId, status: 'pending'};
+      const campaignStatus = { campaignId: this.campaignId, userId: this.userId, status: 'pending' };
       const params = {
         Message: JSON.stringify(campaignStatus),
         TopicArn: this.updateCampaignStatusTopicArn
@@ -159,7 +188,7 @@ class DeliverCampaignService {
           reject(err);
         } else {
           debug('= DeliverCampaignService._updateCampaignStatus', 'Message sent');
-          resolve({id: this.campaignId, status: 'pending'});
+          resolve({ id: this.campaignId, status: 'pending' });
         }
       });
     });
@@ -175,6 +204,16 @@ class DeliverCampaignService {
     if (!this.userPlan || this.userPlan === 'free') {
       return 1;
     }
+  }
+
+  get maxRecipients() {
+    if (!this.userPlan || this.userPlan === 'free') {
+      return 250;
+    }
+    if (!this.userPlan || this.userPlan === 'free_ses') {
+      return 2000;
+    }
+    return Infinity;
   }
 }
 

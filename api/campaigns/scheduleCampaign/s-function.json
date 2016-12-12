@@ -37,6 +37,9 @@
     "SERVERLESS_STAGE": "${stage}",
     "SERVERLESS_REGION": "${region}",
     "CAMPAIGNS_TABLE": "$${campaignsTable}",
+    "USERS_TABLE": "$${usersTable}",
+    "LISTS_TABLE": "$${listsTable}",
+    "SENT_AT_INDEX_NAME": "$${campaignsSentAtIndex}",
     "DEBUG": "true"
   },
   "vpc": {
