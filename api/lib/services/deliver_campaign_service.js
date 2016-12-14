@@ -196,7 +196,7 @@ class DeliverCampaignService {
 
   get maxMonthlyCampaigns() {
     if (!this.userPlan || this.userPlan === 'free') {
-      return 5;
+      return 30;
     }
   }
 
