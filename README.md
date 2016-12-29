@@ -8,7 +8,7 @@
 
 Send email marketing campaigns with [Amazon SES](https://aws.amazon.com/ses/). Let [Amazon Lambda](https://aws.amazon.com/lambda/) compose email by email and literaly scale it to infinite. 
 
-With MoonMail you can: create & edit lists of recipients (email addresses) and store them within a [DynamoDB](https://aws.amazon.com/dynamodb/). Create & edit html email marketing campaigns, send them and track their opens and clicks.
+With [MoonMail](https://moonmail.io) you can: create & edit lists of recipients (email addresses) and store them within a [DynamoDB](https://aws.amazon.com/dynamodb/). Create & edit html email marketing campaigns, send them and track their opens and clicks.
 
 **The biggest magic of MoonMail: SEND BILLIONS OF EMAILS WITH NO SERVERS!**
 
@@ -81,7 +81,7 @@ Feel free to <a href="mailto:hi@microapps.com">contact us</a> if you have any qu
 
 ## License
 
-MoonMail is available under the MIT license. See the LICENSE file for more info.
+[MoonMail](https://moonmail.io) is available under the MIT license. See the LICENSE file for more info.
 
 ## Professional Help
 
@@ -89,6 +89,7 @@ If you need support getting MoonMail into production in your AWS account, contac
 
 - <a href="mailto:ryan@serverlesscode.com">ServerlessCode</a>
 - <a href="http://www.apiwise.nl">Apiwise</a>
+- <a href="http://www.microapps.com">microapps</a>
 - <a href="https://sc5.io">SC5</a>
 - <a href="mailto:sam@acloud.guru">A Cloud Guru - AWS training & serverless experts</a> (<a href="https://acloud.guru">Visit Web Site</a>)
 - <a href="mailto:hello@goltfisch.de">Just Serverless</a>
