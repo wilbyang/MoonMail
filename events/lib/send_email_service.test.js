@@ -200,7 +200,7 @@ describe('SendEmailService', () => {
 
       context('the user has good reputation', () => {
         before(() => {
-          senderService = new SendEmailService(queue, null, contextStub, { sentEmails: 520, lastReputationCheckedOn: 0 });
+          senderService = new SendEmailService(queue, null, contextStub, { sentEmails: 2020, lastReputationCheckedOn: 0 });
           const userData = { reputationData: { reputation: 43.17, minimumAllowedReputation: 15 } };
           sinon.stub(senderService, '_invokeGetUserData').resolves({ Payload: JSON.stringify(userData) });
         });
@@ -208,7 +208,7 @@ describe('SendEmailService', () => {
         it('resolves to continue the execution', (done) => {
           senderService._checkReputation().then(() => {
             expect(senderService._invokeGetUserData).to.have.been.called;
-            expect(senderService.lastReputationCheckedOn).to.equal(520);
+            expect(senderService.lastReputationCheckedOn).to.equal(2020);
             expect(senderService.reputation).to.equal(43.17);
             done();
           }).catch(error => done(error));
@@ -221,7 +221,7 @@ describe('SendEmailService', () => {
 
       context('the user has bad reputation', () => {
         before(() => {
-          senderService = new SendEmailService(queue, null, contextStub, { sentEmails: 520, lastReputationCheckedOn: 0 });
+          senderService = new SendEmailService(queue, null, contextStub, { sentEmails: 2020, lastReputationCheckedOn: 0 });
           const userData = { reputationData: { reputation: 14, minimumAllowedReputation: 15 } };
           sinon.stub(senderService, '_invokeGetUserData').resolves({ Payload: JSON.stringify(userData) });
           sinon.stub(senderService.queue, 'purgeQueue').resolves({});
@@ -231,7 +231,7 @@ describe('SendEmailService', () => {
           senderService._checkReputation().catch((error) => {
             expect(senderService._invokeGetUserData).to.have.been.called;
             // expect(senderService.queue.purgeQueue).to.have.been.called;
-            expect(senderService.lastReputationCheckedOn).to.equal(520);
+            expect(senderService.lastReputationCheckedOn).to.equal(2020);
             expect(senderService.reputation).to.equal(14);
             expect(error).to.equal('Bad reputation');
             done();
@@ -246,14 +246,14 @@ describe('SendEmailService', () => {
 
       context('an error ocurred calling to the getUserDataFunction', () => {
         before(() => {
-          senderService = new SendEmailService(queue, null, contextStub, { sentEmails: 520, lastReputationCheckedOn: 0 });
+          senderService = new SendEmailService(queue, null, contextStub, { sentEmails: 2020, lastReputationCheckedOn: 0 });
           sinon.stub(senderService, '_invokeGetUserData').rejects('Unknown error');
         });
 
         it('resolves since an unknown error on reputation checking should not stop the execution', (done) => {
           senderService._checkReputation().then(() => {
             expect(senderService._invokeGetUserData).to.have.been.called;
-            expect(senderService.lastReputationCheckedOn).to.equal(520);
+            expect(senderService.lastReputationCheckedOn).to.equal(2020);
             done();
           });
         });
@@ -269,7 +269,7 @@ describe('SendEmailService', () => {
       let senderService;
 
       beforeEach(() => {
-        senderService = new SendEmailService(queue, null, contextStub, { sentEmails: 520, lastReputationCheckedOn: 500});
+        senderService = new SendEmailService(queue, null, contextStub, { sentEmails: 2020, lastReputationCheckedOn: 2000});
         sinon.stub(senderService, '_invokeGetUserData').resolves({});
       });
 
@@ -277,7 +277,7 @@ describe('SendEmailService', () => {
       it('resolves to continue the execution without checking reputation', (done) => {
         senderService._checkReputation().then(() => {
           expect(senderService._invokeGetUserData).to.have.not.been.called;
-          expect(senderService.lastReputationCheckedOn).to.equal(500);
+          expect(senderService.lastReputationCheckedOn).to.equal(2000);
           done();
         }).catch(error => done(error));
       });

@@ -77,13 +77,13 @@ describe('TimeAggregatorService', () => {
     it('groups by year intervals', (done) => {
       const events = [
         { id: 1, value: 1, timestamp: moment().startOf('year').unix() },
-        { id: 2, value: 2, timestamp: moment().startOf('year').add(10, 'month').unix() },
+        { id: 2, value: 2, timestamp: moment().startOf('year').unix() },
         { id: 3, value: 3, timestamp: moment().startOf('year').add(1, 'year').unix() },
         { id: 4, value: 4, timestamp: moment().startOf('year').add(3, 'year').unix() },
         { id: 5, value: 5, timestamp: moment().startOf('year').add(6, 'year').unix() },
         { id: 6, value: 5, timestamp: moment().startOf('year').add(10, 'year').unix() }
       ];
-      const expectedGroups = 4;
+      const expectedGroups = 5;
       const result = TimeAggregatorService.aggregate(events, [2, 'y'], { eventName: 'valCount' });
       expect(Object.keys(result).length).to.equal(expectedGroups);
       done();
