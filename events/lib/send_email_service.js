@@ -151,7 +151,7 @@ class SendEmailService {
     return new Promise((resolve, reject) => {
       this.emailClient.sendRawEmail(params, (err, data) => {
         if (err) {
-          logger().error('SendEmailService.deliver', 'Error sending email', err, err.stack);
+          logger().debug('SendEmailService.deliver', 'Error sending email', err, err.stack);
           reject(err);
         } else {
           logger().debug('SendEmailService.deliver', 'Email sent');
