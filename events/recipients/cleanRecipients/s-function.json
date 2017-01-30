@@ -1,0 +1,39 @@
+{
+  "name": "cleanRecipients",
+  "runtime": "babel",
+  "description": "Serverless Lambda function for project: MoonMail-v2",
+  "customName": "${project}-recipients-cleanRecipients",
+  "customRole": false,
+  "handler": "recipients/cleanRecipients/handler.default",
+  "timeout": 60,
+  "memorySize": 1024,
+  "authorizer": {},
+  "custom": {
+    "excludePatterns": []
+  },
+  "endpoints": [],
+  "events": [
+    {
+      "name": "recipientsTableStreamEvent",
+      "type": "dynamodbstream",
+      "config": {
+        "streamArn": "${recipientsTableStreamARN}",
+        "startingPosition": "LATEST",
+        "enabled": true,
+        "batchSize": 50
+      }
+    }
+  ],
+  "environment": {
+    "SERVERLESS_PROJECT": "${project}",
+    "SERVERLESS_STAGE": "${stage}",
+    "SERVERLESS_REGION": "${region}",
+    "RECIPIENTS_TABLE": "$${recipientsTable}",
+    "CLEAN_EMAILS_ENDPOINT": "${cleanEmailsEndpoint}",
+    "DEBUG": "true"
+  },
+  "vpc": {
+    "securityGroupIds": [],
+    "subnetIds": []
+  }
+}

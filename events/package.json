@@ -52,6 +52,7 @@
     "mailcomposer": "^3.10.0",
     "moment": "^2.15.1",
     "moonmail-models": "github:microapps/moonmail-models",
+    "nock": "^9.0.2",
     "omit-empty": "^0.4.1",
     "ramda": "^0.22.1",
     "saws": "^0.1.0",

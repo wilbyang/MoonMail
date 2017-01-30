@@ -23,8 +23,8 @@ describe('DeliverCampaignService', () => {
   const updatedBody = 'New updated body';
   const campaignId = 'some-campaign-id';
   const freeUserPlan = 'free';
-  const campaign = {userId, senderId, subject, listIds, name, body, id: campaignId};
-  const updatedCampaign = {userId, senderId, subject, listIds, name, body: updatedBody, id: campaignId};
+  const campaign = {userId, senderId, subject, listIds, name, body, id: campaignId, status: 'draft'};
+  const updatedCampaign = {userId, senderId, subject, listIds, name, body: updatedBody, id: campaignId, status: 'draft'};
   const nonReadyCampaign = {userId, subject, name, body: updatedBody, id: campaignId};
 
   describe('#sendCampaign', () => {
