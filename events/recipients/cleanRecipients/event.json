@@ -1,0 +1,190 @@
+{
+    "Records": [
+        {
+            "eventID": "1",
+            "eventName": "INSERT",
+            "eventVersion": "1.0",
+            "eventSource": "aws:dynamodb",
+            "awsRegion": "us-west-2",
+            "dynamodb": {
+                "Keys": {
+                    "listId": {
+                        "S": "my-list"
+                    },
+                    "id": {
+                        "S": "my-id"
+                    }
+                },
+                "NewImage": {
+                    "email": {
+                        "S": "new@email.com"
+                    },
+                    "listId": {
+                        "S": "my-list"
+                    },
+                    "id": {
+                        "S": "my-id"
+                    },
+                    "userId": {
+                        "S": "user-id"
+                    },
+                    "status": {
+                        "S": "awaitingConfirmation"
+                    }
+                },
+                "SequenceNumber": "111",
+                "SizeBytes": 26,
+                "StreamViewType": "NEW_AND_OLD_IMAGES"
+            },
+            "eventSourceARN": "stream-ARN"
+        },
+        {
+            "eventID": "2",
+            "eventName": "MODIFY",
+            "eventVersion": "1.0",
+            "eventSource": "aws:dynamodb",
+            "awsRegion": "us-west-2",
+            "dynamodb": {
+                "Keys": {
+                    "listId": {
+                        "S": "my-list"
+                    },
+                    "id": {
+                        "S": "my-id"
+                    }
+                },
+                "NewImage": {
+                    "email": {
+                        "S": "other@email.com"
+                    },
+                    "listId": {
+                        "S": "my-list"
+                    },
+                    "id": {
+                        "S": "my-id"
+                    },
+                    "userId": {
+                        "S": "user-id"
+                    },
+                    "status": {
+                        "S": "subscribed"
+                    }
+                },
+                "OldImage": {
+                    "email": {
+                        "S": "new@email.com"
+                    },
+                    "listId": {
+                        "S": "my-list"
+                    },
+                    "id": {
+                        "S": "my-id"
+                    },
+                    "userId": {
+                        "S": "user-id"
+                    },
+                    "status": {
+                        "S": "awaitingConfirmation"
+                    }
+                },
+                "SequenceNumber": "222",
+                "SizeBytes": 59,
+                "StreamViewType": "NEW_AND_OLD_IMAGES"
+            },
+            "eventSourceARN": "stream-ARN"
+        },
+        {
+            "eventID": "3",
+            "eventName": "MODIFY",
+            "eventVersion": "1.0",
+            "eventSource": "aws:dynamodb",
+            "awsRegion": "us-west-2",
+            "dynamodb": {
+                "Keys": {
+                    "listId": {
+                        "S": "my-list"
+                    },
+                    "id": {
+                        "S": "my-id"
+                    }
+                },
+                "NewImage": {
+                    "email": {
+                        "S": "other@email.com"
+                    },
+                    "listId": {
+                        "S": "my-list"
+                    },
+                    "id": {
+                        "S": "my-id"
+                    },
+                    "userId": {
+                        "S": "user-id"
+                    },
+                    "status": {
+                        "S": "unsubscribed"
+                    }
+                },
+                "OldImage": {
+                    "email": {
+                        "S": "new@email.com"
+                    },
+                    "listId": {
+                        "S": "my-list"
+                    },
+                    "id": {
+                        "S": "my-id"
+                    },
+                    "userId": {
+                        "S": "user-id"
+                    },
+                    "status": {
+                        "S": "subscribed"
+                    }
+                },
+                "SequenceNumber": "222",
+                "SizeBytes": 59,
+                "StreamViewType": "NEW_AND_OLD_IMAGES"
+            },
+            "eventSourceARN": "stream-ARN"
+        },
+        {
+            "eventID": "4",
+            "eventName": "REMOVE",
+            "eventVersion": "1.0",
+            "eventSource": "aws:dynamodb",
+            "awsRegion": "us-west-2",
+            "dynamodb": {
+                "Keys": {
+                    "listId": {
+                        "S": "my-list"
+                    },
+                    "id": {
+                        "S": "my-id"
+                    }
+                },
+                "OldImage": {
+                    "email": {
+                        "S": "other@email.com"
+                    },
+                    "listId": {
+                        "S": "my-list"
+                    },
+                    "id": {
+                        "S": "my-id"
+                    },
+                    "userId": {
+                        "S": "user-id"
+                    },
+                    "status": {
+                        "S": "unsubscribed"
+                    }
+                },
+                "SequenceNumber": "333",
+                "SizeBytes": 38,
+                "StreamViewType": "NEW_AND_OLD_IMAGES"
+            },
+            "eventSourceARN": "stream-ARN"
+        }
+    ]
+}
