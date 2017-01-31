@@ -85,7 +85,8 @@ class EmailNotificationService {
 
   _isHardBounce() {
     if (this.notification.notificationType.toLowerCase() === 'bounce') {
-      if (this.notification.bounce.bounceType.toLowerCase() === 'permanent') {
+      const bounceType = this.notification.bounce.bounceType.toLowerCase();
+      if (bounceType === 'permanent' || bounceType === 'undetermined') {
         return true;
       }
     }
