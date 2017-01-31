@@ -33,7 +33,7 @@ class CleanRecipientsEmailService {
         const listId = result.id;
         const email = result.email;
         const id = base64url.encode(email);
-        return Recipient.update({status: Recipient.statuses.unsubscribed}, listId, id);
+        return Recipient.update({status: Recipient.statuses.bounced}, listId, id);
       });
     return await Promise.all(updates);
   }
