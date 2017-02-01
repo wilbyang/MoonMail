@@ -68,7 +68,7 @@ Create the API Gateway endpoints:
     sls endpoint deploy
     
 ## Questions?
-Please pose your questions in [StackOverflow by tagging them with: moonmail](http://stackoverflow.com/tags/moonmail). 
+Please pose your questions in [StackOverflow by tagging them with: moonmail](http://stackoverflow.com/questions/tagged/moonmail?sort=votes&pageSize=50). 
 
 ## Contributing Guidelines
 Contributions are always welcome! If you'd like to collaborate with us, take into account that:
