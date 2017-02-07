@@ -30,7 +30,8 @@ export default class ExportListService {
       .then(list => this._checkNoExportPending(list))
       .then(list => this._createExport(list))
       .then(() => this._writeRecipients())
-      .then(() => this._uploadToS3())
+      .then(() => this._readFile())
+      .then(data => this._uploadToS3(data))
       .then(() => this._getFileUrl())
       .then(url => this._completeExport(url))
       .catch(err => this._errorHandler(err));
@@ -91,14 +92,18 @@ export default class ExportListService {
     }
   }
 
-  _uploadToS3() {
+  _readFile() {
     return new Promise((resolve, reject) => {
       fs.readFile(this.csvPath, 'utf8', (err, data) => {
         if (err) return reject(err);
-        const params = {Bucket: bucketName, Key: this.s3ObjectKey, Body: data};
-        return resolve(s3bucket.putObject(params).promise());
+        return resolve(data);
       });
     });
+  }
+
+  _uploadToS3(data) {
+    const params = {Bucket: bucketName, Key: this.s3ObjectKey, Body: data};
+    return s3bucket.putObject(params).promise();
   }
 
   _getFileUrl() {
@@ -109,9 +114,18 @@ export default class ExportListService {
     });
   }
 
-  _recipientsToCSV(recipients) {
-    recipients.items.map(recipient => this.csvFile.write(Object.assign({}, {email: recipient.email}, recipient.metadata, {status: recipient.status})));
-    return recipients;
+  _recipientsToCSV(recipients = {}) {
+    const promises = recipients.items.map(recipient => this._writeRecipient(recipient));
+    return Promise.all(promises)
+      .then(() => recipients);
+  }
+
+  _writeRecipient(recipient = {}) {
+    return new Promise((resolve) => {
+      return this.csvFile.write(Object.assign({}, {email: recipient.email}, recipient.metadata, {status: recipient.status}), () => {
+        return resolve(true);
+      });
+    });
   }
 
   _fetchRecipients(previousBatch = {}) {
