@@ -26,6 +26,7 @@
     "SERVERLESS_STAGE": "${stage}",
     "SERVERLESS_REGION": "${region}",
     "CAMPAIGNS_TABLE": "$${campaignsTable}",
+    "IOT_ENDPOINT": "${iotEndpoint}",
     "UPDATE_CAMPAIGN_TOPIC_ARN": "${updateCampaignTopicARN}"
   },
   "vpc": {
