@@ -51,7 +51,7 @@ module.exports.respond = function (event, cb) {
 
 module.exports.debug = function () {
   if (process.env.DEBUG) {
-    logger.info(...arguments);
+    console.log(...arguments);
   }
 };
 

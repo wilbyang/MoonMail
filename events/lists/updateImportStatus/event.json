@@ -6,7 +6,7 @@
       "Sns": {
         "Type": "Notification",
         "Subject": "SomeSubject",
-        "Message": "{\"listId\":\"listId#1\",\"userId\":\"userId\",\"totalRecipientsCount\":2,\"importedCount\":2,\"corruptedEmailsCount\":0,\"corruptedEmails\":[],\"importStatus\":\"SUCCESS\",\"updatedAt\":\"8766823642398746\"}"
+        "Message": "{\"listId\":\"listId#1\",\"userId\":\"google-oauth2|113824531354440458440\",\"totalRecipientsCount\":2,\"importedCount\":2,\"corruptedEmailsCount\":0,\"corruptedEmails\":[],\"importStatus\":\"SUCCESS\",\"updatedAt\":\"8766823642398746\"}"
       }
     }
   ]
