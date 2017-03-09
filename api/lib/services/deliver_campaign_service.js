@@ -1,9 +1,8 @@
-'use strict';
-
 import Promise from 'bluebird';
 import { debug } from '../logger';
 import { Campaign, List } from 'moonmail-models';
 import inlineCss from 'inline-css';
+import juice from 'juice';
 
 class DeliverCampaignService {
 
@@ -25,7 +24,7 @@ class DeliverCampaignService {
       .then(() => this._getCampaign())
       .then(campaign => this._checkCampaign(campaign))
       .then(campaign => this._buildCampaignMessage(campaign))
-      .then((canonicalMessage) => this._publishToSns(canonicalMessage))
+      .then(canonicalMessage => this._publishToSns(canonicalMessage))
       .then(() => this._updateCampaignStatus());
   }
 
@@ -42,7 +41,7 @@ class DeliverCampaignService {
       if (this.maxMonthlyCampaigns) {
         debug('= DeliverCampaignService._checkMonthlyQuota', 'User has a limit of campaigns');
         Campaign.sentLastMonth(this.userId)
-          .then(count => {
+          .then((count) => {
             debug('= DeliverCampaignService._checkMonthlyQuota', count);
             if (count < this.maxMonthlyCampaigns) {
               this.sentCampaignsInMonth = count;
@@ -64,7 +63,7 @@ class DeliverCampaignService {
       if (this.maxDailyCampaigns) {
         debug('= DeliverCampaignService._checkDailyQuota', 'User has a limit of campaigns');
         Campaign.sentLastNDays(this.userId, 1)
-          .then(count => {
+          .then((count) => {
             debug('= DeliverCampaignService._checkDailyQuota', count);
             if (count < this.maxDailyCampaigns) {
               this.sentCampaignsLastDay = count;
@@ -82,12 +81,12 @@ class DeliverCampaignService {
 
   _checkRecipientsLimits() {
     return this._getLists()
-      .then((lists) => this._checkRecipients(lists));
+      .then(lists => this._checkRecipients(lists));
   }
 
   _getLists() {
     return this._getCampaign()
-      .then(campaign => {
+      .then((campaign) => {
         const listIds = campaign.listIds;
         if (listIds) {
           const getListPromises = listIds.map(listId => List.get(this.userId, listId));
@@ -136,25 +135,22 @@ class DeliverCampaignService {
   _buildCampaignMessage(campaign) {
     debug('= DeliverCampaignService._buildCampaignMessage', campaign);
     return new Promise((resolve) => {
-      inlineCss(campaign.body, { url: './' })
-        .then(inlinedBody => {
-          resolve({
-            userId: campaign.userId,
-            userPlan: this.userPlan,
-            sentCampaignsInMonth: this.sentCampaignsInMonth,
-            campaign: {
-              id: campaign.id,
-              subject: campaign.subject,
-              body: inlinedBody,
-              senderId: campaign.senderId,
-              precompiled: false,
-              listIds: campaign.listIds
-            }
-          });
-        });
+      const inlinedBody = juice(campaign.body);
+      resolve({
+        userId: campaign.userId,
+        userPlan: this.userPlan,
+        sentCampaignsInMonth: this.sentCampaignsInMonth,
+        campaign: {
+          id: campaign.id,
+          subject: campaign.subject,
+          body: inlinedBody,
+          senderId: campaign.senderId,
+          precompiled: false,
+          listIds: campaign.listIds
+        }
+      });
     });
   }
-
   _publishToSns(canonicalMessage) {
     return new Promise((resolve, reject) => {
       debug('= DeliverCampaignService._publishToSns', 'Sending canonical message', JSON.stringify(canonicalMessage));
