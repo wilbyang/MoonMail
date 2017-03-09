@@ -1,7 +1,7 @@
-'use strict';
+
 
 import { debug } from '../logger';
-import inlineCss from 'inline-css';
+import juice from 'juice';
 
 class SendTestEmailService {
 
@@ -38,18 +38,15 @@ class SendTestEmailService {
   }
 
   _inlineBodyCss() {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       debug('= SendTestEmailService._inlineBodyCss');
-      inlineCss(this.body, {url: './'})
-        .then(inlinedBody => {
-          this.body = inlinedBody;
-          resolve(true);
-        });
+      this.body = juice(this.body);
+      resolve(true);
     });
   }
 
   _buildSesRequest() {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       debug('= SendTestEmailService._buildSesRequest');
       resolve({
         Source: this.emailFrom,
@@ -57,8 +54,8 @@ class SendTestEmailService {
           ToAddresses: this.emails
         },
         Message: {
-          Body: {Html: {Data: this.body}},
-          Subject: {Data: `[MoonMail-TEST] ${this.subject}`}
+          Body: { Html: { Data: this.body } },
+          Subject: { Data: `[MoonMail-TEST] ${this.subject}` }
         }
       });
     });
