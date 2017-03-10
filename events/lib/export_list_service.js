@@ -139,8 +139,7 @@ export default class ExportListService {
 
   _notifyUser(success = true, list) {
     const type = success ? 'LIST_EXPORT_SUCCEEDED' : 'LIST_EXPORT_FAILED';
-    const payload = {list};
-    return UserNotifier.notify(this.userId, {type, data: payload});
+    return UserNotifier.notify(this.userId, {type, data: list});
   }
 
 }
