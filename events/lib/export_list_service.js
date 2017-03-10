@@ -57,7 +57,7 @@ export default class ExportListService {
   _completeExport(url) {
     return List.get(this.userId, this.listId)
       .then(list => this._doCompleteExport(list, url))
-      .then(() => this._notifyUser(true));
+      .then(list => this._notifyUser(true, list));
   }
 
   _doCompleteExport(list, url) {
@@ -72,7 +72,7 @@ export default class ExportListService {
     debug('= ExportListService._errorHandler', err);
     return List.get(this.userId, this.listId)
       .then(list => this._exportFailed(list, err))
-      .then(() => this._notifyUser(false))
+      .then(list => this._notifyUser(false, list))
       .then(() => err);
   }
 
@@ -137,9 +137,9 @@ export default class ExportListService {
     return Recipient.allBy('listId', this.listId, options);
   }
 
-  _notifyUser(success = true) {
+  _notifyUser(success = true, list) {
     const type = success ? 'LIST_EXPORT_SUCCEEDED' : 'LIST_EXPORT_FAILED';
-    const payload = {listId: this.listId};
+    const payload = {list};
     return UserNotifier.notify(this.userId, {type, data: payload});
   }
 
