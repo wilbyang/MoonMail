@@ -32,6 +32,7 @@ em2@examplemail.com;firstName2;lastName2`,
         headers: '{"email address":"email", "first name":"name","last name":"surname", "some-header":"false", "other-header":false}'
       }
     });
+    awsMock.mock('IotData', 'publish', true);
     sinon.stub(List, 'update').resolves('Ok');
 
     sinon.stub(Recipient, 'saveAll').resolves('Ok');
@@ -100,8 +101,10 @@ em2@examplemail.com;firstName2;lastName2`,
   after(() => {
     awsMock.restore('S3');
     awsMock.restore('Lambda');
+    awsMock.restore('IotData');
     Recipient.saveAll.restore();
     List.update.restore();
     awsMock.restore('SNS');
+    delete process.env.IOT_ENDPOINT;
   });
 });

@@ -31,6 +31,7 @@
     "SERVERLESS_REGION": "${region}",
     "RECIPIENTS_TABLE": "$${recipientsTable}",
     "LISTS_TABLE": "$${listsTable}",
+    "IOT_ENDPOINT": "${iotEndpoint}",
     "UPDATE_IMPORT_STATUS_TOPIC_ARN": "${updateListImportStatusTopicARN}"
   },
   "vpc": {

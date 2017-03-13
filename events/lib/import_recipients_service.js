@@ -1,13 +1,12 @@
-'use strict';
-
 import AWS from 'aws-sdk';
-import { debug } from './index';
 import Baby from 'babyparse';
 import { Recipient, List } from 'moonmail-models';
 import base64url from 'base64-url';
 import querystring from 'querystring';
 import moment from 'moment';
 import _ from 'lodash';
+import { debug } from './index';
+import UserNotifier from './user_notifier';
 
 // TODO: Refactor me!
 class ImportRecipientsService {
@@ -15,6 +14,7 @@ class ImportRecipientsService {
   constructor({s3Event, importOffset = 0 }, s3Client, snsClient, lambdaClient, context) {
     this.s3Event = s3Event;
     this.importOffset = importOffset;
+    this.processedItems = 0;
     this.bucket = s3Event.bucket.name;
     this.fileKey = querystring.unescape(s3Event.object.key);
     const file = this.fileKey.split('.');
@@ -81,22 +81,11 @@ class ImportRecipientsService {
       const deduplicatedRecipientsBatch = _.uniqBy(recipientsBatch, 'email');
       return Recipient.saveAll(deduplicatedRecipientsBatch)
         .then(data => {
-          if (this.timeEnough()) {
-            if (data.UnprocessedItems && data.UnprocessedItems instanceof Array) {
-              this.importOffset += (this.maxBatchSize - data.UnprocessedItems.length);
-            } else {
-              this.importOffset += Math.min(this.maxBatchSize, recipientsBatch.length);
-            }
-            return this.saveRecipients();
-          } else {
-            if (data.UnprocessedItems && data.UnprocessedItems instanceof Array) {
-              this.importOffset += (this.maxBatchSize - data.UnprocessedItems.length);
-            } else {
-              this.importOffset += Math.min(this.maxBatchSize, recipientsBatch.length);
-            }
-            debug('= ImportRecipientsService.saveRecipients', 'Not enough time left. Invoking lambda');
-            return this.invokeLambda();
-          }
+          this.importOffset += (data.UnprocessedItems && data.UnprocessedItems instanceof Array) ?
+            (this.maxBatchSize - data.UnprocessedItems.length) : Math.min(this.maxBatchSize, recipientsBatch.length);
+          this.processedItems += recipientsBatch.length;
+          if (this.processedItems % 1000 === 0) this._notifyProgress(1000);
+          return this.timeEnough() ? this.saveRecipients() : this.invokeLambda();
         }).catch(err => {
           return new Promise((resolve, reject) => {
             debug('= ImportRecipientsService.saveRecipients', 'Error while saving recipients', err, err.stack);
@@ -234,6 +223,11 @@ class ImportRecipientsService {
       this.corruptedEmails.push(email);
       return false;
     }
+  }
+
+  _notifyProgress(recipientsAmount) {
+    const payload = {listId: this.listId, addTotal: recipientsAmount};
+    return UserNotifier.notify(this.userId, {type: 'LIST_IMPORT_PROCESSED', data: payload});
   }
 
   _saveMetadataAttributes() {
