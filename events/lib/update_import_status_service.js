@@ -1,8 +1,7 @@
-import { debug } from './index';
 import { List } from 'moonmail-models';
+import { debug } from './index';
 
 class UpdateImportStatusService {
-
   constructor(importStatusEvent) {
     this.importStatusEvent = importStatusEvent;
     this.userId = this.importStatusEvent.userId;
@@ -13,14 +12,13 @@ class UpdateImportStatusService {
   updateListImportStatus() {
     debug('= UpdateImportStatusService.updateListImportStatus', this.importStatusEvent);
     return List.get(this.userId, this.listId).then((list) => {
-      if (!list.importStatus[this.key]) {
+      if (!list.importStatus || !list.importStatus[this.key]) {
         return List.createFileImportStatus(this.userId, this.listId, this.key, this._createStatusFromEvent());
       } else {
         return List.updateImportStatus(this.userId, this.listId, this.key, this._updateStatusFromEvent());
       }
     });
   }
-
 
   _createStatusFromEvent() {
     return {

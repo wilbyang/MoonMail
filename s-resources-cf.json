@@ -45,6 +45,7 @@
             "$${sqsStatementTemplate}",
             "$${sesStatementTemplate}",
             "$${kinesisStatementTemplate}",
+            "$${iotStatementTemplate}",
             {
               "Effect": "Allow",
               "Action": [

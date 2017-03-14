@@ -204,7 +204,7 @@ class SendEmailService {
   }
 
   _checkReputation() {
-    if (this.counter - this.lastReputationCheckedOn >= 2000) {
+    if (this.counter - this.lastReputationCheckedOn >= 500) {
       this.lastReputationCheckedOn = this.counter;
       logger().debug('SendEmailService._checkReputation, working...');
       return this._invokeGetUserData().then((response) => {

@@ -19,6 +19,7 @@
     "SERVERLESS_REGION": "${region}",
     "LISTS_TABLE": "$${listsTable}",
     "RECIPIENTS_TABLE": "$${recipientsTable}",
+    "IOT_ENDPOINT": "${iotEndpoint}",
     "EXPORTS_BUCKET_NAME": "$${listsExportBucket}"
   },
   "vpc": {

@@ -26,7 +26,8 @@
     "SERVERLESS_STAGE": "${stage}",
     "SERVERLESS_REGION": "${region}",
     "DEBUG": true,
-    "LISTS_TABLE": "$${listsTable}"
+    "LISTS_TABLE": "$${listsTable}",
+    "IOT_ENDPOINT": "${iotEndpoint}"
   },
   "vpc": {
     "securityGroupIds": [],

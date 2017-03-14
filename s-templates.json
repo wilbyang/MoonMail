@@ -64,6 +64,15 @@
       "*"
     ]
   },
+  "iotStatementTemplate": {
+    "Effect": "Allow",
+    "Action": [
+      "iot:Publish"
+    ],
+    "Resource": [
+      "*"
+    ]
+  },
   "sendEmailsTopic": "${project}-${stage}-sendEmails",
   "emailAdminsTopic": "${project}-${stage}-emailAdmins",
   "sentEmailsTopic": "${project}-${stage}-sentEmails",
@@ -105,7 +114,7 @@
       "statusCode": "302",
       "selectionPattern": "http.*",
       "responseParameters": {
-        "method.response.header.Location" : "integration.response.body.errorMessage"
+        "method.response.header.Location": "integration.response.body.errorMessage"
       },
       "responseModels": {
         "application/json": "Empty"

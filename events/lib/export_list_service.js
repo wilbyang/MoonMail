@@ -1,10 +1,11 @@
 import { Recipient, List } from 'moonmail-models';
 import csvWriter from 'csv-write-stream';
 import fs from 'fs';
+import moment from 'moment';
 import cuid from 'cuid';
 import { S3 } from 'aws-sdk';
 import { debug } from './index';
-import moment from 'moment';
+import UserNotifier from './user_notifier';
 
 const bucketName = process.env.EXPORTS_BUCKET_NAME;
 const s3bucket = new S3({params: {Bucket: bucketName}});
@@ -55,7 +56,8 @@ export default class ExportListService {
 
   _completeExport(url) {
     return List.get(this.userId, this.listId)
-      .then(list => this._doCompleteExport(list, url));
+      .then(list => this._doCompleteExport(list, url))
+      .then(list => this._notifyUser(true, list));
   }
 
   _doCompleteExport(list, url) {
@@ -70,6 +72,7 @@ export default class ExportListService {
     debug('= ExportListService._errorHandler', err);
     return List.get(this.userId, this.listId)
       .then(list => this._exportFailed(list, err))
+      .then(list => this._notifyUser(false, list))
       .then(() => err);
   }
 
@@ -132,6 +135,11 @@ export default class ExportListService {
     const options = {limit: 1000};
     if (previousBatch.nextPage) options.page = previousBatch.nextPage;
     return Recipient.allBy('listId', this.listId, options);
+  }
+
+  _notifyUser(success = true, list) {
+    const type = success ? 'LIST_EXPORT_SUCCEEDED' : 'LIST_EXPORT_FAILED';
+    return UserNotifier.notify(this.userId, {type, data: list});
   }
 
 }
