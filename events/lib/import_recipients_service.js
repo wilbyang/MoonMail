@@ -226,7 +226,7 @@ class ImportRecipientsService {
   }
 
   _notifyProgress(recipientsAmount) {
-    const payload = {listId: this.listId, addTotal: recipientsAmount};
+    const payload = {listId: this.listId};
     return UserNotifier.notify(this.userId, {type: 'LIST_IMPORT_PROCESSED', data: payload});
   }
 
