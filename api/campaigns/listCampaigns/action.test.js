@@ -13,8 +13,8 @@ describe('listCampaigns', () => {
 
   describe('#respond()', () => {
     beforeEach(() => {
-      sinon.stub(Campaign, 'allBy').resolves({
-        Items: [
+      sinon.stub(Campaign, 'filterBy').resolves({
+        items: [
           {
             senderId: 'ca654',
             id: 'cio2p2vqt0000n0edndspzrqy',
@@ -28,12 +28,12 @@ describe('listCampaigns', () => {
     });
 
     before(() => {
-      event = {};
+      event = { filters: { status: { eq: '' }, archived: { eq: '' } } };
     });
 
     it('gets a list of campaigns', (done) => {
       respond(event, (err, result) => {
-        const args = Campaign.allBy.lastCall.args;
+        const args = Campaign.filterBy.lastCall.args;
         expect(args[0]).to.equal('userId');
         expect(err).to.not.exist;
         expect(result).to.exist;
@@ -44,9 +44,11 @@ describe('listCampaigns', () => {
     context('when the event contains page', () => {
       it('makes a paginated query', (done) => {
         const page = 'aaabbbb';
-        event.options = {page};
+        event.options = { page };
+        event.filters = { status: { eq: '' }, archived: { eq: '' } };
         respond(event, (err) => {
-          const allbyArgs = Campaign.allBy.lastCall.args;
+          const allbyArgs = Campaign.filterBy.lastCall.args;
+          console.log(allbyArgs);
           expect(allbyArgs[2]).to.have.property('page', page);
           done();
         });
@@ -54,7 +56,7 @@ describe('listCampaigns', () => {
     });
 
     afterEach(() => {
-      Campaign.allBy.restore();
+      Campaign.filterBy.restore();
     });
   });
 });

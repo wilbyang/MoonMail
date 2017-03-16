@@ -8,6 +8,7 @@ import omitEmpty from 'omit-empty';
 
 export function respond(event, cb) {
   debug('= listCampaigns.action', JSON.stringify(event));
+  console.log("hello");
   decrypt(event.authToken).then((decoded) => {
     const defaultOptions = {
       limit: 10
@@ -17,6 +18,16 @@ export function respond(event, cb) {
     };
 
     const filters = event.filters;
+
+    // TODO: Fixme!
+    if (!filters.archived.eq) {
+      delete filters.archived;
+    }
+
+    if (!filters.status.eq) {
+      delete filters.status;
+    }
+
     if (filters.archived) {
       filters.archived.eq = JSON.parse(filters.archived.eq);
       // Should not happen, but just in case.
@@ -24,6 +35,7 @@ export function respond(event, cb) {
         filters.archived.ne = true;
       }
     }
+    //
 
     Campaign.filterBy('userId', decoded.sub,
       Object.assign({}, defaultOptions, omitEmpty(event.options)),
