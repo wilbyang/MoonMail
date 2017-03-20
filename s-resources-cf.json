@@ -454,6 +454,9 @@
             "KeyType": "HASH"
           }
         ],
+        "StreamSpecification": {
+          "StreamViewType": "NEW_AND_OLD_IMAGES"
+        },
         "ProvisionedThroughput": {
           "ReadCapacityUnits": "${defaultRCU}",
           "WriteCapacityUnits": "${defaultWCU}"
@@ -745,6 +748,57 @@
         "TableName": "$${listsTable}"
       }
     },
+    "ExpertsTable": {
+      "Type": "AWS::DynamoDB::Table",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "userId",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "expertType",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "country",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "userId",
+            "KeyType": "HASH"
+          }
+        ],
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": "${defaultRCU}",
+          "WriteCapacityUnits": "${defaultWCU}"
+        },
+        "TableName": "$${expertsTable}",
+        "GlobalSecondaryIndexes": [
+          {
+            "IndexName" : "$${expertsTypeCountryIndex}",
+            "KeySchema" : [
+              {
+                "AttributeName": "expertType",
+                "KeyType": "HASH"
+              },
+              {
+                "AttributeName": "country",
+                "KeyType": "RANGE"
+              }
+            ],
+            "Projection" : {"ProjectionType": "ALL"},
+            "ProvisionedThroughput" : {
+              "ReadCapacityUnits": "${defaultRCU}",
+              "WriteCapacityUnits": "${defaultWCU}"
+            }
+          }
+        ]
+      }
+    },
     "RecipientsImportS3Bucket": {
       "Type": "AWS::S3::Bucket",
       "Properties": {
@@ -991,6 +1045,15 @@
       "Value": {
         "Fn::GetAtt": [
           "OpensTable",
+          "StreamArn"
+        ]
+      }
+    },
+    "UsersTableStreamARN": {
+      "Description": "Arn of the Users DynamoDB Table Stream",
+      "Value": {
+        "Fn::GetAtt": [
+          "UsersTable",
           "StreamArn"
         ]
       }

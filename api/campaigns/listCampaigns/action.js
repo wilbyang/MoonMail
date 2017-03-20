@@ -8,7 +8,6 @@ import omitEmpty from 'omit-empty';
 
 export function respond(event, cb) {
   debug('= listCampaigns.action', JSON.stringify(event));
-  console.log("hello");
   decrypt(event.authToken).then((decoded) => {
     const defaultOptions = {
       limit: 10

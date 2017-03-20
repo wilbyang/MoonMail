@@ -97,6 +97,8 @@
   "recipientsTable": "${project}-${stage}-recipients",
   "reportsTable": "${project}-${stage}-reports",
   "templatesTable": "${project}-${stage}-templates",
+  "expertsTable": "${project}-${stage}-experts",
+  "expertsTypeCountryIndex": "${project}-${stage}-expertsTypeCountryIndex",
   "attachRecipientsTopic": "${project}-${stage}-attachRecipients",
   "attachListRecipientsTopic": "${project}-${stage}-attachListRecipients",
   "attachRecipientsCountTopic": "${project}-${stage}-attachRecipientsCount",
