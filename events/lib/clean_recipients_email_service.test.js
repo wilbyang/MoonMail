@@ -9,7 +9,7 @@ import nock from 'nock';
 chai.use(sinonChai);
 
 describe('CleanRecipientsEmailService', () => {
-  const recipients = [{id: 1, email: 'email@domain.com'}, {id: 2, email: 'email2@domain.com'}];
+  const recipients = [{id: 1, email: 'email@domain.com'}, {id: 2, email: 'email2@domain.com'}, {id: 3 }];
   const cleaningApi = nock('https://whg495mmc3.execute-api.eu-west-1.amazonaws.com/production');
   describe('#cleanAndUpdate()', () => {
     before(() => {
