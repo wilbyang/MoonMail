@@ -17,7 +17,8 @@ class CleanRecipientsEmailService {
 
   async cleanAndUpdate() {
     const emailsWithIds = this.recipients
-      .map((recipient) => { return { email: recipient.email, id: recipient.listId }});
+      .map(recipient => ({ email: recipient.email, id: recipient.listId }))
+      .filter(emailListId => !!emailListId.email);
     const cleaningResults = await this._doClean(emailsWithIds);
     await this._updateRecipients(cleaningResults.data.result);
   }
@@ -28,7 +29,7 @@ class CleanRecipientsEmailService {
 
   async _updateRecipients(cleaningResults) {
     const updates = cleaningResults
-      .filter((result) => result.success && INVALID_CODES.indexOf(result.code) != -1)
+      .filter(result => result.success && INVALID_CODES.indexOf(result.code) != -1)
       .map((result) => {
         const listId = result.id;
         const email = result.email;
