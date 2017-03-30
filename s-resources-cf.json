@@ -821,10 +821,6 @@
           {
             "AttributeName": "id",
             "KeyType": "HASH"
-          },
-          {
-            "AttributeName": "affiliateRef",
-            "KeyType": "RANGE"
           }
         ],
         "StreamSpecification": {
