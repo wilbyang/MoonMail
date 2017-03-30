@@ -99,6 +99,8 @@
   "templatesTable": "${project}-${stage}-templates",
   "expertsTable": "${project}-${stage}-experts",
   "expertsTypeCountryIndex": "${project}-${stage}-expertsTypeCountryIndex",
+  "paymentLogsTable": "${project}-${stage}-payment-logs",
+  "paymentLogsAffiliateRefIndex": "${project}-${stage}-paymentLogsAffiliateRefIndex",
   "attachRecipientsTopic": "${project}-${stage}-attachRecipients",
   "attachListRecipientsTopic": "${project}-${stage}-attachListRecipients",
   "attachRecipientsCountTopic": "${project}-${stage}-attachRecipientsCount",

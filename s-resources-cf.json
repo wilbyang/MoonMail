@@ -799,6 +799,64 @@
         ]
       }
     },
+    "PaymentLogsTable": {
+      "Type": "AWS::DynamoDB::Table",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "id",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "timestamp",
+            "AttributeType": "N"
+          },
+          {
+            "AttributeName": "affiliateRef",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "id",
+            "KeyType": "HASH"
+          },
+          {
+            "AttributeName": "affiliateRef",
+            "KeyType": "RANGE"
+          }
+        ],
+        "StreamSpecification": {
+          "StreamViewType": "NEW_AND_OLD_IMAGES"
+        },
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": "${defaultRCU}",
+          "WriteCapacityUnits": "${defaultWCU}"
+        },
+        "TableName": "$${paymentLogsTable}",
+        "GlobalSecondaryIndexes": [
+          {
+            "IndexName" : "$${paymentLogsAffiliateRefIndex}",
+            "KeySchema" : [
+              {
+                "AttributeName": "affiliateRef",
+                "KeyType": "HASH"
+              },
+              {
+                "AttributeName": "timestamp",
+                "KeyType": "RANGE"
+              }
+            ],
+            "Projection" : {"ProjectionType": "ALL"},
+            "ProvisionedThroughput" : {
+              "ReadCapacityUnits": "${defaultRCU}",
+              "WriteCapacityUnits": "${defaultWCU}"
+            }
+          }
+        ]
+      }
+    },
     "RecipientsImportS3Bucket": {
       "Type": "AWS::S3::Bucket",
       "Properties": {
@@ -1054,6 +1112,15 @@
       "Value": {
         "Fn::GetAtt": [
           "UsersTable",
+          "StreamArn"
+        ]
+      }
+    },
+    "PaymentLogsTableStreamARN": {
+      "Description": "Arn of the PaymentLogs DynamoDB Table Stream",
+      "Value": {
+        "Fn::GetAtt": [
+          "PaymentLogsTable",
           "StreamArn"
         ]
       }
