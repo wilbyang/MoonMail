@@ -20,7 +20,7 @@
         "streamArn": "${recipientsTableStreamARN}",
         "startingPosition": "LATEST",
         "enabled": true,
-        "batchSize": 50
+        "batchSize": 15
       }
     }
   ],
