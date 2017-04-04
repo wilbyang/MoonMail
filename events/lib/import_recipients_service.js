@@ -11,7 +11,7 @@ import UserNotifier from './user_notifier';
 // TODO: Refactor me!
 class ImportRecipientsService {
 
-  constructor({s3Event, importOffset = 0 }, s3Client, snsClient, lambdaClient, context) {
+  constructor({ s3Event, importOffset = 0 }, s3Client, snsClient, lambdaClient, context) {
     this.s3Event = s3Event;
     this.importOffset = importOffset;
     this.processedItems = 0;
@@ -183,29 +183,34 @@ class ImportRecipientsService {
         dynamicTyping: true,
         skipEmptyLines: true,
         step: (results, parser) => {
-          if (results.errors.length > 0) {
-            debug('= ImportRecipientsService.parseCSV', 'Error parsing line', JSON.stringify(results.errors));
-          } else {
-            const item = results.data[0];
-            debug('= ImportRecipientsService.parseCSV', 'Parsing recipient', JSON.stringify(item), headerMapping);
-            let newRecp = {
-              userId,
-              listId,
-              metadata: {},
-              status: Recipient.statuses.subscribed,
-              isConfirmed: true,
-              createdAt: moment().unix()
-            };
-            for (const key in headerMapping) {
-              const newKey = headerMapping[key];
-              if (newKey && newKey !== 'false') {
-                newRecp.metadata[newKey] = item[key];
+          try {
+            if (results.errors.length > 0) {
+              debug('= ImportRecipientsService.parseCSV', 'Error parsing line', JSON.stringify(results.errors));
+            } else {
+              const item = results.data[0];
+              debug('= ImportRecipientsService.parseCSV', 'Parsing recipient', JSON.stringify(item), headerMapping);
+              let newRecp = {
+                userId,
+                listId,
+                metadata: {},
+                status: Recipient.statuses.subscribed,
+                isConfirmed: true,
+                createdAt: moment().unix()
+              };
+              for (const key in headerMapping) {
+                const newKey = headerMapping[key];
+                if (newKey && newKey !== 'false') {
+                  newRecp.metadata[newKey] = item[key];
+                }
               }
+              newRecp.email = newRecp.metadata.email;
+              delete newRecp.metadata.email;
+              newRecp.id = base64url.encode(newRecp.email.toString());
+              debug('= ImportRecipientsService.parseCSV', 'Parsed recipient', JSON.stringify(newRecp));
+              recipients.push(newRecp);
             }
-            newRecp.email = newRecp.metadata.email;
-            delete newRecp.metadata.email;
-            newRecp.id = base64url.encode(newRecp.email);
-            recipients.push(newRecp);
+          } catch (error) {
+            debug('= ImportRecipientsService.parseCSV', 'Error parsing recipient', JSON.stringify(item), headerMapping, error);
           }
         },
         complete: (results, parser) => {
@@ -226,8 +231,8 @@ class ImportRecipientsService {
   }
 
   _notifyProgress(recipientsAmount) {
-    const payload = {listId: this.listId};
-    return UserNotifier.notify(this.userId, {type: 'LIST_IMPORT_PROCESSED', data: payload});
+    const payload = { listId: this.listId };
+    return UserNotifier.notify(this.userId, { type: 'LIST_IMPORT_PROCESSED', data: payload });
   }
 
   _saveMetadataAttributes() {
