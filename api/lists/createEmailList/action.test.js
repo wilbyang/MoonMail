@@ -1,5 +1,3 @@
-'use strict';
-
 import * as chai from 'chai';
 import { respond } from './action';
 import * as sinon from 'sinon';
@@ -9,7 +7,6 @@ import { List } from 'moonmail-models';
 const expect = chai.expect;
 
 describe('createEmailList', () => {
-
   const name = 'my list';
   const list = { name };
   let event;
@@ -40,11 +37,30 @@ describe('createEmailList', () => {
     });
 
     context('when the event is not valid', () => {
-      event = {};
+      before(() => {
+        event = {};
+      });
+
       it('returns an error message', (done) => {
         respond(event, (err, result) => {
           expect(result).to.not.exist;
           expect(err).to.exist;
+          expect(List.save).not.to.be.called;
+          done();
+        });
+      });
+    });
+
+    context('when the list has missing required attributes', () => {
+      before(() => {
+        event = { isDeleted: false };
+      });
+
+      it('returns an error message', (done) => {
+        respond(event, (err, result) => {
+          expect(result).to.not.exist;
+          expect(err).to.exist;
+          expect(List.save).not.to.be.called;
           done();
         });
       });

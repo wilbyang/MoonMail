@@ -22,7 +22,7 @@ describe('updateEmailList', () => {
 
     context('when the event is valid', () => {
       before(() => {
-        event = {list, listId};
+        event = { list, listId };
       });
 
       it('updates the list', (done) => {
@@ -38,11 +38,15 @@ describe('updateEmailList', () => {
     });
 
     context('when the event is not valid', () => {
-      event = {};
+      before(() => {
+        event = {};
+      });
+
       it('returns an error message', (done) => {
         respond(event, (err, result) => {
           expect(result).to.not.exist;
           expect(err).to.exist;
+          expect(List.update).not.to.be.called;
           done();
         });
       });
