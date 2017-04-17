@@ -9,15 +9,12 @@ import { ApiErrors } from '../../lib/errors';
 export function respond(event, cb) {
   debug('= createEmailList.action', JSON.stringify(event));
   decrypt(event.authToken).then((decoded) => {
-    console.log('executing');
     if (event.list) {
-      console.log('list provided', event);
       const list = event.list;
       list.userId = decoded.sub;
       list.id = cuid();
       list.isDeleted = false.toString();
       list.importStatus = {};
-      console.log('ijasd');
       isValid(list)
         .then(list => List.save(list))
         .then(() => cb(null, list))
@@ -32,6 +29,5 @@ export function respond(event, cb) {
 }
 
 function isValid(list) {
-  console.log(list, List.isValid(list));
   return List.isValid(list) ? Promise.resolve(list) : Promise.reject(new Error('Required attributes are missing'));
 }
