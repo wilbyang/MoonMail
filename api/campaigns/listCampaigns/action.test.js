@@ -48,7 +48,6 @@ describe('listCampaigns', () => {
         event.filters = { status: { eq: '' }, archived: { eq: '' } };
         respond(event, (err) => {
           const allbyArgs = Campaign.filterBy.lastCall.args;
-          console.log(allbyArgs);
           expect(allbyArgs[2]).to.have.property('page', page);
           done();
         });

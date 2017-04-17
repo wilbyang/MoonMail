@@ -27,7 +27,7 @@ describe('getTemplate', () => {
 
     context('when the event is valid', () => {
       before(() => {
-        event = {templateId};
+        event = { templateId };
       });
 
       it('gets the template', (done) => {
@@ -42,7 +42,9 @@ describe('getTemplate', () => {
     });
 
     context('when the event is not valid', () => {
-      event = {};
+      before(() => {
+        event = {};
+      });
       it('returns an error message', (done) => {
         respond(event, (err, result) => {
           expect(result).to.not.exist;

@@ -29,7 +29,7 @@ describe('duplicateTemplate', () => {
     context('when the event is valid', () => {
       before(() => {
         event = { templateId };
-        sinon.stub(EmailTemplate, 'get').resolves(Object.assign({userId: 'user-id', id: templateId}, template));
+        sinon.stub(EmailTemplate, 'get').resolves(Object.assign({ userId: 'user-id', id: templateId }, template));
       });
 
       it('duplicates the template', (done) => {
@@ -54,7 +54,10 @@ describe('duplicateTemplate', () => {
     });
 
     context('when the event is not valid', () => {
-      event = {};
+      before(() => {
+        event = {};
+      });
+      
       it('returns an error message', (done) => {
         respond(event, (err, result) => {
           expect(result).to.not.exist;

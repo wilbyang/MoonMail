@@ -15,7 +15,7 @@ describe('createTemplate', () => {
   const name = 'my tempalte';
   const body = 'my tempalte body';
   const thumbnail = '797891230qsa09183134';
-  const template = {name, body, thumbnail, id, userId};
+  const template = { name, body, thumbnail, id, userId };
   let event;
 
   describe('#respond()', () => {
@@ -25,7 +25,7 @@ describe('createTemplate', () => {
 
     context('when the event is valid', () => {
       before(() => {
-        event = {template};
+        event = { template };
       });
 
       it('creates the template', (done) => {
@@ -41,11 +41,14 @@ describe('createTemplate', () => {
     });
 
     context('when the event is not valid', () => {
-      event = {};
+      before(() => {
+        event = {};
+      });
       it('returns an error message', (done) => {
         respond(event, (err, result) => {
           expect(result).to.not.exist;
           expect(err).to.exist;
+          expect(EmailTemplate.save).not.to.be.called;
           done();
         });
       });
