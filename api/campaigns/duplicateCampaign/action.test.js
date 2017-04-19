@@ -54,9 +54,8 @@ describe('duplicateCampaign', () => {
     });
 
     context('when the event is not valid', () => {
-      event = {};
       it('returns an error message', (done) => {
-        respond(event, (err, result) => {
+        respond({}, (err, result) => {
           expect(result).to.not.exist;
           expect(err).to.exist;
           done();
