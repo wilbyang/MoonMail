@@ -1,5 +1,3 @@
-'use strict';
-
 import { Campaign } from 'moonmail-models';
 import { debug } from '../../lib/logger';
 import cuid from 'cuid';
@@ -17,6 +15,7 @@ export function respond(event, cb) {
         campaign.status = 'draft';
         campaign.name = `${existingCampaign.name} copy`;
         delete campaign.sentAt;
+        delete campaign.archived;
         Campaign.save(campaign)
           .then(() => cb(null, campaign))
           .catch(e => {
