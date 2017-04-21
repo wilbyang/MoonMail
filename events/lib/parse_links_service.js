@@ -1,13 +1,14 @@
-'use strict';
-
-import { debug } from './index';
 import { Link } from 'moonmail-models';
+import { debug } from './index';
 import { LinksParser } from './links_parser';
+import { compressString, uncompressString } from './utils';
 
 class ParseLinksService {
 
   constructor(snsClient, campaignParams) {
     this.campaignParams = campaignParams;
+    const uncompressedBody = uncompressString(campaignParams.campaign.body);
+    this.campaignParams.campaign.body = uncompressedBody;
     this.parsedBody = null;
     this.apiHost = process.env.API_HOST;
     this.sendCampaignTopicArn = process.env.ATTACH_RECIPIENTS_TOPIC_ARN;
@@ -45,7 +46,8 @@ class ParseLinksService {
   composeCanonicalMessage(parsedBody) {
     return new Promise((resolve) => {
       let canonicalMessage = Object.assign({}, this.campaignParams);
-      Object.assign(canonicalMessage.campaign, {body: parsedBody, precompiled: true});
+      const compressedParsedBody = compressString(parsedBody);
+      Object.assign(canonicalMessage.campaign, {body: compressedParsedBody, precompiled: true});
       resolve(canonicalMessage);
     });
   }

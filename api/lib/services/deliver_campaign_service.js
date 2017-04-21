@@ -3,6 +3,7 @@ import { debug } from '../logger';
 import { Campaign, List } from 'moonmail-models';
 import inlineCss from 'inline-css';
 import juice from 'juice';
+import { compressString } from '../utils';
 
 class DeliverCampaignService {
 
@@ -23,6 +24,7 @@ class DeliverCampaignService {
     return this.checkUserQuota()
       .then(() => this._getCampaign())
       .then(campaign => this._checkCampaign(campaign))
+      .then((campaign) => this._compressCampaignBody(campaign))
       .then(campaign => this._buildCampaignMessage(campaign))
       .then(canonicalMessage => this._publishToSns(canonicalMessage))
       .then(() => this._updateCampaignStatus());
@@ -118,6 +120,14 @@ class DeliverCampaignService {
         debug('= DeliverCampaignService._getCampaign', 'No info provided');
         reject('No campaign info provided');
       }
+    });
+  }
+
+  _compressCampaignBody(campaign) {
+    return new Promise((resolve, reject) => {
+      const compressedBody = compressString(campaign.body);
+      const compressedCampaign = Object.assign({}, campaign, {body: compressedBody});
+      resolve(compressedCampaign);
     });
   }
 

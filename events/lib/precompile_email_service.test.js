@@ -8,6 +8,7 @@ import * as sinon from 'sinon';
 import { PrecompileEmailService } from './precompile_email_service';
 import { Email } from './email';
 import * as canonicalMessage from './send_email_topic_canonical_message.json';
+import { compressString, uncompressString } from './utils';
 const awsMock = require('aws-sdk-mock');
 const AWS = require('aws-sdk-promise');
 
@@ -20,6 +21,7 @@ describe('PrecompileEmailService', () => {
   const apiHost = 'myapi.com';
   const opensTrackingUrl = `https://${apiHost}/links/open/${canonicalMessage.campaign.id}?r=${canonicalMessage.recipient.id}`;
   const imgTrackingTag = `<img src="${opensTrackingUrl}" width="1" height="1" />`;
+  const compressedBody = compressString(canonicalMessage.campaign.body);
   let sqsClient;
   let precompileService;
   let emailParams;
@@ -27,6 +29,7 @@ describe('PrecompileEmailService', () => {
 
   before(() => {
     emailParams = JSON.parse(JSON.stringify(canonicalMessage));
+    emailParams.campaign.body = compressedBody;
     sqsClient = new AWS.SQS();
     precompileService = new PrecompileEmailService(sqsClient, emailParams);
   });
@@ -51,12 +54,13 @@ describe('PrecompileEmailService', () => {
   describe('#composeEmail()', () => {
     it('returns an object with the SendEmail queue canonical format', (done) => {
       precompileService.composeEmail().then((composedEmail) => {
+        const uncompressedBody = uncompressString(composedEmail.campaign.body);
         expect(composedEmail.userId).to.equal(canonicalMessage.userId);
         expect(composedEmail.sender).to.deep.equal(canonicalMessage.sender);
         expect(composedEmail.campaign.id).to.equal(canonicalMessage.campaign.id);
         expect(composedEmail.recipient).to.have.property('email', canonicalMessage.recipient.email);
         expect(composedEmail.recipient).to.have.property('unsubscribeUrl');
-        expect(composedEmail.campaign.body).to.contain(canonicalMessage.recipient.metadata.name);
+        expect(uncompressedBody).to.contain(canonicalMessage.recipient.metadata.name);
         expect(composedEmail.campaign.subject).to.contain(canonicalMessage.recipient.metadata.name);
         done();
       }).catch(done);
@@ -64,7 +68,8 @@ describe('PrecompileEmailService', () => {
 
     it('appends the tracking pixel', (done) => {
       precompileService.composeEmail().then(composedEmail => {
-        expect(composedEmail.campaign.body).to.contain(imgTrackingTag);
+        const uncompressedBody = uncompressString(composedEmail.campaign.body);
+        expect(uncompressedBody).to.contain(imgTrackingTag);
         done();
       }).catch(done);
     });
