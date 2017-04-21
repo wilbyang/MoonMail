@@ -1,3 +1,4 @@
+import UIDGenerator from 'uid-generator';
 import { Promise } from 'bluebird';
 import * as async from 'async';
 import { SES, SNS } from 'aws-sdk';
@@ -25,7 +26,7 @@ class SendEmailService {
   sendEnqueuedEmails() {
     return this._checkReputation()
       .then(() => this.sendBatch())
-      .then((batch) => this.deleteBatch(batch))
+      .then(batch => this.deleteBatch(batch))
       .then(() => this.sendNextBatch())
       .catch(err => logger().info('SendEmailService.sendEnqueuedEmails', `Sent ${this.counter} emails so far`));
   }
@@ -73,8 +74,10 @@ class SendEmailService {
                   Id: email.messageId
                 });
                 sentEmails.push(email.toSentEmail(result.MessageId));
-                callback();
-              }).catch(err => {
+                return Promise.resolve(result);
+              }).then(result => this._publishBounceNotificationIfNeeded(result))
+              .then(result => callback())
+              .catch((err) => {
                 logger().warn('SendEmailService.sendBatch', 'Error', err);
                 if (this._isAbortError(err)) {
                   logger().error('SendEmailService.sendBatch', 'Aborting...');
@@ -121,6 +124,37 @@ class SendEmailService {
     return this.snsClient.publish(snsParams, callback);
   }
 
+  _publishBounceNotificationIfNeeded(deliverResult) {
+    logger().debug('SendEmailService._publishBounceNotificationIfNeeded', JSON.stringify(deliverResult));
+    if (deliverResult.status === 'BounceDetected') {
+      return this._publishBounceNotification(deliverResult)
+        .then(_ => Promise.resolve(deliverResult));
+    }
+    return Promise.resolve(deliverResult);
+  }
+
+  _publishBounceNotification(deliverResult) {
+    const bounceNotification = {
+      notificationType: 'Bounce',
+      bounce: {
+        bounceType: 'Permanent',
+        metadata: {
+          decription: 'Detected before send',
+          detector: 'Moonmail'
+        }
+      },
+      mail: {
+        messageId: deliverResult.MessageId
+      }
+    };
+    const snsParams = {
+      Message: JSON.stringify(bounceNotification),
+      TopicArn: process.env.EMAIL_NOTIFICATIONS_TOPIC_ARN
+    };
+    logger().debug('SendEmailService._publishBounceNotification', JSON.stringify(snsParams));
+    return this.snsClient.publish(snsParams).promise();
+  }
+
   _isAbortError(error) {
     logger().error('SendEmailService._isAbortError', error);
     return error.code && error.code === 'MessageRejected' ||
@@ -138,7 +172,12 @@ class SendEmailService {
   }
 
   deliver(enqueuedEmail) {
-    logger().debug('SendEmailService.deliver', 'Sending email', enqueuedEmail.receiptHandle);
+    logger().debug('SendEmailService.deliver', 'Sending email', enqueuedEmail.receiptHandle, JSON.stringify(enqueuedEmail));
+    if (!this._shouldSendEmail(enqueuedEmail.message.recipient)) {
+      logger().info('SendEmailService.deliver detected recipient with elevated risk score, skipping the smtp relay delivery', JSON.stringify(enqueuedEmail.message.recipient));
+      const uidGenerator = new UIDGenerator(256, UIDGenerator.BASE62);
+      return Promise.resolve({ MessageId: `${enqueuedEmail.message.campaign.id}-${uidGenerator.generateSync()}`, status: 'BounceDetected' });
+    }
     return enqueuedEmail.toSesRawParams()
       .then(params => this._deliverRawEmail(params));
   }
@@ -158,10 +197,25 @@ class SendEmailService {
     });
   }
 
+  _shouldSendEmail(recipient) {
+    if (recipient.riskScore) {
+      // riskScore = -1 is considered as unknown
+      // so is better idea to send the email
+      if (recipient.riskScore <= 0) {
+        return true;
+      }
+      // riskScore > 0 considered harmful
+      return false;
+    }
+    // for some reason there isn't any riskScore information
+    // proceed to send
+    return true;
+  }
+
   get snsClient() {
     logger().debug('SendEmailService.snsClient', 'Getting SNS client');
     if (!this.sns) {
-      this.sns = new SNS({region: process.env.SERVERLESS_REGION || 'us-east-1'});
+      this.sns = new SNS({ region: process.env.SERVERLESS_REGION || 'us-east-1' });
     }
     return this.sns;
   }
