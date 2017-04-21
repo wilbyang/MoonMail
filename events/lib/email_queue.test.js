@@ -1,17 +1,16 @@
-'use strict';
-
 import * as chai from 'chai';
-const chaiAsPromised = require('chai-as-promised');
-const chaiThings = require('chai-things');
-import { expect } from 'chai';
+import chaiAsPromised from 'chai-as-promised';
+import chaiThings from 'chai-things';
+import awsMock from 'aws-sdk-mock';
+import * as sinon from 'sinon';
+import 'sinon-as-promised';
+import AWS from 'aws-sdk-promise';
 import { EmailQueue } from './email_queue';
 import { EnqueuedEmail } from './enqueued_email';
 import * as sqsMessages from './sqs_receive_messages_response.json';
-const awsMock = require('aws-sdk-mock');
-const AWS = require('aws-sdk-promise');
-import * as sinon from 'sinon';
-import * as sinonAsPromised from 'sinon-as-promised';
+import { uncompressString } from './utils';
 
+const expect = chai.expect;
 chai.use(chaiAsPromised);
 chai.use(chaiThings);
 
@@ -73,10 +72,13 @@ describe('EmailQueue', () => {
           return item.receiptHandle === someMessage.ReceiptHandle;
         });
         expect(emailQueueMessage).to.exist;
-        expect(emailQueueMessage.message).to.deep.equal(JSON.parse(someMessage.Body));
+        const canonicalMessage = JSON.parse(someMessage.Body);
+        const uncompressedBody = uncompressString(canonicalMessage.campaign.body);
+        canonicalMessage.campaign.body = uncompressedBody;
+        expect(emailQueueMessage.message).to.deep.equal(canonicalMessage);
         expect(emailQueueMessage.messageId).to.equal(someMessage.MessageId);
         done();
-      });
+      }).catch(done);
     });
   });
 

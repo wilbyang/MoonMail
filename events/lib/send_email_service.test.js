@@ -1,20 +1,17 @@
-'use strict';
-
-import axios from 'axios';
-import * as chai from 'chai';
-const chaiAsPromised = require('chai-as-promised');
-const chaiThings = require('chai-things');
-const expect = chai.expect;
-import * as sinon from 'sinon';
-import * as sinonAsPromised from 'sinon-as-promised';
-const sinonChai = require('sinon-chai');
-const awsMock = require('aws-sdk-mock');
-const AWS = require('aws-sdk');
+import chai from 'chai';
+import sinon from 'sinon';
+import 'sinon-as-promised';
+import chaiAsPromised from 'chai-as-promised';
+import chaiThings from 'chai-things';
+import sinonChai from 'sinon-chai';
+import awsMock from 'aws-sdk-mock';
+import AWS from 'aws-sdk';
 import { EmailQueue } from './email_queue';
 import { EnqueuedEmail } from './enqueued_email';
 import { SendEmailService } from './send_email_service';
 import * as sqsMessages from './sqs_receive_messages_response.json';
 
+const expect = chai.expect;
 chai.use(sinonChai);
 chai.use(chaiAsPromised);
 chai.use(chaiThings);

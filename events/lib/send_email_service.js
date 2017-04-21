@@ -1,11 +1,7 @@
-'use strict';
-
 import { Promise } from 'bluebird';
-import axios from 'axios';
-import * as url from 'url';
-import { logger } from './index';
 import * as async from 'async';
 import { SES, SNS } from 'aws-sdk';
+import { logger } from './index';
 
 class SendEmailService {
 

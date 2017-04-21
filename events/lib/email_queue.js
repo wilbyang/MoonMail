@@ -1,8 +1,7 @@
-'use strict';
-
+import { CloudWatch } from 'aws-sdk';
 import { debug } from './index';
 import { EnqueuedEmail } from './enqueued_email';
-import { CloudWatch } from 'aws-sdk';
+import { uncompressString } from './utils';
 
 class EmailQueue {
 
@@ -55,7 +54,12 @@ class EmailQueue {
           } else {
             if (data.Messages) {
               debug('= EmailQueue.retrieveMessages', 'Got some messages', JSON.stringify(data));
-              const enqueuedEmails = data.Messages.map((message) => new EnqueuedEmail(JSON.parse(message.Body), message.ReceiptHandle, message.MessageId));
+              const enqueuedEmails = data.Messages.map((message) => {
+                const canonicalMessage = JSON.parse(message.Body);
+                const uncompressedBody = uncompressString(canonicalMessage.campaign.body);
+                canonicalMessage.campaign.body = uncompressedBody;
+                return new EnqueuedEmail(canonicalMessage, message.ReceiptHandle, message.MessageId);
+              });
               this.messages = enqueuedEmails;
               resolve(enqueuedEmails);
             } else {
