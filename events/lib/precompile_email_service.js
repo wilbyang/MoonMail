@@ -1,20 +1,19 @@
-'use strict';
-
 import { debug } from './index';
 import { EmailQueue } from './email_queue';
 import { Email } from './email';
 import { LinksParser } from './links_parser';
+import { compressString, uncompressString } from './utils';
 
 class PrecompileEmailService {
-
   constructor(sqsClient, emailParams) {
     this.emailParams = emailParams;
     this.apiHost = process.env.API_HOST;
     this.queue = new EmailQueue(sqsClient, { name: this.queueName });
+    const uncompressedBody = uncompressString(emailParams.campaign.body);
     this.email = new Email({
       fromEmail: emailParams.sender.emailAddress,
       to: emailParams.recipient.email,
-      body: emailParams.campaign.body,
+      body: uncompressedBody,
       subject: emailParams.campaign.subject,
       metadata: emailParams.recipient.metadata,
       recipientId: emailParams.recipient.id,
@@ -34,7 +33,8 @@ class PrecompileEmailService {
           const parsedBody = values[0];
           const parsedSubject = values[1];
           let composedEmail = Object.assign({}, this.emailParams);
-          Object.assign(composedEmail.campaign, { subject: parsedSubject, body: parsedBody});
+          const compressedParsedBody = compressString(parsedBody);
+          Object.assign(composedEmail.campaign, { subject: parsedSubject, body: compressedParsedBody});
           Object.assign(composedEmail.recipient, { unsubscribeUrl: this.email.unsubscribeUrl});
           debug('= PrecompileEmailService.composeEmail', 'Composed email', composedEmail);
           resolve(composedEmail);
