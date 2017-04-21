@@ -10,6 +10,7 @@ import { EmailQueue } from './email_queue';
 import { EnqueuedEmail } from './enqueued_email';
 import { SendEmailService } from './send_email_service';
 import * as sqsMessages from './sqs_receive_messages_response.json';
+import * as sqsMessagesWithRiskScoreRcpts from './sqs_messages_with_risk_score_recipients';
 
 const expect = chai.expect;
 chai.use(sinonChai);
@@ -22,7 +23,7 @@ describe('SendEmailService', () => {
   let queue;
   const lambdaContext = {
     functionName: 'lambda-function-name',
-    getRemainingTimeInMillis: () => {}
+    getRemainingTimeInMillis: () => { }
   };
   let contextStub;
   let lambdaClient;
@@ -31,7 +32,7 @@ describe('SendEmailService', () => {
     awsMock.mock('SQS', 'receiveMessage', sqsMessages);
     awsMock.mock('SQS', 'deleteMessage', { ResponseMetadata: { RequestId: 'e21774f2-6974-5d8b-adb2-3ba82afacdfc' } });
     sqsClient = new AWS.SQS();
-    queue = new EmailQueue(sqsClient, { url: 'https://some_url.com'});
+    queue = new EmailQueue(sqsClient, { url: 'https://some_url.com' });
     contextStub = sinon.stub(lambdaContext, 'getRemainingTimeInMillis').returns(100000);
     awsMock.mock('Lambda', 'invoke', 'ok');
     awsMock.mock('SNS', 'publish', 'ok');
@@ -42,7 +43,7 @@ describe('SendEmailService', () => {
     context('when there are messages in the queue', () => {
       let senderService;
       const emailHandles = sqsMessages.Messages.map((message) => {
-        return {ReceiptHandle: message.ReceiptHandle, Id: message.MessageId};
+        return { ReceiptHandle: message.ReceiptHandle, Id: message.MessageId };
       });
 
       before(() => {
@@ -83,7 +84,7 @@ describe('SendEmailService', () => {
 
       context('when the sending rate is exceeded', () => {
         before(() => {
-          sinon.stub(senderService, 'deliver').rejects({code: 'Throttling', message: 'Maximum sending rate exceeded'});
+          sinon.stub(senderService, 'deliver').rejects({ code: 'Throttling', message: 'Maximum sending rate exceeded' });
         });
 
         it('should leave the message in the queue', done => {
@@ -102,12 +103,12 @@ describe('SendEmailService', () => {
           const deliverStub = sinon.stub(senderService, 'deliver');
           deliverStub
             .onFirstCall().resolves({ MessageId: 'some_message_id' })
-            .onSecondCall().rejects({code: 'MessageRejected'});
+            .onSecondCall().rejects({ code: 'MessageRejected' });
         });
 
         it('should stop the execution', done => {
           senderService.sendBatch().catch(err => {
-            expect(err).to.deep.equal({code: 'MessageRejected'});
+            expect(err).to.deep.equal({ code: 'MessageRejected' });
             const emailsToDelete = JSON.parse(senderService.snsClient.publish.lastCall.args[0].Message);
             expect(emailsToDelete.length).to.equal(1);
             done();
@@ -121,7 +122,7 @@ describe('SendEmailService', () => {
         before(() => {
           sinon.stub(senderService, 'deliver')
             .onFirstCall().resolves({ MessageId: 'some_message_id' })
-            .onSecondCall().rejects({code: 'Throttling', message: 'Daily message quota exceeded'});
+            .onSecondCall().rejects({ code: 'Throttling', message: 'Daily message quota exceeded' });
         });
 
         it('should stop the execution', done => {
@@ -138,7 +139,7 @@ describe('SendEmailService', () => {
 
       context('when an unexpected error occurs', () => {
         before(() => {
-          sinon.stub(senderService, 'deliver').rejects({code: 'SomethingUnexpected'});
+          sinon.stub(senderService, 'deliver').rejects({ code: 'SomethingUnexpected' });
         });
 
         it('should delete the message from the queue', done => {
@@ -169,25 +170,69 @@ describe('SendEmailService', () => {
   });
 
   describe('#deliver()', () => {
-    before(() => {
-      awsMock.mock('SES', 'sendRawEmail', { MessageId: 'some_message_id' });
-      const sqsMessage = sqsMessages.Messages[0];
-      email = new EnqueuedEmail(JSON.parse(sqsMessage.Body), sqsMessage.ReceiptHandle);
-      sinon.stub(email, 'toSesRawParams').resolves('test data');
+    context('when recipient is not risky', () => {
+      before(() => {
+        awsMock.mock('SES', 'sendRawEmail', { MessageId: 'some_message_id' });
+        const sqsMessage = sqsMessages.Messages[0];
+        email = new EnqueuedEmail(JSON.parse(sqsMessage.Body), sqsMessage.ReceiptHandle);
+        sinon.stub(email, 'toSesRawParams').resolves('test data');
+      });
+
+      it('sends the email', (done) => {
+        const senderService = new SendEmailService(queue, null, contextStub);
+        const emailClient = senderService.setEmailClient(email);
+        senderService.deliver(email).then(res => {
+          expect(emailClient.sendRawEmail).to.have.been.calledOnce;
+          expect(emailClient.sendRawEmail).to.have.been.calledWith('test data');
+          done();
+        }).catch(done);
+      });
+
+      after(() => {
+        awsMock.restore('SES');
+      });
+    });
+    context('when recipient is risky', () => {
+      before(() => {
+        awsMock.mock('SES', 'sendRawEmail', { MessageId: 'some_message_id' });
+        const sqsMessage = sqsMessagesWithRiskScoreRcpts.Messages[3]; // riskScore=1
+        email = new EnqueuedEmail(JSON.parse(sqsMessage.Body), sqsMessage.ReceiptHandle);
+      });
+
+      it('does not send the email', (done) => {
+        const senderService = new SendEmailService(queue, null, contextStub);
+        const emailClient = senderService.setEmailClient(email);
+        senderService.deliver(email).then(res => {
+          expect(emailClient.sendRawEmail).not.to.have.been.called;
+          expect(res.status).to.equals('BounceDetected');
+          done();
+        }).catch(done);
+      });
+
+      after(() => {
+        awsMock.restore('SES');
+      });
     });
 
-    it('sends the email', (done) => {
-      const senderService = new SendEmailService(queue, null, contextStub);
-      const emailClient = senderService.setEmailClient(email);
-      senderService.deliver(email).then(res => {
-        expect(emailClient.sendRawEmail).to.have.been.calledOnce;
-        expect(emailClient.sendRawEmail).to.have.been.calledWith('test data');
-        done();
-      }).catch(done);
-    });
+    context('when recipient has riskScore but is not risky', () => {
+      before(() => {
+        awsMock.mock('SES', 'sendRawEmail', { MessageId: 'some_message_id' });
+        const sqsMessage = sqsMessagesWithRiskScoreRcpts.Messages[1]; // riskScore=0
+        email = new EnqueuedEmail(JSON.parse(sqsMessage.Body), sqsMessage.ReceiptHandle);
+      });
 
-    after(() => {
-      awsMock.restore('SES');
+      it('does not send the email', (done) => {
+        const senderService = new SendEmailService(queue, null, contextStub);
+        const emailClient = senderService.setEmailClient(email);
+        senderService.deliver(email).then(res => {
+          expect(emailClient.sendRawEmail).to.have.been.calledOnce;
+          done();
+        }).catch(done);
+      });
+
+      after(() => {
+        awsMock.restore('SES');
+      });
     });
   });
 
@@ -266,7 +311,7 @@ describe('SendEmailService', () => {
       let senderService;
 
       beforeEach(() => {
-        senderService = new SendEmailService(queue, null, contextStub, { sentEmails: 2020, lastReputationCheckedOn: 2000});
+        senderService = new SendEmailService(queue, null, contextStub, { sentEmails: 2020, lastReputationCheckedOn: 2000 });
         sinon.stub(senderService, '_invokeGetUserData').resolves({});
       });
 
@@ -284,6 +329,23 @@ describe('SendEmailService', () => {
       });
     });
 
+  });
+
+  describe('_publishBounceNotificationIfNeeded', () => {
+    context('when the email was not sent due to bounce detection', () => {
+      let senderService;
+      before(() => {
+        senderService = new SendEmailService(queue, null, contextStub);
+      });
+      it('publishes a sns notification to the email notification topic', (done) => {
+        senderService._publishBounceNotificationIfNeeded({ MessageId: 'some-message-id', status: 'BounceDetected' }).then((result) => {
+          expect(result).to.exist;
+          expect(senderService.snsClient.publish).to.have.been.calledOnce;
+          expect(JSON.parse(senderService.snsClient.publish.lastCall.args[0].Message).notificationType).to.equals('Bounce');
+          done();
+        });
+      });
+    });
   });
 
   after(() => {

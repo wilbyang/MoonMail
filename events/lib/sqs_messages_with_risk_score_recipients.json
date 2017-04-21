@@ -1,0 +1,28 @@
+{
+  "Messages": [
+    {
+      "MessageId": "1a7d65ba-6b3d-49bb-81ef-8ccd1a6ab190",
+      "ReceiptHandle": "this_is_the_code_that_identifies_the_sqs_message_5",
+      "MD5OfBody": "md5",
+      "Body": "{\"userId\":\"some_user_id\",\"sender\":{\"region\":\"eu-west-1\",\"apiKey\":\"some_api_key\",\"apiSecret\":\"some_api_secret\",\"ratePerSecond\":\"14\",\"emailAddress\":\"david.garcia@microapps.com\",\"fromName\":\"David mc\"},\"campaign\":{\"id\":\"some_campaign_id\",\"body\":\"Email Body\",\"subject\":\"Email Subject\"},\"recipient\":{\"email\":\"david.garcia_5@microapps.com\",\"id\":\"recipient-id\",\"listId\":\"list-id\"}}"
+    },
+    {
+      "MessageId": "1a7d65ba-6b3d-49bb-81ef-8ccd1a6ab190",
+      "ReceiptHandle": "this_is_the_code_that_identifies_the_sqs_message_5",
+      "MD5OfBody": "md5",
+      "Body": "{\"userId\":\"some_user_id\",\"sender\":{\"region\":\"eu-west-1\",\"apiKey\":\"some_api_key\",\"apiSecret\":\"some_api_secret\",\"ratePerSecond\":\"14\",\"emailAddress\":\"david.garcia@microapps.com\",\"fromName\":\"David mc\"},\"campaign\":{\"id\":\"some_campaign_id\",\"body\":\"Email Body\",\"subject\":\"Email Subject\"},\"recipient\":{\"email\":\"david.garcia_5@microapps.com\",\"id\":\"recipient-id\",\"listId\":\"list-id\",\"riskScore\":\"0\"}}"
+    },
+    {
+      "MessageId": "1a7d65ba-6b3d-49bb-81ef-8ccd1a6ab190",
+      "ReceiptHandle": "this_is_the_code_that_identifies_the_sqs_message_5",
+      "MD5OfBody": "md5",
+      "Body": "{\"userId\":\"some_user_id\",\"sender\":{\"region\":\"eu-west-1\",\"apiKey\":\"some_api_key\",\"apiSecret\":\"some_api_secret\",\"ratePerSecond\":\"14\",\"emailAddress\":\"david.garcia@microapps.com\",\"fromName\":\"David mc\"},\"campaign\":{\"id\":\"some_campaign_id\",\"body\":\"Email Body\",\"subject\":\"Email Subject\"},\"recipient\":{\"email\":\"david.garcia_5@microapps.com\",\"id\":\"recipient-id\",\"listId\":\"list-id\",\"riskScore\":\"-1\"}}"
+    },
+    {
+      "MessageId": "1a7d65ba-6b3d-49bb-81ef-8ccd1a6ab190",
+      "ReceiptHandle": "this_is_the_code_that_identifies_the_sqs_message_5",
+      "MD5OfBody": "md5",
+      "Body": "{\"userId\":\"some_user_id\",\"sender\":{\"region\":\"eu-west-1\",\"apiKey\":\"some_api_key\",\"apiSecret\":\"some_api_secret\",\"ratePerSecond\":\"14\",\"emailAddress\":\"david.garcia@microapps.com\",\"fromName\":\"David mc\"},\"campaign\":{\"id\":\"some_campaign_id\",\"body\":\"Email Body\",\"subject\":\"Email Subject\"},\"recipient\":{\"email\":\"david.garcia_5@microapps.com\",\"id\":\"recipient-id\",\"listId\":\"list-id\",\"riskScore\":\"1\"}}"
+    }
+  ]
+}
