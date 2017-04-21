@@ -1,11 +1,12 @@
-'use strict';
-
 import * as chai from 'chai';
 import * as sinon from 'sinon';
 import { expect } from 'chai';
 import Promise from 'bluebird';
-import { DeliverCampaignService } from './deliver_campaign_service';
 import { Campaign, List } from 'moonmail-models';
+import 'sinon-as-promised';
+import { DeliverCampaignService } from './deliver_campaign_service';
+import { compressString } from '../utils';
+
 const awsMock = require('aws-sdk-mock');
 const AWS = require('aws-sdk');
 const chaiAsPromised = require('chai-as-promised');
@@ -20,7 +21,9 @@ describe('DeliverCampaignService', () => {
   const listIds = ['ca43546'];
   const name = 'my campaign';
   const body = 'my campaign body';
+  const compressedBody = compressString(body);
   const updatedBody = 'New updated body';
+  const compressedUpdatedBody = compressString(updatedBody);
   const campaignId = 'some-campaign-id';
   const freeUserPlan = 'free';
   const campaign = {userId, senderId, subject, listIds, name, body, id: campaignId, status: 'draft'};
@@ -125,7 +128,7 @@ describe('DeliverCampaignService', () => {
           expect(snsPayload).to.have.property('userId', userId);
           expect(snsPayload).to.have.deep.property('campaign.id', campaignId);
           expect(snsPayload).to.have.deep.property('campaign.subject', subject);
-          expect(snsPayload).to.have.deep.property('campaign.body', body);
+          expect(snsPayload).to.have.deep.property('campaign.body', compressedBody);
           expect(snsPayload).to.have.deep.property('campaign.senderId', senderId);
           expect(snsPayload).to.have.deep.property('campaign.listIds');
           expect(snsPayload).to.have.deep.property('campaign.precompiled', false);
@@ -160,7 +163,7 @@ describe('DeliverCampaignService', () => {
           expect(snsPayload).to.have.property('userId', userId);
           expect(snsPayload).to.have.deep.property('campaign.id', campaignId);
           expect(snsPayload).to.have.deep.property('campaign.subject', subject);
-          expect(snsPayload).to.have.deep.property('campaign.body', updatedBody);
+          expect(snsPayload).to.have.deep.property('campaign.body', compressedUpdatedBody);
           expect(snsPayload).to.have.deep.property('campaign.senderId', senderId);
           expect(snsPayload).to.have.deep.property('campaign.listIds');
           expect(snsPayload).to.have.deep.property('campaign.precompiled', false);
