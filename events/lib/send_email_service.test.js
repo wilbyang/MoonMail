@@ -331,22 +331,22 @@ describe('SendEmailService', () => {
 
   });
 
-  describe('_publishBounceNotificationIfNeeded', () => {
-    context('when the email was not sent due to bounce detection', () => {
-      let senderService;
-      before(() => {
-        senderService = new SendEmailService(queue, null, contextStub);
-      });
-      it('publishes a sns notification to the email notification topic', (done) => {
-        senderService._publishBounceNotificationIfNeeded({ MessageId: 'some-message-id', status: 'BounceDetected' }).then((result) => {
-          expect(result).to.exist;
-          expect(senderService.snsClient.publish).to.have.been.calledOnce;
-          expect(JSON.parse(senderService.snsClient.publish.lastCall.args[0].Message).notificationType).to.equals('Bounce');
-          done();
-        });
-      });
-    });
-  });
+  // describe('_publishBounceNotificationIfNeeded', () => {
+  //   context('when the email was not sent due to bounce detection', () => {
+  //     let senderService;
+  //     before(() => {
+  //       senderService = new SendEmailService(queue, null, contextStub);
+  //     });
+  //     it('publishes a sns notification to the email notification topic', (done) => {
+  //       senderService._publishBounceNotificationIfNeeded({ MessageId: 'some-message-id', status: 'BounceDetected' }).then((result) => {
+  //         expect(result).to.exist;
+  //         expect(senderService.snsClient.publish).to.have.been.calledOnce;
+  //         expect(JSON.parse(senderService.snsClient.publish.lastCall.args[0].Message).notificationType).to.equals('Bounce');
+  //         done();
+  //       });
+  //     });
+  //   });
+  // });
 
   after(() => {
     awsMock.restore('SQS');

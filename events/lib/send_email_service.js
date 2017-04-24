@@ -74,9 +74,8 @@ class SendEmailService {
                   Id: email.messageId
                 });
                 sentEmails.push(email.toSentEmail(result.MessageId));
-                return Promise.resolve(result);
-              }).then(result => this._publishBounceNotificationIfNeeded(result))
-              .then(result => callback())
+                callback();
+              })
               .catch((err) => {
                 logger().warn('SendEmailService.sendBatch', 'Error', err);
                 if (this._isAbortError(err)) {
