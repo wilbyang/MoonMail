@@ -89,7 +89,7 @@ Feel free to <a href="mailto:hi@microapps.com">contact us</a> if you have any qu
 
 ## Professional Help
 
-If you need support getting MoonMail into production in your AWS account, contact the [experts](https://moonmail.io/email-marketing-experts):
+If you need support getting MoonMail into production in your AWS account, contact the [Email Marketing and Serverless Experts](https://moonmail.io/email-marketing-experts):
 
 - <a href="mailto:ryan@serverlesscode.com">ServerlessCode</a>
 - <a href="http://www.apiwise.nl">Apiwise</a>
