@@ -106,35 +106,39 @@ class RecipientsCounterService {
     });
 
     this.eventDetails.Records.forEach((event) => {
-      let attribute;
-      const listId = event.dynamodb.Keys.listId.S;
-      switch (event.eventName) {
-        case 'INSERT':
-          attribute = statusAttrMapping[event.dynamodb.NewImage.status.S];
-          aggregatedCounters[listId][attribute] += 1;
-          aggregatedCounters[listId].total += 1;
-          break;
-        case 'MODIFY':
-          const oldStatus = event.dynamodb.OldImage.status.S;
-          const newStatus = event.dynamodb.NewImage.status.S;
+      try {
+        let attribute;
+        const listId = event.dynamodb.Keys.listId.S;
+        switch (event.eventName) {
+          case 'INSERT':
+            attribute = statusAttrMapping[event.dynamodb.NewImage.status.S];
+            aggregatedCounters[listId][attribute] += 1;
+            aggregatedCounters[listId].total += 1;
+            break;
+          case 'MODIFY':
+            const oldStatus = event.dynamodb.OldImage.status.S;
+            const newStatus = event.dynamodb.NewImage.status.S;
 
-          attribute = this.statusChangesStateMachine(oldStatus, newStatus);
-          // Check if the update changed the status attribute
-          if (attribute) {
-            aggregatedCounters[listId][attribute] += 1; // increment according to the change
-            let oldStatusAttr = statusAttrMapping[oldStatus];
-            aggregatedCounters[listId][oldStatusAttr] -= 1; // decrement old status attribute
-          }
+            attribute = this.statusChangesStateMachine(oldStatus, newStatus);
+            // Check if the update changed the status attribute
+            if (attribute) {
+              aggregatedCounters[listId][attribute] += 1; // increment according to the change
+              let oldStatusAttr = statusAttrMapping[oldStatus];
+              aggregatedCounters[listId][oldStatusAttr] -= 1; // decrement old status attribute
+            }
 
-          break;
-        case 'REMOVE':
-          attribute = statusAttrMapping[event.dynamodb.OldImage.status.S];
-          aggregatedCounters[listId][attribute] -= 1;
-          aggregatedCounters[listId].total -= 1;
-          break;
-        default:
-        //
-      }
+            break;
+          case 'REMOVE':
+            attribute = statusAttrMapping[event.dynamodb.OldImage.status.S];
+            aggregatedCounters[listId][attribute] -= 1;
+            aggregatedCounters[listId].total -= 1;
+            break;
+          default:
+          //
+        }
+      } catch (err) {
+        // Dismiss
+      };
     });
     return aggregatedCounters;
   }
