@@ -207,7 +207,7 @@ class DeliverCampaignService {
   }
 
   get maxDailyCampaigns() {
-    if (!this.userPlan || this.userPlan === 'free') {
+    if (!this.userPlan || /^free*/.test(this.userPlan)) {
       return 1;
     }
   }
