@@ -446,12 +446,30 @@
           {
             "AttributeName": "id",
             "AttributeType": "S"
+          },
+          {
+            "AttributeName": "email",
+            "AttributeType": "S"
           }
         ],
         "KeySchema": [
           {
             "AttributeName": "id",
             "KeyType": "HASH"
+          }
+        ],
+        "GlobalSecondaryIndexes": [
+          {
+            "IndexName" : "$${usersEmailIndex}",
+            "KeySchema" : [{
+              "AttributeName": "email",
+              "KeyType": "HASH"
+            }],
+            "Projection" : {"ProjectionType": "ALL"},
+            "ProvisionedThroughput" : {
+              "ReadCapacityUnits": "${defaultRCU}",
+              "WriteCapacityUnits": "${defaultWCU}"
+            }
           }
         ],
         "StreamSpecification": {

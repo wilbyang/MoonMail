@@ -92,6 +92,7 @@
   "recipientsEmailIndex": "${project}-${stage}-recipientsEmailIndex",
   "recipientsStatusIndex": "${project}-${stage}-recipientsStatusIndex",
   "usersTable": "${project}-${stage}-users",
+  "usersEmailIndex": "${project}-${stage}-usersEmailIndex",
   "sentEmailsTable": "${project}-${stage}-sentEmails",
   "listsTable": "${project}-${stage}-lists",
   "recipientsTable": "${project}-${stage}-recipients",
