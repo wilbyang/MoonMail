@@ -1,0 +1,48 @@
+{
+  "name": "sendTestConfirmationEmail",
+  "runtime": "babel",
+  "description": "Serverless Lambda function for project: MoonMail-v2",
+  "customName": "${project}-campaigns-sendTestConfirmationEmail",
+  "customRole": false,
+  "handler": "lists/sendTestConfirmationEmail/handler.default",
+  "timeout": 6,
+  "memorySize": 1024,
+  "authorizer": {},
+  "custom": {
+    "excludePatterns": [],
+    "cors": "$${corsSettings}"
+  },
+  "endpoints": [
+    {
+      "path": "/list/{listId}/confirmation-email/test",
+      "method": "POST",
+      "type": "AWS",
+      "authorizationType": "none",
+      "authorizerFunction": false,
+      "apiKeyRequired": false,
+      "requestParameters": {},
+      "requestTemplates": {
+        "application/json": {
+          "list": "$input.json('$')",
+          "authToken": "$input.params('Authorization')"
+        }
+      },
+      "responses": "$${responses}"
+    }
+  ],
+  "events": [],
+  "environment": {
+    "SERVERLESS_PROJECT": "${project}",
+    "SERVERLESS_STAGE": "${stage}",
+    "SERVERLESS_REGION": "${region}",
+    "DEFAULT_API_KEY": "${defaultApiKey}",
+    "DEFAULT_API_SECRET": "${defaultApiSecret}",
+    "DEFAULT_DEFAULT_REGION": "${defaultRegion}",
+    "DEFAULT_EMAIL_ADDRESS": "${defaultEmailAddress}",
+    "DEBUG": "true"
+  },
+  "vpc": {
+    "securityGroupIds": [],
+    "subnetIds": []
+  }
+}
