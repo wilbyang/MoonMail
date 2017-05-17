@@ -200,7 +200,7 @@ class ImportRecipientsService {
               for (const key in headerMapping) {
                 const newKey = headerMapping[key];
                 if (newKey && newKey !== 'false') {
-                  newRecp.metadata[newKey] = item[key];
+                  newRecp.metadata[newKey] = item[key].trim();
                 }
               }
               newRecp.email = newRecp.metadata.email;
