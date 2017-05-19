@@ -32,7 +32,7 @@ class EmailNotificationService {
         // There is no need to unubscribe recipient if
         // it is not a complaint or a hard bounce
         if (this._shouldUnsubscribe()) {
-          const recipient = {status: this.newStatus};
+          const recipient = { status: this.newStatus };
           recipient[`${this.newStatus}At`] = moment().unix();
           return Recipient.update(omitEmpty(recipient), sentEmail.listId, sentEmail.recipientId);
         }
@@ -41,8 +41,8 @@ class EmailNotificationService {
   }
 
   updateStatus() {
-    debug('= EmailNotificationService.updateStatus', this.notificationType);
-    return SentEmail.update({status: this.newStatus}, this.messageId);
+    debug('= EmailNotificationService.updateStatus', this.notification.notificationType);
+    return SentEmail.update({ status: this.newStatus }, this.messageId);
   }
 
   incrementReportCount(sentEmail) {
@@ -51,8 +51,8 @@ class EmailNotificationService {
       case 'bounce':
         const bounceType = this.notification.bounce.bounceType.toLowerCase();
         if (bounceType === 'permanent' || bounceType === 'undetermined') {
-            debug('= EmailNotificationService.incrementReportCount', 'Bounce');
-            return Report.incrementBounces(sentEmail.campaignId);
+          debug('= EmailNotificationService.incrementReportCount', 'Bounce');
+          return Report.incrementBounces(sentEmail.campaignId);
         }
         debug('= EmailNotificationService.incrementReportCount', 'Bounce', bounceType);
         return Report.incrementSoftBounces(sentEmail.campaignId);

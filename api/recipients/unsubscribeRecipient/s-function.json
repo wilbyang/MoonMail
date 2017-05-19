@@ -53,7 +53,8 @@
     "SERVERLESS_REGION": "${region}",
     "RECIPIENTS_TABLE": "$${recipientsTable}",
     "UNSUBSCRIBED_RECIPIENT_TOPIC_ARN": "${unsubscribedRecipientTopicARN}",
-    "UNSUBSCRIBED_CALLBACK_URL": "${unsubscribedCallbackUrl}"
+    "UNSUBSCRIBED_CALLBACK_URL": "${unsubscribedCallbackUrl}",
+    "LISTS_TABLE": "$${listsTable}"
   },
   "vpc": {
     "securityGroupIds": [],
