@@ -1,21 +1,20 @@
 {
-  "name": "sendTestConfirmationEmail",
+  "name": "setUnsubscribeReason",
   "runtime": "babel",
   "description": "Serverless Lambda function for project: MoonMail-v2",
-  "customName": "${project}-campaigns-sendTestConfirmationEmail",
+  "customName": "${project}-recipients-setUnsubscribeReason",
   "customRole": false,
-  "handler": "lists/sendTestConfirmationEmail/handler.default",
+  "handler": "recipients/setUnsubscribeReason/handler.default",
   "timeout": 6,
   "memorySize": 1024,
   "authorizer": {},
   "custom": {
-    "excludePatterns": [],
-    "cors": "$${corsSettings}"
+    "excludePatterns": []
   },
   "endpoints": [
     {
-      "path": "/lists/{listId}/confirmation-email/test",
-      "method": "POST",
+      "path": "lists/{listId}/recipients/{recipientId}/unsubscribe-reason",
+      "method": "PATCH",
       "type": "AWS",
       "authorizationType": "none",
       "authorizerFunction": false,
@@ -23,8 +22,10 @@
       "requestParameters": {},
       "requestTemplates": {
         "application/json": {
-          "list": "$input.json('$')",
-          "authToken": "$input.params('Authorization')"
+          "listId": "$input.params('listId')",
+          "campaignId": "$input.params('campaignId')",
+          "recipientId": "$input.params('recipientId')",
+          "requestBody": "$input.json('$')"
         }
       },
       "responses": "$${responses}"
@@ -35,10 +36,9 @@
     "SERVERLESS_PROJECT": "${project}",
     "SERVERLESS_STAGE": "${stage}",
     "SERVERLESS_REGION": "${region}",
-    "DEFAULT_API_KEY": "${defaultApiKey}",
-    "DEFAULT_API_SECRET": "${defaultApiSecret}",
-    "DEFAULT_DEFAULT_REGION": "${defaultRegion}",
-    "DEFAULT_EMAIL_ADDRESS": "${defaultEmailAddress}",
+    "RECIPIENTS_TABLE": "$${recipientsTable}",
+    "REPORTS_TABLE": "$${reportsTable}",
+    "LISTS_TABLE": "$${listsTable}",
     "DEBUG": "true"
   },
   "vpc": {
