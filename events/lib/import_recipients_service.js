@@ -200,10 +200,10 @@ class ImportRecipientsService {
               for (const key in headerMapping) {
                 const newKey = headerMapping[key];
                 if (newKey && newKey !== 'false') {
-                  newRecp.metadata[newKey] = item[key].trim();
+                  newRecp.metadata[newKey] = item[key];
                 }
               }
-              newRecp.email = newRecp.metadata.email;
+              newRecp.email = newRecp.metadata.email.trim();
               delete newRecp.metadata.email;
               newRecp.id = base64url.encode(newRecp.email.toString());
               debug('= ImportRecipientsService.parseCSV', 'Parsed recipient', JSON.stringify(newRecp));
