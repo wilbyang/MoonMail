@@ -1,0 +1,46 @@
+{
+  "Records": [
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "valid_open_event",
+        "sequenceNumber": "49561248805737405226755593691918241865509837490266046466",
+        "data": "eyJ0eXBlIjoiY2FtcGFpZ24ub3BlbiIsInBheWxvYWQiOnsiY2FtcGFpZ24iOnsiaWQiOiJjYW1wYWlnbi1pZCIsInVzZXJJZCI6InVzZXItaWQifSwicmVjaXBpZW50Ijp7ImlkIjoicmVjaXBpZW50LWlkIiwibGlzdElkIjoibGlzdC1pZCJ9fX0=",
+        "approximateArrivalTimestamp": 1461254626.271
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691918241865509837490266046466",
+      "eventName": "aws:kinesis:record",
+      "awsRegion": "us-east-1"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "valid_subscribe_event",
+        "sequenceNumber": "49561248805737405226755593691919450791329452119440752642",
+        "data": "eyJ0eXBlIjoibGlzdC5yZWNpcGllbnQuc3Vic2NyaWJlIiwicGF5bG9hZCI6eyJyZWNpcGllbnQiOnsiaWQiOiJyZWNpcGllbnQtaWQiLCJlbWFpbCI6ImRhdmlkLmdhcmNpYUBtaWNyb2FwcHMuY29tIiwibGlzdElkIjoibGlzdC1pZCIsInVzZXJJZCI6InVzZXItaWQifX19",
+        "approximateArrivalTimestamp": 1461254626.376
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691919450791329452119440752642",
+      "eventName": "aws:kinesis:record",
+      "awsRegion": "us-east-1"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "invalid_event",
+        "sequenceNumber": "49561248805737405226755593691920659717149066748615458818",
+        "data": "eyJ0eXBlIjoibm9uLnZhbGlkIiwicGF5bG9hZCI6e319",
+        "approximateArrivalTimestamp": 1461254626.401
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49561248805737405226755593691920659717149066748615458818",
+      "eventName": "aws:kinesis:record",
+      "awsRegion": "us-east-1"
+    }
+  ]
+}

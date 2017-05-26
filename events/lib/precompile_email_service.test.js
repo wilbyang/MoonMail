@@ -1,17 +1,15 @@
-'use strict';
-
-import * as chai from 'chai';
-const chaiAsPromised = require('chai-as-promised');
-const sinonChai = require('sinon-chai');
-import { expect } from 'chai';
-import * as sinon from 'sinon';
+import chai from 'chai';
+import chaiAsPromised from 'chai-as-promised';
+import sinonChai from 'sinon-chai';
+import sinon from 'sinon';
+import awsMock from 'aws-sdk-mock';
+import AWS from 'aws-sdk-promise';
 import { PrecompileEmailService } from './precompile_email_service';
 import { Email } from './email';
 import * as canonicalMessage from './send_email_topic_canonical_message.json';
 import { compressString, uncompressString } from './utils';
-const awsMock = require('aws-sdk-mock');
-const AWS = require('aws-sdk-promise');
 
+const expect = chai.expect;
 chai.use(chaiAsPromised);
 chai.use(sinonChai);
 
@@ -25,9 +23,9 @@ describe('PrecompileEmailService', () => {
   let sqsClient;
   let precompileService;
   let emailParams;
-  process.env.API_HOST = apiHost;
 
   before(() => {
+    process.env.API_HOST = apiHost;
     emailParams = JSON.parse(JSON.stringify(canonicalMessage));
     emailParams.campaign.body = compressedBody;
     sqsClient = new AWS.SQS();
@@ -134,6 +132,7 @@ describe('PrecompileEmailService', () => {
       after(() => {
         awsMock.restore('SQS');
         sqsClient.createQueue.restore();
+        delete process.env.API_HOST;
       });
     });
   });

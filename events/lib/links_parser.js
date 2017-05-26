@@ -1,5 +1,4 @@
-'use strict';
-
+import 'babel-polyfill';
 import { debug } from './index';
 import * as url from 'url';
 import * as cheerio from 'cheerio';

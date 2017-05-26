@@ -1,0 +1,7 @@
+{
+  "authToken": "foo",
+  "options": {
+    "fields": "userId",
+    "include_fields": true
+  }
+}

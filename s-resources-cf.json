@@ -129,6 +129,12 @@
         "TopicName": "$${emailAdminsTopic}"
       }
     },
+    "EventsBusTopic": {
+      "Type": "AWS::SNS::Topic",
+      "Properties": {
+        "TopicName": "$${eventsBusTopic}"
+      }
+    },
     "SendEmailsTopic": {
       "Type": "AWS::SNS::Topic",
       "Properties": {
@@ -438,6 +444,147 @@
         "TableName": "$${campaignsTable}"
       }
     },
+    "AutomationsTable": {
+      "Type": "AWS::DynamoDB::Table",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "id",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "userId",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "status",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "userId",
+            "KeyType": "HASH"
+          },
+          {
+            "AttributeName": "id",
+            "KeyType": "RANGE"
+          }
+        ],
+        "LocalSecondaryIndexes": [
+          {
+            "IndexName": "$${automationStatusIndex}",
+            "KeySchema": [
+              {
+                "AttributeName": "userId",
+                "KeyType": "HASH"
+              },
+              {
+                "AttributeName": "status",
+                "KeyType": "RANGE"
+              }
+            ],
+            "Projection": {"ProjectionType": "ALL"}
+          }
+        ],
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": "${defaultRCU}",
+          "WriteCapacityUnits": "${defaultWCU}"
+        },
+        "TableName": "$${automationsTable}"
+      }
+    },
+    "AutomationActionsTable": {
+      "Type": "AWS::DynamoDB::Table",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "id",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "status",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "automationId",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "footprint",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "automationId",
+            "KeyType": "HASH"
+          },
+          {
+            "AttributeName": "id",
+            "KeyType": "RANGE"
+          }
+        ],
+        "GlobalSecondaryIndexes": [
+          {
+            "IndexName" : "$${automationsFootprintStatusIndex}",
+            "KeySchema" : [
+              {
+                "AttributeName": "status",
+                "KeyType": "HASH"
+              },
+              {
+                "AttributeName": "footprint",
+                "KeyType": "RANGE"
+              }
+            ],
+            "Projection" : {"ProjectionType": "ALL"},
+            "ProvisionedThroughput" : {
+              "ReadCapacityUnits": "${defaultRCU}",
+              "WriteCapacityUnits": "${defaultWCU}"
+            }
+          }
+        ],
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": "${defaultRCU}",
+          "WriteCapacityUnits": "${defaultWCU}"
+        },
+        "TableName": "$${automationActionsTable}"
+      }
+    },
+    "ScheduledEmailsTable": {
+      "Type": "AWS::DynamoDB::Table",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "id",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "automationActionId",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "automationActionId",
+            "KeyType": "HASH"
+          },
+          {
+            "AttributeName": "id",
+            "KeyType": "RANGE"
+          }
+        ],
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": "${defaultRCU}",
+          "WriteCapacityUnits": "${defaultWCU}"
+        },
+        "TableName": "$${scheduledEmailsTable}"
+      }
+    },
     "UsersTable": {
       "Type": "AWS::DynamoDB::Table",
       "DeletionPolicy": "Retain",
@@ -520,6 +667,12 @@
       }
     },
     "ClicksStream": {
+      "Type": "AWS::Kinesis::Stream",
+      "Properties": {
+        "ShardCount": 1
+      }
+    },
+    "EventsStream": {
       "Type": "AWS::Kinesis::Stream",
       "Properties": {
         "ShardCount": 1
@@ -965,6 +1118,12 @@
         "Ref": "EmailAdminsTopic"
       }
     },
+    "EventsBusTopicARN": {
+      "Description": "ARN of the EventsBus SNS topic",
+      "Value": {
+        "Ref": "EventsBusTopic"
+      }
+    },
     "PrecompileCampaignTopicARN": {
       "Description": "ARN of the PrecompileCampaign SNS topic",
       "Value": {
@@ -1041,6 +1200,21 @@
       "Description": "ARN of the UpdateListImportStatus SNS topic",
       "Value": {
         "Ref": "UpdateListImportStatusTopic"
+      }
+    },
+    "EventsStreamName": {
+      "Description": "Name of the Opens Kinesis Stream",
+      "Value": {
+        "Ref": "EventsStream"
+      }
+    },
+    "EventsStreamARN": {
+      "Description": "Name of the Opens Kinesis Stream",
+      "Value": {
+        "Fn::GetAtt": [
+          "EventsStream",
+          "Arn"
+        ]
       }
     },
     "OpensStreamName": {

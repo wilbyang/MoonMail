@@ -1,0 +1,34 @@
+{
+  "name": "writeEvents",
+  "runtime": "babel",
+  "description": "Serverless Lambda function for project: MoonMail-v2",
+  "customName": "${project}-automations-writeEvents",
+  "customRole": false,
+  "handler": "automations/writeEvents/handler.default",
+  "timeout": 60,
+  "memorySize": 1024,
+  "authorizer": {},
+  "custom": {
+    "excludePatterns": []
+  },
+  "endpoints": [],
+  "events": [
+    {
+      "name": "eventsBusSns",
+      "type": "sns",
+      "config": {
+        "topicName": "$${eventsBusTopic}"
+      }
+    }
+  ],
+  "environment": {
+    "SERVERLESS_PROJECT": "${project}",
+    "SERVERLESS_STAGE": "${stage}",
+    "SERVERLESS_REGION": "${region}",
+    "EVENTS_LOG_STREAM_NAME": "${eventsStreamName}"
+  },
+  "vpc": {
+    "securityGroupIds": [],
+    "subnetIds": []
+  }
+}

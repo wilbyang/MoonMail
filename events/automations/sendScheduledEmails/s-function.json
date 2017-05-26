@@ -1,0 +1,38 @@
+{
+  "name": "sendScheduledEmails",
+  "runtime": "babel",
+  "description": "Serverless Lambda function for project: MoonMail-v2",
+  "customName": "${project}-automations-sendScheduledEmails",
+  "customRole": false,
+  "handler": "automations/sendScheduledEmails/handler.default",
+  "timeout": 300,
+  "memorySize": 1024,
+  "authorizer": {},
+  "custom": {
+    "excludePatterns": []
+  },
+  "endpoints": [],
+  "events": [
+    {
+      "name": "sendSchedEmails",
+      "type": "schedule",
+      "config": {
+        "schedule": "rate(1 minute)",
+        "enabled": true
+      }
+    }
+  ],
+  "environment": {
+    "SERVERLESS_PROJECT": "${project}",
+    "SERVERLESS_STAGE": "${stage}",
+    "SERVERLESS_REGION": "${region}",
+    "AUTOMATION_ACTIONS_TABLE": "$${automationActionsTable}",
+    "AUTOMATIONS_TABLE": "$${automationsTable}",
+    "SCHEDULED_EMAILS_TABLE": "$${scheduledEmailsTable}",
+    "SENT_EMAILS_TOPIC_ARN": "${sentEmailsTopicARN}"
+  },
+  "vpc": {
+    "securityGroupIds": [],
+    "subnetIds": []
+  }
+}

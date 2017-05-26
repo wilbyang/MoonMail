@@ -9,7 +9,7 @@
       "method": "coroutine"
     }],
     ["transform-runtime", {
-      "polyfill": false,
+      "polyfill": true,
       "regenerator": true
     }]
   ]

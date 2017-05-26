@@ -55,7 +55,8 @@ class EnqueuedEmail {
       campaignId: this.message.campaign.id,
       email: this.message.recipient.email,
       listId: this.message.recipient.listId,
-      status: 'sent'
+      status: 'sent',
+      userId: this.getEmailUserId()
     };
   }
 

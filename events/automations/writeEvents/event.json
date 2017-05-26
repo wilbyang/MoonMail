@@ -1,0 +1,18 @@
+{
+  "Records": [
+    {
+      "EventSource": "aws:sns",
+      "EventVersion": "1.0",
+      "Sns": {
+        "Type": "Notification",
+        "MessageId": "57e50c7f-c4c6-538f-b72f-5dea3b5c3dda",
+        "TopicArn": "arn:aws:sns:MoonMail-v2-dev-eventsBus",
+        "Subject": null,
+        "Message": "{\"type\":\"list.recipient.subscribe\",\"payload\":{\"recipient\":{\"metadata\":{\"country_code\":\"ES\",\"metro_code\":0,\"city\":\"Madrid\",\"ip\":\"89.140.96.126\",\"latitude\":40.4167,\"country_name\":\"Spain\",\"region_name\":\"Madrid\",\"time_zone\":\"Europe/Madrid\",\"zip_code\":\"28001\",\"longitude\":-3.6838,\"region_code\":\"MD\"},\"riskScore\":0,\"listId\":\"cj1xr77z7000001ozpbyl84yp\",\"userId\":\"google-oauth2|113824531354440458440\",\"status\":\"subscribed\",\"verificationCode\":\"cj2so9yiu000001qix5buroat\",\"createdAt\":1495006510,\"email\":\"david.garcia+1234341@microapps.com\",\"id\":\"ZGF2aWQuZ2FyY2lhKzEyMzQzNDFAbWljcm9hcHBzLmNvbQ\"}}}",
+        "Timestamp": "2017-05-17T07:35:54.473Z",
+        "SignatureVersion": "1",
+        "MessageAttributes": {}
+      }
+    }
+  ]
+}

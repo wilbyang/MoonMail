@@ -1,0 +1,40 @@
+{
+  "name": "automationsTrigger",
+  "runtime": "babel",
+  "description": "Serverless Lambda function for project: MoonMail-v2",
+  "customName": "${project}-automations-automationsTrigger",
+  "customRole": false,
+  "handler": "automations/automationsTrigger/handler.default",
+  "timeout": 300,
+  "memorySize": 1024,
+  "authorizer": {},
+  "custom": {
+    "excludePatterns": []
+  },
+  "endpoints": [],
+  "events": [
+    {
+      "name": "triggerAutomationsStream",
+      "type": "kinesisstream",
+      "config": {
+        "streamArn": "${eventsStreamARN}",
+        "batchSize": 25,
+        "enabled": true
+      }
+    }
+  ],
+  "environment": {
+    "SERVERLESS_PROJECT": "${project}",
+    "SERVERLESS_STAGE": "${stage}",
+    "SERVERLESS_REGION": "${region}",
+    "API_HOST": "${apiHost}",
+    "AUTOMATION_ACTIONS_TABLE": "$${automationActionsTable}",
+    "SCHEDULED_EMAILS_TABLE": "$${scheduledEmailsTable}",
+    "FOOTPRINT_STATUS_INDEX_NAME": "$${automationsFootprintStatusIndex}",
+    "FETCH_SENDER_FN_NAME": "$${fetchSenderFunctionName}"
+  },
+  "vpc": {
+    "securityGroupIds": [],
+    "subnetIds": []
+  }
+}
