@@ -1,5 +1,3 @@
-'use strict';
-
 import * as chai from 'chai';
 const chaiAsPromised = require('chai-as-promised');
 const sinonChai = require('sinon-chai');
