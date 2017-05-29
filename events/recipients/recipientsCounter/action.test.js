@@ -1,11 +1,9 @@
-'use strict';
-
 import * as chai from 'chai';
 import { respond } from './action';
 import * as sinon from 'sinon';
 import * as sinonAsPromised from 'sinon-as-promised';
 import { RecipientsCounterService } from '../../lib/recipients_counter_service';
-import * as event from './event.json'
+import * as event from './event.json';
 
 const expect = chai.expect;
 
