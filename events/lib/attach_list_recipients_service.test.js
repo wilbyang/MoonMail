@@ -280,5 +280,6 @@ describe('AttachListRecipientsService', () => {
   after(() => {
     Recipient.allBy.restore();
     awsMock.restore('SNS');
+    awsMock.restore('Lambda');
   });
 });

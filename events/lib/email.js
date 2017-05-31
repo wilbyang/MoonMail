@@ -18,6 +18,7 @@ class Email {
     this.campaignId = campaignId;
     this.apiHost = process.env.API_HOST;
     this.options = options;
+    this.opensPath = 'links/open';
   }
 
   renderBody() {
@@ -36,6 +37,29 @@ class Email {
 
   get unsubscribeUrl() {
     return this._buildUnsubscribeUrl();
+  }
+
+  appendOpensPixel(body) {
+    return new Promise((resolve) => {
+      if (this.opensTrackUrl) {
+        const imgTag = `<img src="${this.opensTrackUrl}" width="1" height="1" />`;
+        resolve(`${body} ${imgTag}`);
+      } else {
+        return resolve(body);
+      }
+    });
+  }
+
+  get opensTrackUrl() {
+    if (this.apiHost) {
+      const opensUrlObj = {
+        protocol: 'https',
+        hostname: this.apiHost,
+        pathname: `${this.opensPath}/${this.campaignId}`
+      };
+      if (this.recipientId) opensUrlObj.query = {r: this.recipientId};
+      return url.format(opensUrlObj);
+    }
   }
 
   _appendFooter(body) {

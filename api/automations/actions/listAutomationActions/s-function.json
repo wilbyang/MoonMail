@@ -1,0 +1,51 @@
+{
+  "name": "listAutomationActions",
+  "runtime": "babel",
+  "description": "Serverless Lambda function for project: MoonMail-v2",
+  "customName": "${project}-automations-listAutomationActions",
+  "customRole": false,
+  "handler": "automations/actions/listAutomationActions/handler.default",
+  "timeout": 60,
+  "memorySize": 1024,
+  "authorizer": {},
+  "custom": {
+    "excludePatterns": [],
+    "cors": "$${corsSettings}"
+  },
+  "endpoints": [
+    {
+      "path": "/automations/{automationId}/actions",
+      "method": "GET",
+      "type": "AWS",
+      "authorizationType": "none",
+      "authorizerFunction": false,
+      "apiKeyRequired": false,
+      "requestParameters": {},
+      "requestTemplates": {
+        "application/json": {
+          "options": {
+            "page": "$input.params('page')",
+            "limit": "$input.params('limit')",
+            "fields": "$input.params('fields')",
+            "include_fields": "$input.params('include_fields')"
+          },
+          "automationId": "$input.params('automationId')",
+          "authToken": "$input.params('Authorization')"
+        }
+      },
+      "responses": "$${responses}"
+    }
+  ],
+  "events": [],
+  "environment": {
+    "SERVERLESS_PROJECT": "${project}",
+    "SERVERLESS_STAGE": "${stage}",
+    "SERVERLESS_REGION": "${region}",
+    "AUTOMATION_ACTIONS_TABLE": "$${automationActionsTable}",
+    "LOG_LEVEL": "info"
+  },
+  "vpc": {
+    "securityGroupIds": [],
+    "subnetIds": []
+  }
+}

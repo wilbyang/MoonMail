@@ -1,0 +1,16 @@
+{
+  "authToken": "foo",
+  "automationId": "cj333sv8u0000wledgc0qd87e",
+  "automationAction": {
+    "id": "automation-action",
+    "name": "my automation",
+    "userId": "fake-user",
+    "type": "list.recipient.subscribe",
+    "delay": 0,
+    "status": "undefined",
+    "campaign": {
+      "subject": "hey {{name}}",
+      "body": "body of the message"
+    }
+  }
+}
