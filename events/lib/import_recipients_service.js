@@ -207,7 +207,9 @@ class ImportRecipientsService {
               delete newRecp.metadata.email;
               newRecp.id = base64url.encode(newRecp.email.toString());
               debug('= ImportRecipientsService.parseCSV', 'Parsed recipient', JSON.stringify(newRecp));
-              recipients.push(newRecp);
+              if (newRecp.email) {
+                recipients.push(newRecp);
+              }
             }
           } catch (error) {
             debug('= ImportRecipientsService.parseCSV', 'Error parsing recipient', JSON.stringify(item), headerMapping, error);
