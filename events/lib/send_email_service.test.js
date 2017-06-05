@@ -49,7 +49,7 @@ describe('SendEmailService', () => {
       before(() => {
         senderService = new SendEmailService(queue, null, contextStub);
         sinon.stub(senderService, 'setUserId').returns("some-user-id");
-        awsMock.mock('SES', 'sendEmail', { MessageId: 'some_message_id' });
+        awsMock.mock('SES', 'sendRawEmail', { MessageId: 'some_message_id' });
       });
 
       it('returns the sent emails message handles', (done) => {
@@ -85,12 +85,12 @@ describe('SendEmailService', () => {
       context('when the sending rate is exceeded', () => {
         before(() => {
           sinon.stub(senderService, 'deliver').rejects({ code: 'Throttling', message: 'Maximum sending rate exceeded' });
+          senderService.snsClient.publish.reset();
         });
 
         it('should leave the message in the queue', done => {
           senderService.sendBatch().then(() => {
-            const emailsToDelete = JSON.parse(senderService.snsClient.publish.lastCall.args[0].Message);
-            expect(emailsToDelete.length).to.equal(0);
+            expect(senderService.snsClient.publish).not.to.have.been.called;
             done();
           });
         });
@@ -101,6 +101,7 @@ describe('SendEmailService', () => {
       context('when the message is rejected', () => {
         before(() => {
           const deliverStub = sinon.stub(senderService, 'deliver');
+          senderService.snsClient.publish.reset();
           deliverStub
             .onFirstCall().resolves({ MessageId: 'some_message_id' })
             .onSecondCall().rejects({ code: 'MessageRejected' });
@@ -120,6 +121,7 @@ describe('SendEmailService', () => {
 
       context('when the daily quota is exceeded', () => {
         before(() => {
+          senderService.snsClient.publish.reset();
           sinon.stub(senderService, 'deliver')
             .onFirstCall().resolves({ MessageId: 'some_message_id' })
             .onSecondCall().rejects({ code: 'Throttling', message: 'Daily message quota exceeded' });
@@ -140,13 +142,13 @@ describe('SendEmailService', () => {
       context('when an unexpected error occurs', () => {
         before(() => {
           sinon.stub(senderService, 'deliver').rejects({ code: 'SomethingUnexpected' });
+          senderService.snsClient.publish.reset();
         });
 
         it('should delete the message from the queue', done => {
           senderService.sendBatch().then(emailsToDelete => {
-            const emailsToSave = JSON.parse(senderService.snsClient.publish.lastCall.args[0].Message);
-            expect(emailsToSave.length).to.equal(0);
-            expect(emailsToDelete.length).to.equal(emailHandles.length);
+            expect(senderService.snsClient.publish).not.to.have.been.called;
+            expect(emailsToDelete.length).to.equal(5);
             done();
           });
         });

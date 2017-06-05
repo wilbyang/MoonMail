@@ -73,7 +73,9 @@ class SendEmailService {
                   ReceiptHandle: email.receiptHandle,
                   Id: email.messageId
                 });
-                sentEmails.push(email.toSentEmail(result.MessageId));
+                const sentEmail = email.toSentEmail(result.MessageId);
+                logger().debug('SendEmailService.sendBatch', 'Email data', JSON.stringify(sentEmail));
+                sentEmails.push(sentEmail);
                 callback();
               })
               .catch((err) => {
@@ -116,6 +118,7 @@ class SendEmailService {
   }
 
   _publishSentEmails(sentEmails, callback) {
+    if (sentEmails.length === 0) return callback();
     const snsParams = {
       Message: JSON.stringify(sentEmails),
       TopicArn: process.env.SENT_EMAILS_TOPIC_ARN
