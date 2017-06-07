@@ -1,0 +1,47 @@
+{
+  "name": "updateSegmentHttp",
+  "runtime": "babel",
+  "description": "Serverless Lambda function for project: MoonMail-v2",
+  "customName": "${project}-segments-updateSegmentHttp",
+  "customRole": false,
+  "handler": "segments/updateSegmentHttp/handler.default",
+  "timeout": 6,
+  "memorySize": 1024,
+  "authorizer": {},
+  "custom": {
+    "excludePatterns": [],
+    "cors": "$${corsSettings}"
+  },
+  "endpoints": [
+    {
+      "path": "/lists/{listId}/segments/{segmentId}",
+      "method": "PATCH",
+      "type": "AWS",
+      "authorizationType": "none",
+      "authorizerFunction": false,
+      "apiKeyRequired": false,
+      "requestParameters": {},
+      "requestTemplates": {
+        "application/json": {
+          "listId": "$input.params('listId')",
+          "segmentId": "$input.params('segmentId')",
+          "segment": "$input.json('$')",
+          "authToken": "$input.params('Authorization')"
+        }
+      },
+      "responses": "$${responses}"
+    }
+  ],
+  "events": [],
+  "environment": {
+    "SERVERLESS_PROJECT": "${project}",
+    "SERVERLESS_STAGE": "${stage}",
+    "SERVERLESS_REGION": "${region}",
+    "UPDATE_SEGMENT_FUNCTION": "$${updateSegmentFunctionName}",
+    "LOG_LEVEL": "info"
+  },
+  "vpc": {
+    "securityGroupIds": [],
+    "subnetIds": []
+  }
+}
