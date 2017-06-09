@@ -18,10 +18,8 @@ export default function respond(event, cb) {
 }
 
 function updateAutomationAction(userId, event) {
-  const {campaign, delay, name} = event.action;
-  return AutomationAction.update(
-    omitEmpty({campaign, delay, name}),
-    event.automationId,
-    event.actionId
-  );
+  const { campaign, delay, name } = event.action;
+  return AutomationAction.get(event.automationId, event.actionId)
+    .then(automation => ({ campaign: Object.assign({}, automation.campaign, campaign), delay, name }))
+    .then(updatedAction => AutomationAction.update(omitEmpty(updatedAction), event.automationId, event.actionId));
 }
