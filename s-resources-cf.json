@@ -660,6 +660,37 @@
         "TableName": "$${templatesTable}"
       }
     },
+    "ListSegmentsTable": {
+      "Type": "AWS::DynamoDB::Table",
+      "DeletionPolicy": "Retain",
+      "Properties": {
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "id",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "listId",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "listId",
+            "KeyType": "HASH"
+          },
+          {
+            "AttributeName": "id",
+            "KeyType": "RANGE"
+          }
+        ],
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": "${defaultRCU}",
+          "WriteCapacityUnits": "${defaultWCU}"
+        },
+        "TableName": "$${listSegmentsTable}"
+      }
+    },
     "OpensStream": {
       "Type": "AWS::Kinesis::Stream",
       "Properties": {

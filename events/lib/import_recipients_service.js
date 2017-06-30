@@ -206,13 +206,14 @@ class ImportRecipientsService {
               newRecp.email = newRecp.metadata.email.trim();
               delete newRecp.metadata.email;
               newRecp.id = base64url.encode(newRecp.email.toString());
+              newRecp.subscriptionOrigin = Recipient.subscriptionOrigins.listImport;
               debug('= ImportRecipientsService.parseCSV', 'Parsed recipient', JSON.stringify(newRecp));
               if (newRecp.email) {
                 recipients.push(newRecp);
               }
             }
           } catch (error) {
-            debug('= ImportRecipientsService.parseCSV', 'Error parsing recipient', JSON.stringify(item), headerMapping, error);
+            debug('= ImportRecipientsService.parseCSV', 'Error parsing recipient', JSON.stringify(results.data[0]), headerMapping, error);
           }
         },
         complete: (results, parser) => {

@@ -11,6 +11,7 @@
     ["transform-runtime", {
       "polyfill": true,
       "regenerator": true
-    }]
+    }],
+    "transform-promise-to-bluebird"
   ]
 }

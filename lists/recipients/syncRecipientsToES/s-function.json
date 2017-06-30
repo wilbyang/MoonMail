@@ -1,0 +1,41 @@
+{
+  "name": "syncRecipientsToES",
+  "runtime": "babel",
+  "description": "Serverless Lambda function for project: MoonMail-v2",
+  "customName": "${project}-recipients-syncRecipientsToES",
+  "customRole": false,
+  "handler": "recipients/syncRecipientsToES/handler.default",
+  "timeout": 300,
+  "memorySize": 1024,
+  "authorizer": {},
+  "custom": {
+    "excludePatterns": [],
+    "cors": "$${corsSettings}"
+  },
+  "endpoints": [],
+  "events": [
+    {
+      "name": "recipientsTableStreamEventSyncES",
+      "type": "dynamodbstream",
+      "config": {
+        "streamArn": "${recipientsTableStreamARN}",
+        "startingPosition": "LATEST",
+        "enabled": true
+      }
+    }
+  ],
+  "environment": {
+    "SERVERLESS_PROJECT": "${project}",
+    "SERVERLESS_STAGE": "${stage}",
+    "SERVERLESS_REGION": "${region}",
+    "ES_RECIPIENTS_INDEX_NAME": "$${esRecipientsIndexName}",
+    "ES_RECIPIENTS_INDEX_TYPE": "$${esRecipientsIndexType}",
+    "ES_HOST": "${esHost}",
+    "ES_REGION": "${esRegion}",
+    "LOG_LEVEL": "info"
+  },
+  "vpc": {
+    "securityGroupIds": [],
+    "subnetIds": []
+  }
+}
