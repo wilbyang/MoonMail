@@ -80,6 +80,8 @@
   "listSegmentMembersFunctionName": "${project}-segments-listSegmentMembers",
   "listSegmentsFunctionName": "${project}-segments-listSegments",
   "searchRecipientsFunctionName": "${project}-recipients-searchRecipients",
+  "checkSubscriptionLimitsFunctionName": "${project}-subscriptions-checkSubscriptionLimits",
+  "getSubscriptionDetailsFunctionName": "${project}-subscriptions-getSubscriptionDetails",
   "sendEmailsTopic": "${project}-${stage}-sendEmails",
   "eventsBusTopic": "${project}-${stage}-eventsBus",
   "emailAdminsTopic": "${project}-${stage}-emailAdmins",

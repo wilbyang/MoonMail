@@ -40,6 +40,7 @@
     "USERS_TABLE": "$${usersTable}",
     "LISTS_TABLE": "$${listsTable}",
     "SENT_AT_INDEX_NAME": "$${campaignsSentAtIndex}",
+    "CHECK_SUBSCRIPTION_LIMITS_FUNCTION": "$${checkSubscriptionLimitsFunctionName}",
     "DEBUG": "true"
   },
   "vpc": {
