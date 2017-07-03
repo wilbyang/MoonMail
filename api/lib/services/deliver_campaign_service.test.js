@@ -6,6 +6,7 @@ import { Campaign, List } from 'moonmail-models';
 import 'sinon-as-promised';
 import { DeliverCampaignService } from './deliver_campaign_service';
 import { compressString } from '../utils';
+import FunctionsClient from '../functions_client';
 
 const awsMock = require('aws-sdk-mock');
 const AWS = require('aws-sdk');
@@ -36,57 +37,23 @@ describe('DeliverCampaignService', () => {
       snsClient = new AWS.SNS();
     });
 
-    context('when the user is not allowed to send more campaigns', () => {
+    context('when the user has exceeded the subscription quota', () => {
       before(() => {
         deliverCampaignService = new DeliverCampaignService(snsClient, {campaignId, userId, userPlan: freeUserPlan});
-        sinon.stub(Campaign, 'sentLastNDays').resolves(deliverCampaignService.maxMonthlyCampaigns + 1);
+        sinon.stub(Campaign, 'sentLastNDays').resolves(100);
+        sinon.stub(deliverCampaignService, '_getRecipientsCount').resolves(10);
+        sinon.stub(FunctionsClient, 'execute').resolves({ quotaExceeded: true });
       });
 
-      it('rejects the promise', done => {
+      it('rejects the promise', (done) => {
         const sendCampaignPromise = deliverCampaignService.sendCampaign();
         expect(sendCampaignPromise).to.be.rejectedWith('User can\'t send more campaigns').notify(done);
       });
 
       after(() => {
         Campaign.sentLastNDays.restore();
-      });
-    });
-
-    context('when the user is not allowed to send more campaigns the same day', () => {
-      before(() => {
-        deliverCampaignService = new DeliverCampaignService(snsClient, {campaignId, userId, userPlan: freeUserPlan});
-        sinon.stub(Campaign, 'sentLastNDays').resolves(deliverCampaignService.maxDailyCampaigns + 1);
-      });
-
-      it('rejects the promise', done => {
-        const sendCampaignPromise = deliverCampaignService.sendCampaign();
-        expect(sendCampaignPromise).to.be.rejectedWith(`You can send only ${deliverCampaignService.maxDailyCampaigns} campaigns a day`).notify(done);
-      });
-
-      after(() => {
-        Campaign.sentLastNDays.restore();
-      });
-    });
-
-    context('when the user is not allowed to send to the total of recipients', () => {
-      before(() => {
-        deliverCampaignService = new DeliverCampaignService(snsClient, {campaignId, userId, userPlan: freeUserPlan});
-        sinon.stub(Campaign, 'sentLastNDays').resolves(deliverCampaignService.maxDailyCampaigns - 1);
-        sinon.stub(Campaign, 'get').resolves(campaign);
-        sinon.stub(List, 'get').resolves({userId, id: listIds[0], name: 'Some list', subscribedCount: 251});
-      });
-
-      it('rejects the promise', done => {
-        deliverCampaignService.sendCampaign().catch((error) => {
-          expect(error).to.equal('You can send campaigns up to 250 subscribers');
-          done();
-        });
-      });
-
-      after(() => {
-        List.get.restore();
-        Campaign.get.restore();
-        Campaign.sentLastNDays.restore();
+        FunctionsClient.execute.restore();
+        deliverCampaignService._getRecipientsCount.restore();
       });
     });
 
@@ -96,9 +63,10 @@ describe('DeliverCampaignService', () => {
         sinon.stub(Campaign, 'sentLastNDays').resolves(deliverCampaignService.maxDailyCampaigns - 1);
         sinon.stub(Campaign, 'get').resolves(nonReadyCampaign);
         sinon.stub(List, 'get').resolves({userId, id: listIds[0], name: 'Some list', subscribedCount: 25});
+        sinon.stub(FunctionsClient, 'execute').resolves({ quotaExceeded: false });
       });
 
-      it('rejects the promise', done => {
+      it('rejects the promise', (done) => {
         const sendCampaignPromise = deliverCampaignService.sendCampaign();
         expect(sendCampaignPromise).to.be.rejectedWith('Campaign not ready to be sent').notify(done);
       });
@@ -107,6 +75,7 @@ describe('DeliverCampaignService', () => {
         Campaign.get.restore();
         List.get.restore();
         Campaign.sentLastNDays.restore();
+        FunctionsClient.execute.restore();
       });
     });
 
@@ -117,10 +86,11 @@ describe('DeliverCampaignService', () => {
         sinon.stub(deliverCampaignService, '_updateCampaignStatus').resolves(true);
         sinon.stub(Campaign, 'sentLastNDays').resolves(deliverCampaignService.maxDailyCampaigns - 1);
         sinon.stub(List, 'get').resolves({userId, id: listIds[0], name: 'Some list', subscribedCount: 25});
+        sinon.stub(FunctionsClient, 'execute').resolves({ quotaExceeded: false });
       });
 
-      it('fetches the campaign from DB and sends it to the topic', done => {
-        deliverCampaignService.sendCampaign().then(result => {
+      it('fetches the campaign from DB and sends it to the topic', (done) => {
+        deliverCampaignService.sendCampaign().then((result) => {
           const args = Campaign.get.lastCall.args;
           expect(args[0]).to.equal(userId);
           expect(args[1]).to.equal(campaignId);
@@ -132,6 +102,7 @@ describe('DeliverCampaignService', () => {
           expect(snsPayload).to.have.deep.property('campaign.senderId', senderId);
           expect(snsPayload).to.have.deep.property('campaign.listIds');
           expect(snsPayload).to.have.deep.property('campaign.precompiled', false);
+          expect(snsPayload.currentUserState).to.exist;
           done();
         })
         .catch(err => done(err));
@@ -142,6 +113,7 @@ describe('DeliverCampaignService', () => {
         Campaign.sentLastNDays.restore();
         List.get.restore();
         deliverCampaignService._updateCampaignStatus.restore();
+        FunctionsClient.execute.restore();
       });
     });
 
@@ -152,10 +124,11 @@ describe('DeliverCampaignService', () => {
         sinon.stub(deliverCampaignService, '_updateCampaignStatus').resolves(true);
         sinon.stub(Campaign, 'sentLastNDays').resolves(deliverCampaignService.maxDailyCampaigns - 1);
         sinon.stub(List, 'get').resolves({userId, id: listIds[0], name: 'Some list', subscribedCount: 25});
+        sinon.stub(FunctionsClient, 'execute').resolves({ quotaExceeded: false });
       });
 
       it('fetches the campaign from DB and sends it to the topic', (done) => {
-        deliverCampaignService.sendCampaign().then(result => {
+        deliverCampaignService.sendCampaign().then((result) => {
           const args = Campaign.update.lastCall.args;
           expect(args[1]).to.equal(userId);
           expect(args[2]).to.equal(campaignId);
@@ -167,6 +140,7 @@ describe('DeliverCampaignService', () => {
           expect(snsPayload).to.have.deep.property('campaign.senderId', senderId);
           expect(snsPayload).to.have.deep.property('campaign.listIds');
           expect(snsPayload).to.have.deep.property('campaign.precompiled', false);
+          expect(snsPayload.currentUserState).to.exist;
           done();
         })
         .catch(err => done(err));
@@ -176,6 +150,7 @@ describe('DeliverCampaignService', () => {
         Campaign.sentLastNDays.restore();
         List.get.restore();
         Campaign.update.restore();
+        FunctionsClient.execute.restore();
       });
     });
 

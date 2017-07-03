@@ -4,6 +4,8 @@ import { Campaign, List } from 'moonmail-models';
 import inlineCss from 'inline-css';
 import juice from 'juice';
 import { compressString } from '../utils';
+import FunctionsClient from '../functions_client';
+
 
 class DeliverCampaignService {
 
@@ -13,8 +15,6 @@ class DeliverCampaignService {
     this.campaignId = campaignId;
     this.userId = userId;
     this.userPlan = userPlan || 'free';
-    this.sentCampaignsInMonth = 0;
-    this.sentCampaignsLastDay = 0;
     this.attachRecipientsCountTopicArn = process.env.ATTACH_RECIPIENTS_COUNT_TOPIC_ARN;
     this.updateCampaignStatusTopicArn = process.env.UPDATE_CAMPAIGN_TOPIC_ARN;
   }
@@ -24,7 +24,7 @@ class DeliverCampaignService {
     return this.checkUserQuota()
       .then(() => this._getCampaign())
       .then(campaign => this._checkCampaign(campaign))
-      .then((campaign) => this._compressCampaignBody(campaign))
+      .then(campaign => this._compressCampaignBody(campaign))
       .then(campaign => this._buildCampaignMessage(campaign))
       .then(canonicalMessage => this._publishToSns(canonicalMessage))
       .then(() => this._updateCampaignStatus());
@@ -32,58 +32,19 @@ class DeliverCampaignService {
 
   checkUserQuota() {
     debug('= DeliverCampaignService._checkUserQuota', this.userId);
-    return this._checkMonthlyQuota()
-      .then(() => this._checkDailyQuota())
-      .then(() => this._checkRecipientsLimits());
-  }
-
-  _checkMonthlyQuota() {
-    return new Promise((resolve, reject) => {
-      debug('= DeliverCampaignService._checkMonthlyQuota', this.userId);
-      if (this.maxMonthlyCampaigns) {
-        debug('= DeliverCampaignService._checkMonthlyQuota', 'User has a limit of campaigns');
-        Campaign.sentLastMonth(this.userId)
-          .then((count) => {
-            debug('= DeliverCampaignService._checkMonthlyQuota', count);
-            if (count < this.maxMonthlyCampaigns) {
-              this.sentCampaignsInMonth = count;
-              resolve(true);
-            } else {
-              reject('User can\'t send more campaigns');
-            }
-          });
-      } else {
-        debug('= DeliverCampaignService._checkMonthlyQuota', 'User has no limit of campaigns');
-        resolve(true);
-      }
+    return Promise.props({
+      sentCampaignsInLastDay: Campaign.sentLastNDays(this.userId, 1),
+      recipientsCount: this._getRecipientsCount()
+    }).then((currentState) => {
+      this.currentState = currentState;
+      return this._checkSubscriptionLimits(currentState);
     });
   }
 
-  _checkDailyQuota() {
-    return new Promise((resolve, reject) => {
-      debug('= DeliverCampaignService._checkDailyQuota', this.userId);
-      if (this.maxDailyCampaigns) {
-        debug('= DeliverCampaignService._checkDailyQuota', 'User has a limit of campaigns');
-        Campaign.sentLastNDays(this.userId, 1)
-          .then((count) => {
-            debug('= DeliverCampaignService._checkDailyQuota', count);
-            if (count < this.maxDailyCampaigns) {
-              this.sentCampaignsLastDay = count;
-              resolve(true);
-            } else {
-              reject(`You can send only ${this.maxDailyCampaigns} campaigns a day`);
-            }
-          });
-      } else {
-        debug('= DeliverCampaignService._checkDailyQuota', 'User has no limit of campaigns');
-        resolve(true);
-      }
-    });
-  }
-
-  _checkRecipientsLimits() {
+  _getRecipientsCount() {
+    // Probably this should relay in a micro-service instead of calling Lists directly
     return this._getLists()
-      .then(lists => this._checkRecipients(lists));
+      .then(lists => this._countRecipients(lists));
   }
 
   _getLists() {
@@ -98,14 +59,12 @@ class DeliverCampaignService {
       });
   }
 
-  _checkRecipients(lists) {
+  _countRecipients(lists) {
     if (lists) {
       const count = lists.reduce((accum, next) => (accum + next.subscribedCount), 0);
-      if (count > this.maxRecipients) {
-        return Promise.reject(`You can send campaigns up to ${this.maxRecipients} subscribers`);
-      }
+      return Promise.resolve(count);
     }
-    return Promise.resolve({});
+    return Promise.resolve(0);
   }
 
   _getCampaign() {
@@ -126,7 +85,7 @@ class DeliverCampaignService {
   _compressCampaignBody(campaign) {
     return new Promise((resolve, reject) => {
       const compressedBody = compressString(campaign.body);
-      const compressedCampaign = Object.assign({}, campaign, {body: compressedBody});
+      const compressedCampaign = Object.assign({}, campaign, { body: compressedBody });
       resolve(compressedCampaign);
     });
   }
@@ -149,7 +108,7 @@ class DeliverCampaignService {
       resolve({
         userId: campaign.userId,
         userPlan: this.userPlan,
-        sentCampaignsInMonth: this.sentCampaignsInMonth,
+        currentUserState: this.currentState,
         campaign: {
           id: campaign.id,
           subject: campaign.subject,
@@ -200,26 +159,15 @@ class DeliverCampaignService {
     });
   }
 
-  get maxMonthlyCampaigns() {
-    if (!this.userPlan || this.userPlan === 'free') {
-      return 30;
-    }
-  }
-
-  get maxDailyCampaigns() {
-    if (!this.userPlan || /^free*/.test(this.userPlan)) {
-      return 1;
-    }
-  }
-
-  get maxRecipients() {
-    if (!this.userPlan || this.userPlan === 'free') {
-      return 250;
-    }
-    if (!this.userPlan || this.userPlan === 'free_ses') {
-      return 2000;
-    }
-    return Infinity;
+  _checkSubscriptionLimits({ sentCampaignsInLastDay, recipientsCount }) {
+    const lambdaName = process.env.CHECK_SUBSCRIPTION_LIMITS_FUNCTION;
+    debug('= DeliverCampaignService.invokeLambda', lambdaName);
+    const payload = { userId: this.userId, currentState: { sentCampaignsInLastDay, recipientsCount } };
+    return FunctionsClient.execute(lambdaName, payload)
+      .then(response => {
+        console.log('FunctionsClient.execute', response);
+        return response.quotaExceeded ? Promise.reject(new Error('User can\'t send more campaigns')) : Promise.resolve({});
+      });
   }
 }
 
