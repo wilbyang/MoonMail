@@ -42,6 +42,7 @@ describe('DeliverCampaignService', () => {
         deliverCampaignService = new DeliverCampaignService(snsClient, {campaignId, userId, userPlan: freeUserPlan});
         sinon.stub(Campaign, 'sentLastNDays').resolves(100);
         sinon.stub(deliverCampaignService, '_getRecipientsCount').resolves(10);
+        sinon.stub(deliverCampaignService, '_getTotalRecipients').resolves(100);
         sinon.stub(FunctionsClient, 'execute').resolves({ quotaExceeded: true });
       });
 
@@ -54,6 +55,7 @@ describe('DeliverCampaignService', () => {
         Campaign.sentLastNDays.restore();
         FunctionsClient.execute.restore();
         deliverCampaignService._getRecipientsCount.restore();
+        deliverCampaignService._getTotalRecipients.restore();
       });
     });
 
@@ -63,6 +65,7 @@ describe('DeliverCampaignService', () => {
         sinon.stub(Campaign, 'sentLastNDays').resolves(deliverCampaignService.maxDailyCampaigns - 1);
         sinon.stub(Campaign, 'get').resolves(nonReadyCampaign);
         sinon.stub(List, 'get').resolves({userId, id: listIds[0], name: 'Some list', subscribedCount: 25});
+        sinon.stub(deliverCampaignService, '_getTotalRecipients').resolves(100);
         sinon.stub(FunctionsClient, 'execute').resolves({ quotaExceeded: false });
       });
 
@@ -76,6 +79,7 @@ describe('DeliverCampaignService', () => {
         List.get.restore();
         Campaign.sentLastNDays.restore();
         FunctionsClient.execute.restore();
+        deliverCampaignService._getTotalRecipients.restore();
       });
     });
 
@@ -86,6 +90,7 @@ describe('DeliverCampaignService', () => {
         sinon.stub(deliverCampaignService, '_updateCampaignStatus').resolves(true);
         sinon.stub(Campaign, 'sentLastNDays').resolves(deliverCampaignService.maxDailyCampaigns - 1);
         sinon.stub(List, 'get').resolves({userId, id: listIds[0], name: 'Some list', subscribedCount: 25});
+        sinon.stub(deliverCampaignService, '_getTotalRecipients').resolves(100);
         sinon.stub(FunctionsClient, 'execute').resolves({ quotaExceeded: false });
       });
 
@@ -114,6 +119,7 @@ describe('DeliverCampaignService', () => {
         List.get.restore();
         deliverCampaignService._updateCampaignStatus.restore();
         FunctionsClient.execute.restore();
+        deliverCampaignService._getTotalRecipients.restore();
       });
     });
 
@@ -124,6 +130,7 @@ describe('DeliverCampaignService', () => {
         sinon.stub(deliverCampaignService, '_updateCampaignStatus').resolves(true);
         sinon.stub(Campaign, 'sentLastNDays').resolves(deliverCampaignService.maxDailyCampaigns - 1);
         sinon.stub(List, 'get').resolves({userId, id: listIds[0], name: 'Some list', subscribedCount: 25});
+        sinon.stub(deliverCampaignService, '_getTotalRecipients').resolves(100);
         sinon.stub(FunctionsClient, 'execute').resolves({ quotaExceeded: false });
       });
 
@@ -151,6 +158,7 @@ describe('DeliverCampaignService', () => {
         List.get.restore();
         Campaign.update.restore();
         FunctionsClient.execute.restore();
+        deliverCampaignService._getTotalRecipients.restore();
       });
     });
 

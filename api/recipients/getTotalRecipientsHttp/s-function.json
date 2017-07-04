@@ -1,10 +1,10 @@
 {
-  "name": "scheduleCampaign",
+  "name": "getTotalRecipientsHttp",
   "runtime": "babel",
   "description": "Serverless Lambda function for project: MoonMail-v2",
-  "customName": "${project}-campaigns-scheduleCampaign",
+  "customName": "${project}-recipients-getTotalRecipientsHttp",
   "customRole": false,
-  "handler": "campaigns/scheduleCampaign/handler.default",
+  "handler": "recipients/getTotalRecipientsHttp/handler.default",
   "timeout": 6,
   "memorySize": 1024,
   "authorizer": {},
@@ -14,8 +14,8 @@
   },
   "endpoints": [
     {
-      "path": "/campaigns/{campaignId}/schedule",
-      "method": "POST",
+      "path": "/lists/recipients/count",
+      "method": "GET",
       "type": "AWS",
       "authorizationType": "none",
       "authorizerFunction": false,
@@ -23,8 +23,7 @@
       "requestParameters": {},
       "requestTemplates": {
         "application/json": {
-          "scheduleAt": "$input.json('$.scheduleAt')",
-          "campaignId": "$input.params('campaignId')",
+          "listId": "$input.params('listId')",
           "authToken": "$input.params('Authorization')"
         }
       },
@@ -36,13 +35,8 @@
     "SERVERLESS_PROJECT": "${project}",
     "SERVERLESS_STAGE": "${stage}",
     "SERVERLESS_REGION": "${region}",
-    "CAMPAIGNS_TABLE": "$${campaignsTable}",
-    "USERS_TABLE": "$${usersTable}",
-    "LISTS_TABLE": "$${listsTable}",
-    "SENT_AT_INDEX_NAME": "$${campaignsSentAtIndex}",
-    "CHECK_SUBSCRIPTION_LIMITS_FUNCTION": "$${checkSubscriptionLimitsFunctionName}",
     "GET_TOTAL_RECIPIENTS_FUNCTION": "$${getTotalRecipientsFunctionName}",
-    "DEBUG": "true"
+    "LOG_LEVEL": "info"
   },
   "vpc": {
     "securityGroupIds": [],
