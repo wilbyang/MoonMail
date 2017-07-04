@@ -1,0 +1,32 @@
+{
+  "name": "getTotalRecipients",
+  "runtime": "babel",
+  "description": "Serverless Lambda function for project: MoonMail-v2",
+  "customName": "${project}-recipients-getTotalRecipients",
+  "customRole": false,
+  "handler": "recipients/getTotalRecipients/handler.default",
+  "timeout": 300,
+  "memorySize": 1024,
+  "authorizer": {},
+  "custom": {
+    "excludePatterns": [],
+    "cors": "$${corsSettings}"
+  },
+  "endpoints": [],
+  "events": [],
+  "environment": {
+    "SERVERLESS_PROJECT": "${project}",
+    "SERVERLESS_STAGE": "${stage}",
+    "SERVERLESS_REGION": "${region}",
+    "ES_RECIPIENTS_INDEX_NAME": "$${esRecipientsIndexName}",
+    "ES_RECIPIENTS_INDEX_TYPE": "$${esRecipientsIndexType}",
+    "LISTS_TABLE": "$${listsTable}",
+    "ES_HOST": "${esHost}",
+    "ES_REGION": "${esRegion}",
+    "LOG_LEVEL": "info"
+  },
+  "vpc": {
+    "securityGroupIds": [],
+    "subnetIds": []
+  }
+}

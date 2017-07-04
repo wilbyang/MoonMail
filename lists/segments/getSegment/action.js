@@ -7,7 +7,7 @@ export default function respond(event, cb) {
   return Segments.getSegment(event.listId, event.segmentId)
     .then(segment => cb(null, segment))
     .catch((err) => {
-      logger().error(err, err.stack);
+      logger().error(err);
       return cb(err);
     });
 }

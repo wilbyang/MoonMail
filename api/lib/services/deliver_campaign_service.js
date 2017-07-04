@@ -34,7 +34,8 @@ class DeliverCampaignService {
     debug('= DeliverCampaignService._checkUserQuota', this.userId);
     return Promise.props({
       sentCampaignsInLastDay: Campaign.sentLastNDays(this.userId, 1),
-      recipientsCount: this._getRecipientsCount()
+      recipientsCount: this._getRecipientsCount(),
+      totalRecipients: this._getTotalRecipients()
     }).then((currentState) => {
       this.currentState = currentState;
       return this._checkSubscriptionLimits(currentState);
@@ -164,10 +165,12 @@ class DeliverCampaignService {
     debug('= DeliverCampaignService.invokeLambda', lambdaName);
     const payload = { userId: this.userId, currentState: { sentCampaignsInLastDay, recipientsCount } };
     return FunctionsClient.execute(lambdaName, payload)
-      .then(response => {
-        console.log('FunctionsClient.execute', response);
-        return response.quotaExceeded ? Promise.reject(new Error('User can\'t send more campaigns')) : Promise.resolve({});
-      });
+      .then(response => response.quotaExceeded ? Promise.reject(new Error('User can\'t send more campaigns')) : Promise.resolve({}));
+  }
+
+  _getTotalRecipients() {
+    return FunctionsClient.execute(process.env.GET_TOTAL_RECIPIENTS_FUNCTION, { userId: this.userId })
+      .then(response => response.totalRecipients);
   }
 }
 

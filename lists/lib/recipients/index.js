@@ -1,7 +1,7 @@
 import { strip } from 'eskimo-stripper';
 import moment from 'moment';
 import ElasticSearch from '../elasticsearch/index';
-
+import { List } from 'moonmail-models';
 function validRecipient(recipient) {
   return !!recipient.listId && !!recipient.id && !!recipient.createdAt && !!recipient.email;
 }
@@ -32,6 +32,12 @@ const Recipients = {
 
   syncRecipientStreamWithES(records) {
     return Promise.map(records, record => this.syncRecipientRecordWithES(record), { concurrency: 10 });
+  },
+
+  // TODO: migrate to ES
+  totalRecipients(userId) {
+    return List.allBy('userId', userId)
+      .then(lists => lists.items.filter(l => l.subscribedCount).reduce((accum, next) => (accum + next.subscribedCount), 0));
   },
 
   syncRecipientRecordWithES(record) {

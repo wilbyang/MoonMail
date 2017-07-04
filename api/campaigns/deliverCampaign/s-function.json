@@ -43,6 +43,7 @@
     "ATTACH_RECIPIENTS_COUNT_TOPIC_ARN": "${attachRecipientsCountTopicARN}",
     "SENT_AT_INDEX_NAME": "$${campaignsSentAtIndex}",
     "CHECK_SUBSCRIPTION_LIMITS_FUNCTION": "$${checkSubscriptionLimitsFunctionName}",
+    "GET_TOTAL_RECIPIENTS_FUNCTION": "$${getTotalRecipientsFunctionName}",
     "DEBUG": "true"
   },
   "vpc": {
