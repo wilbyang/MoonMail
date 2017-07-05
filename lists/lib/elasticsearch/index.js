@@ -34,7 +34,9 @@ const ElasticSearch = {
   },
 
   buildQueryFilters(conditions) {
-    return conditions.reduce((aggregatedBody, nextCondition) => aggregatedBody.filter(nextCondition.queryType, nextCondition.fieldToQuery, nextCondition.searchTerm), bodyBuilder());
+    return conditions
+      .filter(conditionObject => conditionObject.conditionType === 'filter') // we only support filter conditions for now
+      .reduce((aggregatedBody, nextCondition) => aggregatedBody.filter(nextCondition.condition.queryType, nextCondition.condition.fieldToQuery, nextCondition.condition.searchTerm), bodyBuilder());
   },
 
   createClient({ credentials = awsCredentials(), elasticSearchHost = process.env.ES_HOST, elasticSearchRegion = process.env.ES_REGION }) {
