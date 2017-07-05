@@ -5,7 +5,7 @@ import decrypt from '../../lib/auth-token-decryptor';
 import { paramsChecker, errorHandler } from '../../lib/api-utils';
 
 export default function respond(event, cb) {
-  logger().info('= getSegmentHttp.action', JSON.stringify(event));
+  logger().info('= updateSegmentHttp.action', JSON.stringify(event));
   const checkParams = paramsChecker(['authToken']);
   return checkParams(omitEmpty(event))
     .then(params => decrypt(params.authToken))
