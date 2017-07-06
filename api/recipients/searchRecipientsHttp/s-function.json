@@ -25,6 +25,10 @@
         "application/json": {
           "listId": "$input.params('listId')",
           "conditions": "$input.json('$.conditions')",
+          "options": {
+            "from": "$input.params('from')",
+            "size": "$input.params('size')"
+          },
           "authToken": "$input.params('Authorization')"
         }
       },

@@ -10,7 +10,10 @@ const Segments = {
 
   listSegmentMembersFromConditions(conditions, from, size) {
     const query = ElasticSearch.buildQueryFilters(conditions).from(from).size(size);
-    return ElasticSearch.search(this.client, this.indexName, this.indexType, query.build());
+    return ElasticSearch.search(this.client, this.indexName, this.indexType, query.build())
+      .then((esResult) => {
+        return { items: esResult.hits.hits.map(hit => Object.assign({}, { _id: hit._id }, hit._source)) };
+      });
   },
 
   getSegment(listId, id) {
