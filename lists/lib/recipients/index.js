@@ -17,12 +17,12 @@ const Recipients = {
 
   createESRecipient(id, recipient) {
     if (!validRecipient(recipient)) return Promise.resolve();
-    const recipientToIndex = Object.assign({}, recipient, { createdAt: moment.unix(recipient.createdAt).format('YYYY-MM-DD') });
+    const recipientToIndex = Object.assign({}, recipient, { createdAt: moment.unix(recipient.createdAt).utc().format() });
     return ElasticSearch.createOrUpdateDocument(this.client, this.indexName, this.indexType, id, recipientToIndex);
   },
 
   updateESRecipient(id, newRecipient) {
-    const recipientToIndex = Object.assign({}, newRecipient, { createdAt: moment.unix(newRecipient.createdAt).format('YYYY-MM-DD') });
+    const recipientToIndex = Object.assign({}, newRecipient, { createdAt: moment.unix(newRecipient.createdAt).utc().format() });
     return ElasticSearch.createOrUpdateDocument(this.client, this.indexName, this.indexType, id, recipientToIndex);
   },
 
