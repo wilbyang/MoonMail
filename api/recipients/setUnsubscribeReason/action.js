@@ -21,15 +21,15 @@ export function respond(event, cb) {
 
 function setUnsubscribeReason(recipientId, listId, campaignId, reason) {
   return Recipient.update({ unsubscribeReason: reason }, listId, recipientId)
-    .then(recipient => publishCompaintIfApplies(recipient, listId, campaignId, reason));
+    .then(recipient => publishComplaintIfApplies(recipient, listId, campaignId, reason));
 }
 
-function publishCompaintIfApplies(recipient, listId, campaignId, reason) {
+function publishComplaintIfApplies(recipient, listId, campaignId, reason) {
   if (reason !== 'complaint') return Promise.resolve(recipient);
 
-  // Email notifications has too much reponsibilities and it doesn't fit the 
-  // way needs to be used here, so we are relying in the Report model to notify the
-  // campaign's complaints.
+  // Email notifications service has too many responsibilities and it doesn't fit 
+  // this use case, so we are relying directly on the Report model to notify the
+  // complaints.
   const updatedRecpt = { status: Recipient.statuses.complaint };
   updatedRecpt[`${updatedRecpt.status}At`] = moment().unix();
   return Recipient.update(updatedRecpt, listId, recipient.id)
