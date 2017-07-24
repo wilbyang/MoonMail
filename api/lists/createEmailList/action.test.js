@@ -27,6 +27,7 @@ describe('createEmailList', () => {
           expect(args).to.have.property('userId');
           expect(args).to.have.property('id');
           expect(args).to.have.property('isDeleted', false.toString());
+          expect(args).to.have.property('processed', false);
           expect(args).to.have.property('importStatus');
           expect(args.importStatus).to.deep.equals({});
           expect(err).to.not.exist;
