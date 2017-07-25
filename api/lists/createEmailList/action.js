@@ -15,7 +15,6 @@ export function respond(event, cb) {
       list.id = cuid();
       list.isDeleted = false.toString();
       list.importStatus = {};
-      list.processed = false;
       isValid(list)
         .then(list => List.save(list))
         .then(() => cb(null, list))
