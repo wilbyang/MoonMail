@@ -84,7 +84,7 @@ em2@examplemail.com;firstName2;lastName2`,
 
           expect(List.update).to.have.been.calledOnce;
           const updateArgs = List.update.lastCall.args;
-          expect(updateArgs[0]).to.deep.equals({ metadataAttributes: ['name', 'surname'] });
+          expect(updateArgs[0]).to.deep.equals({ metadataAttributes: ['name', 'surname'], processed: false });
           expect(updateArgs[1]).to.equals('userId');
           expect(updateArgs[2]).to.equals('listId#1');
 
