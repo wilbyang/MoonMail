@@ -225,12 +225,17 @@ class ImportRecipientsService {
 
   filterByEmail(recipient) {
     const email = recipient.email;
-    if (/\S+@\S+\.\S+/.test(email)) {
+    if (this.validateEmail(email)) {
       return true;
     } else {
       this.corruptedEmails.push(email);
       return false;
     }
+  }
+
+  validateEmail(email) {
+    const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(email);
   }
 
   _notifyProgress(recipientsAmount) {
