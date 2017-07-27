@@ -597,6 +597,10 @@
           {
             "AttributeName": "email",
             "AttributeType": "S"
+          },
+          {
+            "AttributeName": "amazonCustomerId",
+            "AttributeType": "S"
           }
         ],
         "KeySchema": [
@@ -613,6 +617,18 @@
               "KeyType": "HASH"
             }],
             "Projection" : {"ProjectionType": "ALL"},
+            "ProvisionedThroughput" : {
+              "ReadCapacityUnits": "${defaultRCU}",
+              "WriteCapacityUnits": "${defaultWCU}"
+            }
+          },
+          {
+            "IndexName" : "$${usersAmazonCustomerIndex}",
+            "KeySchema" : [{
+              "AttributeName": "amazonCustomerId",
+              "KeyType": "HASH"
+            }],
+            "Projection" : {"ProjectionType": "KEYS_ONLY"},
             "ProvisionedThroughput" : {
               "ReadCapacityUnits": "${defaultRCU}",
               "WriteCapacityUnits": "${defaultWCU}"
