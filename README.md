@@ -23,6 +23,8 @@ With [MoonMail](https://moonmail.io/) you can: create & edit lists of recipients
 * Schedule campaigns to be sent in the future
 * Extend the recipient fields with extra values like: gender, country... [(Liquid powered)](https://shopify.github.io/liquid/)
 * Update the recipient status with any of the following: Unsubscribed, Bounced, Complaint-Spam, Suppresion-list
+* Create Automations
+* Filter lists by Segments
 * [React powered frontend / UI to send campaigns](https://microapps.github.io/MoonMail-UI/)
 * Apply [liquid](https://shopify.github.io/liquid/) syntax within the campaigns
 * [Public API to interact with the SAAS version](http://microapps.github.io/MoonMail/)
@@ -79,7 +81,7 @@ Contributions are always welcome! If you'd like to collaborate with us, take int
 * We use [ES2015](https://babeljs.io/docs/learn-es2015/) and love OOP.
 * We test with [mocha](https://github.com/mochajs/mocha) + [chai](https://github.com/chaijs/chai) + [sinon](https://github.com/sinonjs/sinon).
 
-Feel free to <a href="mailto:hi@microapps.com">contact us</a> if you have any question!
+Feel free to <a href="mailto:hi@microapps.com">contact us</a> if you have any question
 
 
 ## License
@@ -96,3 +98,5 @@ If you need support getting MoonMail into production in your AWS account, contac
 - <a href="https://sc5.io">SC5</a>
 - <a href="mailto:sam@acloud.guru">A Cloud Guru - AWS training & serverless experts</a> (<a href="https://acloud.guru">Visit Web Site</a>)
 - <a href="mailto:hello@goltfisch.de">Just Serverless</a>
+
+MoonMail [Email Marketing Software](https://moonmail.io/) done the right way
