@@ -1,5 +1,5 @@
 {
-  "name": "",
+  "name": "lists",
   "version": "0.0.1",
   "description": "Serverless module dependencies",
   "author": "me",
@@ -10,15 +10,16 @@
     "url": "git://github.com/"
   },
   "scripts": {
-    "test": "NODE_ENV=test mocha --require babel-register $(find . -name '*.test.js' -not -path './node_modules/*')"
+    "test": "NODE_ENV=test mocha --require babel-register $(find . -name '*.test.js' -not -path './node_modules/*')",
+    "watch": "NODE_ENV=test mocha --watch --require babel-register $(find . -name '*.test.js' -not -path './node_modules/*')"
   },
   "keywords": [],
   "devDependencies": {
-    "aws-sdk": "^2.4.8",
+    "aws-sdk": "^2.93.0",
     "aws-sdk-mock": "^1.3.0",
     "babel": "^6.5.2",
     "babel-plugin-transform-object-assign": "^6.5.0",
-    "babel-polyfill": "^6.6.1",
+    "babel-polyfill": "^6.7.4",
     "babel-register": "^6.7.2",
     "babel-runtime": "^6.18.0",
     "babelify": "^7.2.0",
@@ -37,7 +38,6 @@
     "aws-event-parser": "^1.0.0",
     "aws-sdk-promise": "0.0.2",
     "axios": "^0.15.2",
-    "babel-polyfill": "^6.7.4",
     "babyparse": "^0.4.6",
     "base64-url": "^1.2.2",
     "bluebird": "^3.4.1",
@@ -54,10 +54,14 @@
     "lodash": "^4.16.4",
     "mailcomposer": "^3.10.0",
     "moment": "^2.15.1",
-    "moonmail-models": "github:microapps/moonmail-models",
+    "moonmail-models": "microapps/moonmail-models",
     "nock": "^9.0.2",
+    "nodent": "^3.1.0",
     "omit-empty": "^0.4.1",
     "ramda": "^0.22.1",
+    "recursive-lambda": "^1.1.3",
+    "request": "^2.81.0",
+    "request-promise": "^4.2.1",
     "saws": "^0.1.0",
     "serverless-helpers-js": "~0.1.0",
     "uid-generator": "^0.1.1",

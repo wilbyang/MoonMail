@@ -2,6 +2,7 @@ import AWS from 'aws-sdk';
 import AWSESConnection from 'http-aws-es';
 import Elasticsearch from 'elasticsearch';
 import bodyBuilder from 'bodybuilder';
+import { logger } from '../../lib/index';
 
 function awsCredentials() {
   return new AWS.EnvironmentCredentials('AWS');
@@ -26,11 +27,13 @@ const ElasticSearch = {
   },
 
   search(esClient, indexName, indexType, queryBody) {
-    return esClient.search({
+    const esQueryRequest = {
       index: indexName,
       type: indexType,
       body: queryBody
-    });
+    };
+    logger().debug(JSON.stringify(esQueryRequest));
+    return esClient.search(esQueryRequest);
   },
 
   buildQueryFilters(conditions) {

@@ -239,6 +239,12 @@
         "TopicName": "$${attachListRecipientsTopic}"
       }
     },
+    "AttachSegmentRecipientsTopic": {
+      "Type": "AWS::SNS::Topic",
+      "Properties": {
+        "TopicName": "$${attachSegmentRecipientsTopic}"
+      }
+    },
     "AttachRecipientsCountTopic": {
       "Type": "AWS::SNS::Topic",
       "Properties": {
@@ -667,6 +673,20 @@
           {
             "AttributeName": "id",
             "KeyType": "RANGE"
+          }
+        ],
+        "GlobalSecondaryIndexes": [
+          {
+            "IndexName" : "$${segmentIdIndex}",
+            "KeySchema" : [{
+              "AttributeName": "id",
+              "KeyType": "HASH"
+            }],
+            "Projection" : {"ProjectionType": "ALL"},
+            "ProvisionedThroughput" : {
+              "ReadCapacityUnits": "${defaultRCU}",
+              "WriteCapacityUnits": "${defaultWCU}"
+            }
           }
         ],
         "ProvisionedThroughput": {
@@ -1223,6 +1243,12 @@
       "Description": "ARN of the AttachListRecipients SNS topic",
       "Value": {
         "Ref": "AttachListRecipientsTopic"
+      }
+    },
+    "AttachSegmentRecipientsTopicARN": {
+      "Description": "ARN of the AttachSegmentRecipients SNS topic",
+      "Value": {
+        "Ref": "AttachSegmentRecipientsTopic"
       }
     },
     "AttachSenderTopicARN": {

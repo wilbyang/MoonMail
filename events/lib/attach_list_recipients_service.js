@@ -1,5 +1,3 @@
-'use strict';
-
 import { debug } from './index';
 import { Recipient } from 'moonmail-models';
 import * as async from 'async';
@@ -23,8 +21,8 @@ class AttachListRecipientsService {
     return 250;
   }
 
-  attachRecipientsList(nextPage = {}) {
-    debug('= AttachListRecipientsService.attachRecipientsList', this.listId, nextPage);
+  attachRecipients(nextPage = {}) {
+    debug('= AttachListRecipientsService.attachRecipients', this.listId, nextPage);
     return this._attachRecipientsBatch(this.listId, nextPage)
       .then(nextPage => this._attachNextBatch(this.listId, nextPage));
   }
@@ -34,7 +32,7 @@ class AttachListRecipientsService {
     return new Promise((resolve, reject) => {
       const next = {};
       this._getRecipientsBatch(listId, options)
-        .then(result => {
+        .then((result) => {
           if (result.nextPage) {
             next.page = result.nextPage;
           }
@@ -49,10 +47,10 @@ class AttachListRecipientsService {
       if (next && next.hasOwnProperty('page')) {
         if (this._timeEnough()) {
           debug('= AttachListRecipientsService._attachNextBatch', 'Attaching next batch', JSON.stringify(next));
-          resolve(this.attachRecipientsList(next));
+          resolve(this.attachRecipients(next));
         } else {
           debug('= AttachListRecipientsService._attachNextBatch', 'Not time enough for next batch, invoking lambda...');
-          return this._invokeLambda(next);
+          return resolve(this._invokeLambda(next));
         }
       } else {
         debug('= AttachListRecipientsService._attachNextBatch', 'No more batches');
@@ -75,7 +73,7 @@ class AttachListRecipientsService {
       async.each(recipients, (recipient, cb) => {
         this._publishRecipient(recipient)
           .then(() => cb())
-          .catch(err => {
+          .catch((err) => {
             debug('= AttachListRecipientsService._publishRecipients',
               'Couldn\'t publish recipient', JSON.stringify(recipient), err);
             cb();
@@ -125,6 +123,7 @@ class AttachListRecipientsService {
         InvocationType: 'Event',
         Payload: JSON.stringify(payload)
       };
+
       this.lambdaClient.invoke(params, (err, data) => {
         if (err) {
           debug('= AttachListRecipientsService._invokeLambda', 'Error invoking lambda', err, err.stack);

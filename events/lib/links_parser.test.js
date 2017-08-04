@@ -20,27 +20,30 @@ describe('LinksParser', () => {
   const unsubscribeLink = `<a href="${unsubscribeUrl}">${unsubscribeText}</a>`;
   const htmlLinks = [`<a href="${linkUrls[0]}">${linksText[0]}</a>`, `<a href="${linkUrls[1]}">${linksText[1]}</a>`];
   const htmlBody = `This piece of HTML contains not only ${htmlLinks[0]} but ${htmlLinks[1]}, and this is the unsubscribe ${unsubscribeLink}`;
-  const campaignId = 'some_campaign_id';
+  const campaign = { id: 'campaign-id' };
+  const recipient = { id: 'recipient-id' };
+  const userId = 'user-id';
   const linkId = 'some_link_id';
   const apiHost = 'fakeapi.com';
-  const opensTrackingUrl = `https://${apiHost}/links/open/${campaignId}`;
-  const clicksTrackingUrl = `https://${apiHost}/links/click/${campaignId}/${linkId}`;
+  const opensTrackingUrl = `https://${apiHost}/links/open/${campaign.id}`;
+  const clicksTrackingUrl = `https://${apiHost}/links/click/${campaign.id}/${linkId}`;
+  const context = { campaign, recipient, userId };
   let links;
 
   before(() => {
-    links = new LinksParser({campaignId, apiHost});
+    links = new LinksParser({ apiHost, context });
   });
 
   describe('#opensTrackUrl()', () => {
     it('returns the URL to track opens', (done) => {
-      expect(links.opensTrackUrl).to.equal(opensTrackingUrl);
+      expect(links.opensTrackUrl).to.contain(opensTrackingUrl);
       done();
     });
   });
 
   describe('#appendOpensPixel()', () => {
     it('appends the opens tracking image', (done) => {
-      const imgTrackingTag = `<img src="${opensTrackingUrl}" width="1" height="1" />`;
+      const imgTrackingTag = `<img src="${opensTrackingUrl}`;
       expect(links.appendOpensPixel(htmlBody)).to.eventually.contain(imgTrackingTag).notify(done);
     });
   });
@@ -79,9 +82,9 @@ describe('LinksParser', () => {
       links.parseLinks(htmlBody).then((result) => {
         expect(result.campaignLinks).to.have.property('id', links.campaignId);
         const linksData = result.campaignLinks.links;
-        expect(linksData).to.containOneLike({url: linkUrls[0], text: linksText[0]});
-        expect(linksData).to.containOneLike({url: linkUrls[1], text: linksText[1]});
-        expect(linksData).not.to.containOneLike({url: unsubscribeUrl, text: unsubscribeText});
+        expect(linksData).to.containOneLike({ url: linkUrls[0], text: linksText[0] });
+        expect(linksData).to.containOneLike({ url: linkUrls[1], text: linksText[1] });
+        expect(linksData).not.to.containOneLike({ url: unsubscribeUrl, text: unsubscribeText });
         done();
       }).catch(done);
     });

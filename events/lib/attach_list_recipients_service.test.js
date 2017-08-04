@@ -1,18 +1,10 @@
-'use strict';
+import './spec_helper';
 
-import * as chai from 'chai';
-const expect = chai.expect;
-const chaiAsPromised = require('chai-as-promised');
-const sinonChai = require('sinon-chai');
-import * as sinon from 'sinon';
+import awsMock from 'aws-sdk-mock';
+import AWS from 'aws-sdk';
+
 import { Recipient } from 'moonmail-models';
 import { AttachListRecipientsService } from './attach_list_recipients_service';
-import * as sinonAsPromised from 'sinon-as-promised';
-const awsMock = require('aws-sdk-mock');
-const AWS = require('aws-sdk');
-
-chai.use(sinonChai);
-chai.use(chaiAsPromised);
 
 describe('AttachListRecipientsService', () => {
   const userId = 'some_user_id';
@@ -25,15 +17,13 @@ describe('AttachListRecipientsService', () => {
     subject: 'Hi {{ name }} {{ surname }}',
     listIds
   };
-  const recipients = Array(250).fill().map((el, i) => {
-    return {
-      id: i,
-      listId: listIds[0],
-      status: 'subscribed',
-      email: `david.garcia+${i}@microapps.com`,
-      metadata: { name: 'David', surname: i }
-    };
-  });
+  const recipients = Array(250).fill().map((el, i) => ({
+    id: i,
+    listId: listIds[0],
+    status: 'subscribed',
+    email: `david.garcia+${i}@microapps.com`,
+    metadata: { name: 'David', surname: i }
+  }));
   const nextPage = 'next-page-token';
   const dbResponse = { items: recipients };
   const paginatedDbResponse = { items: recipients, nextPage };
@@ -57,7 +47,7 @@ describe('AttachListRecipientsService', () => {
         cb('Invalid params');
       }
     });
-    awsMock.mock('Lambda', 'invoke', 'ok');
+    awsMock.mock('Lambda', 'invoke', (params, callback) => { callback(null, true); });
     lambdaClient = new AWS.Lambda();
     snsClient = new AWS.SNS();
     service = new AttachListRecipientsService(snsClient, attachListRecipientsMessage, lambdaClient, lambdaContext);
@@ -69,21 +59,21 @@ describe('AttachListRecipientsService', () => {
       .withArgs('listId', paginatedList).resolves(paginatedDbResponse);
   });
 
-  describe('#attachRecipientsList', () => {
+  describe('attaching recipients', () => {
     before(() => {
       sinon.stub(service, '_getRecipientsBatch')
         .onFirstCall().resolves(paginatedDbResponse)
         .onSecondCall().resolves(paginatedDbResponse)
         .onThirdCall().resolves(dbResponse);
       sinon.spy(service, '_attachRecipientsBatch');
-      sinon.spy(service, 'attachRecipientsList');
+      sinon.spy(service, 'attachRecipients');
     });
 
-    it('attaches all the recipients of a given list', done => {
-      service.attachRecipientsList().then(() => {
-        expect(service.attachRecipientsList).to.have.been.calledThrice;
-        const firstCallParams = service.attachRecipientsList.firstCall.args;
-        const secondCallParams = service.attachRecipientsList.secondCall.args;
+    it('attaches all the recipients of a given list', (done) => {
+      service.attachRecipients().then(() => {
+        expect(service.attachRecipients).to.have.been.calledThrice;
+        const firstCallParams = service.attachRecipients.firstCall.args;
+        const secondCallParams = service.attachRecipients.secondCall.args;
         expect(firstCallParams[0]).to.be.undefined;
         expect(secondCallParams[0]).to.deep.equal({ page: nextPage });
         done();
@@ -94,7 +84,7 @@ describe('AttachListRecipientsService', () => {
     after(() => {
       service._getRecipientsBatch.restore();
       service._attachRecipientsBatch.restore();
-      service.attachRecipientsList.restore();
+      service.attachRecipients.restore();
     });
   });
 
@@ -104,7 +94,7 @@ describe('AttachListRecipientsService', () => {
       sinon.spy(service, '_publishRecipients');
     });
 
-    it('publishes a batch of recipients', done => {
+    it('publishes a batch of recipients', (done) => {
       service._attachRecipientsBatch(nonPaginatedList).then(() => {
         expect(service._publishRecipients).to.have.been.calledOnce;
         const publishParams = service._publishRecipients.lastCall.args[0];
@@ -114,7 +104,7 @@ describe('AttachListRecipientsService', () => {
     });
 
     context('when the next page option was provided', () => {
-      it('it fetches the next batch of recipients', done => {
+      it('it fetches the next batch of recipients', (done) => {
         const options = { page: nextPage };
         service._attachRecipientsBatch(nonPaginatedList, options).then(() => {
           const getBatchOptions = service._getRecipientsBatch.lastCall.args[1];
@@ -125,8 +115,8 @@ describe('AttachListRecipientsService', () => {
     });
 
     context('when processing the last batch', () => {
-      it('resolves an empty object', done => {
-        service._attachRecipientsBatch(nonPaginatedList).then(result => {
+      it('resolves an empty object', (done) => {
+        service._attachRecipientsBatch(nonPaginatedList).then((result) => {
           expect(result).to.deep.equal({});
           done();
         });
@@ -134,8 +124,8 @@ describe('AttachListRecipientsService', () => {
     });
 
     context('when there are batches left', () => {
-      it('resolves the next page object', done => {
-        service._attachRecipientsBatch(paginatedList).then(result => {
+      it('resolves the next page object', (done) => {
+        service._attachRecipientsBatch(paginatedList).then((result) => {
           expect(result).to.deep.equal({ page: nextPage });
           done();
         })
@@ -155,7 +145,7 @@ describe('AttachListRecipientsService', () => {
     });
 
     context('given a next page object', () => {
-      it('sends the next batch', done => {
+      it('sends the next batch', (done) => {
         const next = { page: nextPage };
         service._attachNextBatch(nonPaginatedList, next).then(() => {
           expect(service._attachRecipientsBatch).to.have.been.calledOnce;
@@ -165,8 +155,8 @@ describe('AttachListRecipientsService', () => {
     });
 
     context('given an empty object', () => {
-      it('resolves true', done => {
-        service._attachNextBatch().then(result => {
+      it('resolves true', (done) => {
+        service._attachNextBatch().then((result) => {
           expect(result).to.be.true;
           expect(service._attachRecipientsBatch).to.have.been.not.called;
           done();
@@ -175,9 +165,9 @@ describe('AttachListRecipientsService', () => {
     });
 
     context('there is not enough time to process a next batch', () => {
-      it('invokes a new lambda', done => {
+      it('invokes a new lambda', (done) => {
         const next = { page: nextPage };
-        service._attachNextBatch(next).then(result => {
+        service._attachNextBatch(next).then((result) => {
           expect(result).to.be.true;
           expect(service._attachRecipientsBatch).to.have.been.not.called;
           done();
@@ -191,7 +181,7 @@ describe('AttachListRecipientsService', () => {
   });
 
   describe('#_getRecipientsBatch()', () => {
-    it('returns a batch of 250 subscribed recipients', done => {
+    it('returns a batch of 250 subscribed recipients', (done) => {
       const getBatchPromise = service._getRecipientsBatch(listIds[0]);
       expect(getBatchPromise).to.eventually.have.deep.property('items', recipients);
       const allByOptions = Recipient.allBy.lastCall.args[2];
@@ -201,7 +191,7 @@ describe('AttachListRecipientsService', () => {
     });
 
     context('when next page was provided', () => {
-      it('returns the next batch of subscribed recipients', done => {
+      it('returns the next batch of subscribed recipients', (done) => {
         const nextPage = 'next-page-handle';
         service._getRecipientsBatch(listIds[0], { nextPage }).then(() => {
           const allByOptions = Recipient.allBy.lastCall.args[2];
@@ -214,7 +204,7 @@ describe('AttachListRecipientsService', () => {
   });
 
   describe('#_publishRecipients()', () => {
-    it('publishes the campaign message with the recipient info for every recipient', done => {
+    it('publishes the campaign message with the recipient info for every recipient', (done) => {
       const publishStub = sinon.stub(service, '_publishRecipient').resolves(true);
       service._publishRecipients(dbResponse.items).then(() => {
         expect(publishStub.callCount).to.equal(dbResponse.items.length);
@@ -226,7 +216,7 @@ describe('AttachListRecipientsService', () => {
   });
 
   describe('#_buildRecipientMessage', () => {
-    it('adds the recipient info to the message', done => {
+    it('adds the recipient info to the message', (done) => {
       const recipient = dbResponse.items[0];
       const recipientMessage = service._buildRecipientMessage(recipient);
       expect(recipientMessage).to.include({ campaign });
@@ -238,7 +228,7 @@ describe('AttachListRecipientsService', () => {
   });
 
   describe('#_publishRecipient()', () => {
-    it('publishes the campaign message to SNS for certain recipient', done => {
+    it('publishes the campaign message to SNS for certain recipient', (done) => {
       const recipient = dbResponse.items[0];
       snsClient.publish.reset();
       service._publishRecipient(recipient).then(() => {
@@ -252,25 +242,19 @@ describe('AttachListRecipientsService', () => {
     });
   });
 
-  describe('#recursiveCalls', () => {
+  describe('recursive calls', () => {
     before(() => {
       sinon.stub(service, '_timeEnough').returns(false);
-      sinon.stub(service, '_getRecipientsBatch')
-        .onFirstCall().resolves(paginatedDbResponse)
-        .onSecondCall().resolves(paginatedDbResponse)
-        .onThirdCall().resolves(dbResponse);
     });
 
-    // TODO: Pending
-    // it('invokes the same lambda function with a new offset to start on', done => {
-    //   service._attachNextBatch(listIds[0], { page: nextPage }).then(() => {
-    //   //   expect(lambdaClient.invoke).to.have.been.calledOne;
-    //   //   const payload = JSON.parse(lambdaClient.invoke.lastCall.args[0].Payload);
-    //   //   expect(payload.batchOffset).to.deep.equals({ page: nextPage });
-    //     done();
-    //   }).catch(err => done(err));
-    //   // done();
-    // });
+    it('invokes the same lambda function with a new offset to start on', (done) => {
+      service._attachNextBatch(listIds[0], { page: nextPage }).then(() => {
+        expect(lambdaClient.invoke).to.have.been.calledOne;
+        const payload = JSON.parse(lambdaClient.invoke.lastCall.args[0].Payload);
+        expect(payload.batchOffset).to.deep.equals({ page: nextPage });
+        done();
+      }).catch(err => done(err));
+    });
 
     after(() => {
       service._timeEnough.restore();

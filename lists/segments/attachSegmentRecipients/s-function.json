@@ -1,10 +1,10 @@
 {
-  "name": "listSegmentMembers",
+  "name": "attachSegmentRecipients",
   "runtime": "babel",
   "description": "Serverless Lambda function for project: MoonMail-v2",
-  "customName": "${project}-segments-listSegmentMembers",
+  "customName": "${project}-segments-attachSegmentRecipients",
   "customRole": false,
-  "handler": "segments/listSegmentMembers/handler.default",
+  "handler": "segments/attachSegmentRecipients/handler.default",
   "timeout": 300,
   "memorySize": 1024,
   "authorizer": {},
@@ -12,12 +12,21 @@
     "excludePatterns": [],
     "cors": "$${corsSettings}"
   },
-  "endpoints": [],
-  "events": [],
+  "events": [
+    {
+      "name": "attach-segment-recipients-topic",
+      "type": "sns",
+      "config": {
+        "topicName": "$${attachSegmentRecipientsTopic}"
+      }
+    }
+  ],
   "environment": {
     "SERVERLESS_PROJECT": "${project}",
     "SERVERLESS_STAGE": "${stage}",
     "SERVERLESS_REGION": "${region}",
+    "PRECOMPILE_EMAIL_TOPIC_ARN": "${precompileEmailTopicARN}",
+    "RECIPIENTS_TABLE": "$${recipientsTable}",
     "LIST_SEGMENTS_TABLE": "$${listSegmentsTable}",
     "LIST_SEGMENT_ID_INDEX_NAME": "$${segmentIdIndex}",
     "ES_RECIPIENTS_INDEX_NAME": "$${esRecipientsIndexName}",

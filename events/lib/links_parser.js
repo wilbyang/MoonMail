@@ -1,14 +1,16 @@
 import 'babel-polyfill';
+import base64url from 'base64-url';
 import { debug } from './index';
 import * as url from 'url';
 import * as cheerio from 'cheerio';
 import cuid from 'cuid';
 
 class LinksParser {
-  constructor({ campaignId, apiHost, recipientId } = {}) {
-    this.campaignId = campaignId;
+  constructor({ apiHost, context } = {}) {
     this.apiHost = apiHost;
-    this.recipientId = recipientId;
+    this.campaignId = context.campaign.id;
+    this.recipientId = context.recipient.id;
+    this.userId = base64url.encode(context.userId);
     this.opensPath = 'links/open';
     this.clicksPath = 'links/click';
   }
@@ -20,7 +22,7 @@ class LinksParser {
         hostname: this.apiHost,
         pathname: `${this.opensPath}/${this.campaignId}`
       };
-      if (this.recipientId) opensUrlObj.query = {r: this.recipientId};
+      if (this.recipientId) opensUrlObj.query = { r: this.recipientId, u: this.userId };
       return url.format(opensUrlObj);
     }
   }
@@ -51,7 +53,7 @@ class LinksParser {
             const linkId = cuid();
             const clickTrackUrl = this.clicksTrackUrl(linkId, linkUrl);
             $(link).attr('href', clickTrackUrl);
-            campaignLinks.links[linkId] = {url: linkUrl, text: linkText};
+            campaignLinks.links[linkId] = { url: linkUrl, text: linkText };
           }
         }
       });
@@ -67,7 +69,7 @@ class LinksParser {
     if (this.recipientId) {
       return new Promise((resolve, reject) => {
         const $ = cheerio.load(body);
-        $('a').each((i, link) => this._appendRecipientId(link, $));
+        $('a').each((i, link) => this._appendTrackingInfo(link, $));
         return resolve($.html());
       });
     } else {
@@ -75,12 +77,13 @@ class LinksParser {
     }
   }
 
-  _appendRecipientId(link, $) {
+  _appendTrackingInfo(link, $) {
     const linkUrl = $(link).attr('href');
     const uri = url.parse(linkUrl, true);
     if (linkUrl && !this._isUnsubscribeLink(linkUrl) && this._isRedirectionLink(uri)) {
       delete uri.search;
       uri.query.r = this.recipientId;
+      uri.query.u = this.userId;
       $(link).attr('href', uri.format());
     }
   }
@@ -99,7 +102,7 @@ class LinksParser {
         protocol: 'https',
         hostname: this.apiHost,
         pathname: `${this.clicksPath}/${this.campaignId}/${linkId}`,
-        query: {url: linkUrl}
+        query: { url: linkUrl }
       };
       return url.format(clicksUrlObj);
     }

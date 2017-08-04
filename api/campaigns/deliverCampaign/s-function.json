@@ -5,7 +5,7 @@
   "customName": "${project}-campaigns-deliverCampaign",
   "customRole": false,
   "handler": "campaigns/deliverCampaign/handler.default",
-  "timeout": 6,
+  "timeout": 300,
   "memorySize": 1024,
   "authorizer": {},
   "custom": {
@@ -40,8 +40,9 @@
     "USERS_TABLE": "$${usersTable}",
     "LISTS_TABLE": "$${listsTable}",
     "UPDATE_CAMPAIGN_TOPIC_ARN": "${updateCampaignTopicARN}",
-    "ATTACH_RECIPIENTS_COUNT_TOPIC_ARN": "${attachRecipientsCountTopicARN}",
     "SENT_AT_INDEX_NAME": "$${campaignsSentAtIndex}",
+    "ATTACH_SENDER_TOPIC_ARN": "${attachSenderTopicARN}",
+    "LIST_SEGMENT_MEMBERS_FUNCTION": "$${listSegmentMembersFunctionName}",
     "CHECK_SUBSCRIPTION_LIMITS_FUNCTION": "$${checkSubscriptionLimitsFunctionName}",
     "GET_TOTAL_RECIPIENTS_FUNCTION": "$${getTotalRecipientsFunctionName}",
     "DEBUG": "true"

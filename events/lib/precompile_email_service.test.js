@@ -18,7 +18,7 @@ describe('PrecompileEmailService', () => {
   const fakeQueueUrl = 'https://somefakeurl.com/';
   const apiHost = 'myapi.com';
   const opensTrackingUrl = `https://${apiHost}/links/open/${canonicalMessage.campaign.id}?r=${canonicalMessage.recipient.id}`;
-  const imgTrackingTag = `<img src="${opensTrackingUrl}" width="1" height="1" />`;
+  const imgTrackingTag = `<img src="${opensTrackingUrl}`;
   const compressedBody = compressString(canonicalMessage.campaign.body);
   let sqsClient;
   let precompileService;

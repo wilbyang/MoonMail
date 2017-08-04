@@ -1,0 +1,22 @@
+{
+  "Records": [
+    {
+      "EventSource": "aws:sns",
+      "EventVersion": "1.0",
+      "EventSubscriptionArn": "arn:aws:sns:us-east-1:862946620411:MoonMail-v2-dev-attachSegmentRecipients:7de5c58e-d0fb-4120-863f-c593f7ec6773",
+      "Sns": {
+        "Type": "Notification",
+        "MessageId": "01414308-5e50-5773-a1cc-12f14b1a4e4e",
+        "TopicArn": "arn:aws:sns:us-east-1:862946620411:MoonMail-v2-dev-attachSegmentRecipients",
+        "Subject": null,
+        "Message": "{\"sender\":{\"emailAddress\":\"carlos.castellanos@microapps.com\",\"fromName\":\"Carlos Castellanos\",\"verified\":true,\"id\":\"cj39yaiq5000001qkhw1aydmo\",\"apiKey\":\"JKIAIHR112KJ23I5RZCLWVQ\",\"sendingQuota\":50000,\"apiSecret\":\"0yjV9wLnX7QJ2lE1K3HNlYTzQYO/SwVgIQOIPJ\",\"region\":\"us-west-2\"},\"campaign\":{\"id\":\"cj5jmono6000001qmopwgej52\",\"subject\":\"Test send to segments\",\"body\":\"H4sIAAAAAAAAA/NIzcnJ11HIgFDV1aV5xaVJxclFMUmp8aVFObW1AHlpllkhAAAA\",\"senderId\":\"cj39yaiq5000001qkhw1aydmo\",\"precompiled\":true,\"segmentId\":\"eyJsaXN0SWQiOiJjajVzMXF0eGUwMDAwM45xZXI1MmR5MWY1IiwiaWQiOiJjajVzMXR3cHcwMDAwMDFvdWljeHg2eWRzIn0\"},\"userId\":\"google-oauth2|113373534076241986701\",\"userPlan\":\"enterprise\",\"segmentId\":\"eyJsaXN0SWQiOiJjajVzMXF0eGUwMDAwMDFxZXI1MmR5MWY1IiwiaWQiOiJjajVzMXR3cHcwMDAwMDFvdWljeHg2eWRzIn0\"}",
+        "Timestamp": "2017-07-31T11:22:50.463Z",
+        "SignatureVersion": "1",
+        "Signature": "TbAHLKvT78pwtJGG8oexdzNXJ1r4LEAxugTKjN+mqTdgKLHXPGPWm7QsthgYnqf4n8QiZWMoJPN9hwV+TaG27OFdMpyV1hD3CSxFVvHTuJJjqlfqGzUHvPVQFOaIbDE0aU/hPSHWUxgPE4xQod2cGpyh4K3Dmdu/B/emivLZ0KqIYe/IezJcIqOkSoPakkuz16LH/m9+QPyig7XrTBrDROkpba9UZOv1ungjH8SXbg2E+3/iptzbXjHyP3De2Pfg8gjHblART+LY9Bdr+wT0QbiSk3we9Y/x6ZdNrBPTjaZ7moUDaspBml6+jnQf+o8ZcAXhYfyUdhjZv72Sqn1EjA==",
+        "SigningCertUrl": "https://sns.us-east-1.amazonaws.com/SimpleNotificationService-b95095beb82e8f6a046b3aafc7f4149a.pem",
+        "UnsubscribeUrl": "https://sns.us-east-1.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:us-east-1:862946620411:MoonMail-v2-dev-attachSegmentRecipients:7de5c58e-d0fb-4120-863f-c593f7ec6773",
+        "MessageAttributes": {}
+      }
+    }
+  ]
+}

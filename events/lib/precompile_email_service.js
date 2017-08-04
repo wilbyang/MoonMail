@@ -45,11 +45,11 @@ class PrecompileEmailService {
 
   composeBody() {
     return this.email.renderBody()
-      .then(body => this._addTracking(body, this.emailParams.campaign.id, this.emailParams.recipient.id));
+      .then(body => this._addTracking(body, this.emailParams));
   }
 
-  _addTracking(body, campaignId, recipientId) {
-    const linksParser = new LinksParser({apiHost: this.apiHost, campaignId, recipientId});
+  _addTracking(body, context) {
+    const linksParser = new LinksParser({apiHost: this.apiHost, context});
     return linksParser.appendRecipientIdToLinks(body)
       .then(parsedBody => linksParser.appendOpensPixel(parsedBody));
   }

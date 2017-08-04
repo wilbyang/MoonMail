@@ -26,6 +26,7 @@
     "SERVERLESS_STAGE": "${stage}",
     "SERVERLESS_REGION": "${region}",
     "ATTACH_LIST_RECIPIENTS_TOPIC_ARN": "${attachListRecipientsTopicARN}",
+    "ATTACH_SEGMENTS_RECIPIENTS_TOPIC_ARN": "${attachSegmentRecipientsTopicARN}",
     "SEND_EMAILS_TOPIC_ARN": "${sendEmailsTopicARN}",
     "UPDATE_CAMPAIGN_TOPIC_ARN": "${updateCampaignTopicARN}",
     "RECIPIENTS_TABLE": "$${recipientsTable}",

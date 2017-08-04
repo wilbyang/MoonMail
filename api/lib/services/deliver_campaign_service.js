@@ -1,4 +1,6 @@
 import Promise from 'bluebird';
+import omitEmpty from 'omit-empty';
+import base64url from 'base64-url';
 import { debug } from '../logger';
 import { Campaign, List } from 'moonmail-models';
 import inlineCss from 'inline-css';
@@ -15,7 +17,6 @@ class DeliverCampaignService {
     this.campaignId = campaignId;
     this.userId = userId;
     this.userPlan = userPlan || 'free';
-    this.attachRecipientsCountTopicArn = process.env.ATTACH_RECIPIENTS_COUNT_TOPIC_ARN;
     this.updateCampaignStatusTopicArn = process.env.UPDATE_CAMPAIGN_TOPIC_ARN;
   }
 
@@ -43,9 +44,29 @@ class DeliverCampaignService {
   }
 
   _getRecipientsCount() {
+    return this._getCampaign()
+      .then((campaign) => {
+        if (campaign.segmentId) return this._getSegmentMembersCount(campaign);
+        return this._getListRecipientsCount();
+      });
+  }
+
+  _getSegmentMembersCount(campaign) {
+    const segmentId = campaign.segmentId;
+    return FunctionsClient.execute(process.env.LIST_SEGMENT_MEMBERS_FUNCTION, {
+      segmentId,
+      options: {
+        conditions: [
+          { condition: { queryType: 'match', fieldToQuery: 'status', searchTerm: 'subscribed' }, conditionType: 'filter' }
+        ]
+      }
+    }).then(response => response.total);
+  }
+
+  _getListRecipientsCount() {
     // Probably this should relay in a micro-service instead of calling Lists directly
     return this._getLists()
-      .then(lists => this._countRecipients(lists));
+      .then(lists => this._countListRecipients(lists));
   }
 
   _getLists() {
@@ -60,7 +81,7 @@ class DeliverCampaignService {
       });
   }
 
-  _countRecipients(lists) {
+  _countListRecipients(lists) {
     if (lists) {
       const count = lists.reduce((accum, next) => (accum + next.subscribedCount), 0);
       return Promise.resolve(count);
@@ -106,7 +127,7 @@ class DeliverCampaignService {
     debug('= DeliverCampaignService._buildCampaignMessage', campaign);
     return new Promise((resolve) => {
       const inlinedBody = juice(campaign.body);
-      resolve({
+      resolve(omitEmpty({
         userId: campaign.userId,
         userPlan: this.userPlan,
         currentUserState: this.currentState,
@@ -116,9 +137,10 @@ class DeliverCampaignService {
           body: inlinedBody,
           senderId: campaign.senderId,
           precompiled: false,
-          listIds: campaign.listIds
+          listIds: campaign.listIds,
+          segmentId: campaign.segmentId
         }
-      });
+      }));
     });
   }
   _publishToSns(canonicalMessage) {
@@ -126,7 +148,7 @@ class DeliverCampaignService {
       debug('= DeliverCampaignService._publishToSns', 'Sending canonical message', JSON.stringify(canonicalMessage));
       const params = {
         Message: JSON.stringify(canonicalMessage),
-        TopicArn: this.attachRecipientsCountTopicArn
+        TopicArn: process.env.ATTACH_SENDER_TOPIC_ARN
       };
       this.snsClient.publish(params, (err, data) => {
         if (err) {

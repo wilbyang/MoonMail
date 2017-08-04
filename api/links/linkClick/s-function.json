@@ -27,6 +27,7 @@
           "linkId": "$input.params('linkId')",
           "linkUrl": "$input.params('url')",
           "recipientId": "$input.params('r')",
+          "userId": "$input.params('u')",
           "headers": "{#foreach($header in $input.params().header.keySet())\"$header\": \"$util.escapeJavaScript($input.params().header.get($header))\" #if($foreach.hasNext),#end#end}"
         }
       },
@@ -54,7 +55,8 @@
     "SERVERLESS_PROJECT": "${project}",
     "SERVERLESS_STAGE": "${stage}",
     "SERVERLESS_REGION": "${region}",
-    "CLICKS_STREAM_NAME": "${clicksStreamName}"
+    "CLICKS_STREAM_NAME": "${clicksStreamName}",
+    "LOG_LEVEL": "info"
   },
   "vpc": {
     "securityGroupIds": [],
