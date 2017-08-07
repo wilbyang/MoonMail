@@ -30,8 +30,7 @@
             "include_fields": "$input.params('include_fields')"
           },
           "filters": {
-            "status": { "eq": "$input.params('status')" },
-            "archived": { "eq": "$input.params('archived')" }
+            "archived": "$input.params('archived')"
           },
           "authToken": "$input.params('Authorization')"
         }
@@ -45,6 +44,7 @@
     "SERVERLESS_STAGE": "${stage}",
     "SERVERLESS_REGION": "${region}",
     "CAMPAIGNS_TABLE": "$${campaignsTable}",
+    "ARCHIVED_INDEX_NAME": "$${campaignsArchivedIndex}",
     "DEBUG": "true"
   },
   "vpc": {

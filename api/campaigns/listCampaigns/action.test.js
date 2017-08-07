@@ -13,7 +13,7 @@ describe('listCampaigns', () => {
 
   describe('#respond()', () => {
     beforeEach(() => {
-      sinon.stub(Campaign, 'filterBy').resolves({
+      sinon.stub(Campaign, 'allBy').resolves({
         items: [
           {
             senderId: 'ca654',
@@ -28,12 +28,12 @@ describe('listCampaigns', () => {
     });
 
     before(() => {
-      event = { filters: { status: { eq: '' }, archived: { eq: '' } } };
+      event = { filters: { archived: '' } };
     });
 
     it('gets a list of campaigns', (done) => {
       respond(event, (err, result) => {
-        const args = Campaign.filterBy.lastCall.args;
+        const args = Campaign.allBy.lastCall.args;
         expect(args[0]).to.equal('userId');
         expect(err).to.not.exist;
         expect(result).to.exist;
@@ -41,21 +41,8 @@ describe('listCampaigns', () => {
       });
     });
 
-    context('when the event contains page', () => {
-      it('makes a paginated query', (done) => {
-        const page = 'aaabbbb';
-        event.options = { page };
-        event.filters = { status: { eq: '' }, archived: { eq: '' } };
-        respond(event, (err) => {
-          const allbyArgs = Campaign.filterBy.lastCall.args;
-          expect(allbyArgs[2]).to.have.property('page', page);
-          done();
-        });
-      });
-    });
-
     afterEach(() => {
-      Campaign.filterBy.restore();
+      Campaign.allBy.restore();
     });
   });
 });
