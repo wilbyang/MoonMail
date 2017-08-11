@@ -40,7 +40,7 @@ const Segments = {
   },
 
   listSegments(listId, options = {}) {
-    return ListSegment.allBy('listId', listId, Object.assign({}, { limit: 250 }, options));
+    return ListSegment.allBy('listId', listId, Object.assign({}, { limit: 250 }, Object.assign({}, { filters: { archived: { ne: true } } }, options)));
   },
 
   archiveSegment(listId, id) {
