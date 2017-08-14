@@ -1,83 +1,130 @@
-'use strict';
+import './spec_helper';
 
-import * as chai from 'chai';
-const expect = chai.expect;
-const chaiAsPromised = require('chai-as-promised');
-const sinonChai = require('sinon-chai');
-import * as sinon from 'sinon';
+import awsMock from 'aws-sdk-mock';
+import AWS from 'aws-sdk';
 import { Recipient } from 'moonmail-models';
 import { AttachRecipientsService } from './attach_recipients_service';
-import * as sinonAsPromised from 'sinon-as-promised';
-const awsMock = require('aws-sdk-mock');
-const AWS = require('aws-sdk');
 
-chai.use(sinonChai);
-chai.use(chaiAsPromised);
 
 describe('AttachRecipientsService', () => {
   const userId = 'some_user_id';
   const userPlan = 'free';
-  const listIds = ['some-list-id', 'another-list-id'];
   const sender = { apiKey: 'api-key', apiSecret: 'secret' };
-  const campaign = {
-    id: 'some_campaign_id',
-    body: 'Hi {{ name }}, this is the body of the email',
-    subject: 'Hi {{ name }} {{ surname }}',
-    listIds
-  };
-
-  const campaignMessage = { userId, userPlan, campaign, sender };
   let snsClient;
   let service;
 
-  before(() => {
-    awsMock.mock('SNS', 'publish', (params, cb) => {
-      if (params.hasOwnProperty('Message') && params.hasOwnProperty('TopicArn')) {
-        cb(null, { ReceiptHandle: 'STRING_VALUE' });
-      } else {
-        cb('Invalid params');
-      }
+  describe('attaching recipients', () => {
+    context('when campaign the is sent to lists', () => {
+      const listIds = ['some-list-id', 'another-list-id'];
+      const campaign = {
+        id: 'some_campaign_id',
+        body: 'Hi {{ name }}, this is the body of the email',
+        subject: 'Hi {{ name }} {{ surname }}',
+        listIds
+      };
+
+      const campaignMessage = { userId, userPlan, campaign, sender };
+
+      before(() => {
+        awsMock.mock('SNS', 'publish', (params, cb) => {
+          if (params.hasOwnProperty('Message') && params.hasOwnProperty('TopicArn')) {
+            cb(null, { ReceiptHandle: 'STRING_VALUE' });
+          } else {
+            cb('Invalid params');
+          }
+        });
+        snsClient = new AWS.SNS();
+        service = new AttachRecipientsService(snsClient, campaignMessage);
+        sinon.stub(service, '_notifyAttachListRecipients').resolves(true);
+        sinon.stub(service, '_notifyToUpdateCampaignStatus').resolves(true);
+        sinon.stub(service, '_notifyToSendEmails').resolves(true);
+        sinon.stub(service, '_wait').resolves(true);
+      });
+
+      it('notifies to lists recipients attachers', (done) => {
+        service.execute().then(() => {
+          expect(service._notifyAttachListRecipients).to.have.been.calledTwice;
+
+          const firstCall = service._notifyAttachListRecipients.firstCall.args[0];
+          expect(firstCall).to.include({ sender });
+          expect(firstCall).to.include({ campaign });
+          expect(firstCall).to.include({ userId });
+          expect(firstCall).to.include({ userPlan });
+          expect(firstCall).to.include({ listId: listIds[0] });
+
+          const lastCall = service._notifyAttachListRecipients.lastCall.args[0];
+          expect(lastCall).to.include({ sender });
+          expect(lastCall).to.include({ campaign });
+          expect(lastCall).to.include({ userId });
+          expect(lastCall).to.include({ userPlan });
+          expect(lastCall).to.include({ listId: listIds[1] });
+
+          expect(service._notifyToUpdateCampaignStatus).to.have.been.calledOnce;
+          expect(service._notifyToSendEmails).to.have.been.calledOnce;
+          expect(service._wait).to.have.been.calledOnce;
+          done();
+        }).catch(err => done(err));
+      });
+      after(() => {
+        awsMock.restore('SNS');
+        service._notifyAttachListRecipients.restore();
+        service._notifyToUpdateCampaignStatus.restore();
+        service._notifyToSendEmails.restore();
+        service._wait.restore();
+      });
     });
-    snsClient = new AWS.SNS();
-    service = new AttachRecipientsService(snsClient, campaignMessage);
-    sinon.stub(service, '_notifyAttachListRecipients').resolves(true);
-    sinon.stub(service, '_notifyToUpdateCampaignStatus').resolves(true);
-    sinon.stub(service, '_notifyToSendEmails').resolves(true);
-    sinon.stub(service, '_wait').resolves(true);
-  });
 
-  describe('#notifyAttachListRecipients', () => {
-    it('notifies lists recipients attachers', done => {
-      service.notifyAttachListRecipients().then(() => {
-        expect(service._notifyAttachListRecipients).to.have.been.calledTwice;
+    context('when campaign the is sent to segments', () => {
+      const segmentId = '123';
+      const campaign = {
+        id: 'some_campaign_id',
+        body: 'Hi {{ name }}, this is the body of the email',
+        subject: 'Hi {{ name }} {{ surname }}',
+        segmentId
+      };
 
-        const firstCall = service._notifyAttachListRecipients.firstCall.args[0];
-        expect(firstCall).to.include({ sender });
-        expect(firstCall).to.include({ campaign });
-        expect(firstCall).to.include({ userId });
-        expect(firstCall).to.include({ userPlan });
-        expect(firstCall).to.include({ listId: listIds[0] });
+      const campaignMessage = { userId, userPlan, campaign, sender };
 
-        const lastCall = service._notifyAttachListRecipients.lastCall.args[0];
-        expect(lastCall).to.include({ sender });
-        expect(lastCall).to.include({ campaign });
-        expect(lastCall).to.include({ userId });
-        expect(lastCall).to.include({ userPlan });
-        expect(lastCall).to.include({ listId: listIds[1] });
+      before(() => {
+        awsMock.mock('SNS', 'publish', (params, cb) => {
+          if (params.hasOwnProperty('Message') && params.hasOwnProperty('TopicArn')) {
+            cb(null, { ReceiptHandle: 'STRING_VALUE' });
+          } else {
+            cb('Invalid params');
+          }
+        });
+        snsClient = new AWS.SNS();
+        service = new AttachRecipientsService(snsClient, campaignMessage);
+        sinon.stub(service, '_notifyAttachSegmentMembers').resolves(true);
+        sinon.stub(service, '_notifyToUpdateCampaignStatus').resolves(true);
+        sinon.stub(service, '_notifyToSendEmails').resolves(true);
+        sinon.stub(service, '_wait').resolves(true);
+      });
 
-        expect(service._notifyToUpdateCampaignStatus).to.have.been.calledOnce;
-        expect(service._notifyToSendEmails).to.have.been.calledOnce;
-        expect(service._wait).to.have.been.calledOnce;
-        done();
-      }).catch(err => done(err));
+      it('notifies to segment recipients attachers', (done) => {
+        service.execute().then(() => {
+          expect(service._notifyAttachListRecipients).to.have.been.once;
+          const args = service._notifyAttachSegmentMembers.lastCall.args[0];
+
+          expect(args).to.include({ sender });
+          expect(args).to.include({ campaign });
+          expect(args).to.include({ userId });
+          expect(args).to.include({ userPlan });
+          expect(args.campaign).to.include({ segmentId });
+
+          expect(service._notifyToUpdateCampaignStatus).to.have.been.calledOnce;
+          expect(service._notifyToSendEmails).to.have.been.calledOnce;
+          expect(service._wait).to.have.been.calledOnce;
+          done();
+        }).catch(err => done(err));
+      });
+      after(() => {
+        awsMock.restore('SNS');
+        service._notifyAttachSegmentMembers.restore();
+        service._notifyToUpdateCampaignStatus.restore();
+        service._notifyToSendEmails.restore();
+        service._wait.restore();
+      });
     });
-  });
-
-  after(() => {
-    awsMock.restore('SNS');
-    service._notifyAttachListRecipients.restore();
-    service._notifyToUpdateCampaignStatus.restore();
-    service._notifyToSendEmails.restore();
-    service._wait.restore();
   });
 });

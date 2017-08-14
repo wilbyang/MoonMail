@@ -11,7 +11,7 @@ export function respond(event, cb) {
   debug('= attachRecipients.action', JSON.stringify(event));
   const campaignMessage = parse(event)[0];
   const service = new AttachRecipientsService(sns, campaignMessage);
-  service.notifyAttachListRecipients()
+  service.execute()
     .then(res => cb(null, res))
     .catch(err => cb(err));
 }

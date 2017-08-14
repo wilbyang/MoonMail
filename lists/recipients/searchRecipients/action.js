@@ -1,15 +1,14 @@
+import omitEmpty from 'omit-empty';
 import { logger } from '../../lib/index';
-import Segments from '../../lib/segments/index';
+import Recipients from '../../lib/recipients/index';
 
 export default function respond(event, cb) {
   logger().info('= searchRecipients.action', JSON.stringify(event));
-  const listIdCondition = { condition: { queryType: 'match', fieldToQuery: 'listId', searchTerm: event.listId }, conditionType: 'filter' };
-  event.conditions.push(listIdCondition);
   const options = event.options || {};
-  return Segments.listSegmentMembersFromConditions(event.conditions, options.from || 0, options.size || 10)
+  return Recipients.searchRecipientsByListAndConditions(event.listId, event.conditions, omitEmpty(options))
     .then(members => cb(null, members))
     .catch((err) => {
       logger().error(err, err);
-      return cb(err);
+      return cb(JSON.stringify(err));
     });
 }

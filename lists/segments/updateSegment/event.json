@@ -1,8 +1,8 @@
 {
-  "authToken": "foo",
-  "automation": {
-    "name": "my automation",
-    "listId": "cj27j27h4000001nnznt6h174",
-    "senderId": "cj2srduvs000001oybz2r011z"
-  }
+    "segment": {
+        "userId": "google-oauth2|113373534076241986701",
+        "archived": true
+    },
+    "listId": "cj5s1qtxe000001qer52dy1f5",
+    "segmentId": "cj5v6wuur000001pdqenjlt0x"
 }

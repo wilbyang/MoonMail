@@ -16,7 +16,7 @@ export function respond(event, cb, context) {
     attachRecipientsListMessage = JSON.parse(attachRecipientsListMessage);
   }
   const service = new AttachListRecipientsService(sns, attachRecipientsListMessage, lambda, context);
-  service.attachRecipientsList(recipientsBatchOffset)
+  service.attachRecipients(recipientsBatchOffset)
     .then(res => cb(null, res))
     .catch(err => cb(err));
 }

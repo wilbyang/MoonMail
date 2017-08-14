@@ -1,0 +1,45 @@
+{
+  "name": "enhanceRecipientMetadata",
+  "runtime": "babel",
+  "description": "Serverless Lambda function for project: MoonMail-v2",
+  "customName": "${project}-recipients-enhanceRecipientMetadata",
+  "customRole": false,
+  "handler": "recipients/enhanceRecipientMetadata/handler.default",
+  "timeout": 300,
+  "memorySize": 1024,
+  "authorizer": {},
+  "custom": {
+    "excludePatterns": [],
+    "cors": "$${corsSettings}"
+  },
+  "endpoints": [],
+  "events": [
+    {
+      "name": "enhanceRecipientMetadataFromClickStream",
+      "type": "dynamodbstream",
+      "config": {
+        "streamArn": "${clicksTableStreamARN}",
+        "enabled": true
+      }
+    },
+    {
+      "name": "enhanceRecipientMetadataFromOpensStream",
+      "type": "dynamodbstream",
+      "config": {
+        "streamArn": "${opensTableStreamARN}",
+        "enabled": true
+      }
+    }
+  ],
+  "environment": {
+    "SERVERLESS_PROJECT": "${project}",
+    "SERVERLESS_STAGE": "${stage}",
+    "SERVERLESS_REGION": "${region}",
+    "RECIPIENTS_TABLE": "$${recipientsTable}",
+    "LOG_LEVEL": "info"
+  },
+  "vpc": {
+    "securityGroupIds": [],
+    "subnetIds": []
+  }
+}

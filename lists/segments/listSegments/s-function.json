@@ -19,6 +19,7 @@
     "SERVERLESS_STAGE": "${stage}",
     "SERVERLESS_REGION": "${region}",
     "LIST_SEGMENTS_TABLE": "$${listSegmentsTable}",
+    "DEBUG": "true",
     "LOG_LEVEL": "info"
   },
   "vpc": {
