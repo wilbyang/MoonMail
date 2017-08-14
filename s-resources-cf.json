@@ -675,20 +675,6 @@
             "KeyType": "RANGE"
           }
         ],
-        "GlobalSecondaryIndexes": [
-          {
-            "IndexName" : "$${segmentIdIndex}",
-            "KeySchema" : [{
-              "AttributeName": "id",
-              "KeyType": "HASH"
-            }],
-            "Projection" : {"ProjectionType": "ALL"},
-            "ProvisionedThroughput" : {
-              "ReadCapacityUnits": "${defaultRCU}",
-              "WriteCapacityUnits": "${defaultWCU}"
-            }
-          }
-        ],
         "ProvisionedThroughput": {
           "ReadCapacityUnits": "${defaultRCU}",
           "WriteCapacityUnits": "${defaultWCU}"
@@ -718,6 +704,20 @@
           {
             "AttributeName": "id",
             "KeyType": "RANGE"
+          }
+        ],
+        "GlobalSecondaryIndexes": [
+          {
+            "IndexName" : "$${segmentIdIndex}",
+            "KeySchema" : [{
+              "AttributeName": "id",
+              "KeyType": "HASH"
+            }],
+            "Projection" : {"ProjectionType": "ALL"},
+            "ProvisionedThroughput" : {
+              "ReadCapacityUnits": "${defaultRCU}",
+              "WriteCapacityUnits": "${defaultWCU}"
+            }
           }
         ],
         "ProvisionedThroughput": {
