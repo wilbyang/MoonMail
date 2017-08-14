@@ -8,7 +8,7 @@ import { debug } from './index';
 import UserNotifier from './user_notifier';
 
 const bucketName = process.env.EXPORTS_BUCKET_NAME;
-const s3bucket = new S3({params: {Bucket: bucketName}});
+const s3bucket = new S3({ params: { Bucket: bucketName } });
 
 export default class ExportListService {
 
@@ -50,8 +50,8 @@ export default class ExportListService {
 
   _createExport(list) {
     const listExports = list.exports || {};
-    listExports[this.s3ObjectKey] = {status: 'pending', createdAt: moment().unix()};
-    return List.update({exports: listExports}, this.userId, this.listId);
+    listExports[this.s3ObjectKey] = { status: 'pending', createdAt: moment().unix() };
+    return List.update({ exports: listExports }, this.userId, this.listId);
   }
 
   _completeExport(url) {
@@ -65,7 +65,7 @@ export default class ExportListService {
     listExports[this.s3ObjectKey].url = url;
     listExports[this.s3ObjectKey].status = 'success';
     listExports[this.s3ObjectKey].finishedAt = moment().unix();
-    return List.update({exports: listExports}, this.userId, this.listId);
+    return List.update({ exports: listExports }, this.userId, this.listId);
   }
 
   _errorHandler(err) {
@@ -81,7 +81,7 @@ export default class ExportListService {
     if (listExports[this.s3ObjectKey]) {
       listExports[this.s3ObjectKey].status = 'failed';
       listExports[this.s3ObjectKey].finishedAt = moment().unix();
-      return List.update({exports: listExports}, this.userId, this.listId);
+      return List.update({ exports: listExports }, this.userId, this.listId);
     }
   }
 
@@ -105,13 +105,13 @@ export default class ExportListService {
   }
 
   _uploadToS3(data) {
-    const params = {Bucket: bucketName, Key: this.s3ObjectKey, Body: data};
+    const params = { Bucket: bucketName, Key: this.s3ObjectKey, Body: data };
     return s3bucket.putObject(params).promise();
   }
 
   _getFileUrl() {
     return new Promise((resolve, reject) => {
-      const params = {Bucket: bucketName, Key: this.s3ObjectKey};
+      const params = { Bucket: bucketName, Key: this.s3ObjectKey };
       const url = s3bucket.getSignedUrl('getObject', params);
       resolve(url);
     });
@@ -125,21 +125,21 @@ export default class ExportListService {
 
   _writeRecipient(recipient = {}) {
     return new Promise((resolve) => {
-      return this.csvFile.write(Object.assign({}, {email: recipient.email}, recipient.metadata, {status: recipient.status}), () => {
+      return this.csvFile.write(Object.assign({}, { email: recipient.email }, recipient.metadata, { status: recipient.status }), () => {
         return resolve(true);
       });
     });
   }
 
   _fetchRecipients(previousBatch = {}) {
-    const options = {limit: 1000};
+    const options = { limit: 1000, filters: { status: { eq: 'subscribed' } } };
     if (previousBatch.nextPage) options.page = previousBatch.nextPage;
     return Recipient.allBy('listId', this.listId, options);
   }
 
   _notifyUser(success = true, list) {
     const type = success ? 'LIST_EXPORT_SUCCEEDED' : 'LIST_EXPORT_FAILED';
-    return UserNotifier.notify(this.userId, {type, data: list});
+    return UserNotifier.notify(this.userId, { type, data: list });
   }
 
 }
