@@ -182,10 +182,10 @@ class DeliverCampaignService {
     });
   }
 
-  _checkSubscriptionLimits({ sentCampaignsInLastDay, recipientsCount }) {
+  _checkSubscriptionLimits({ sentCampaignsInLastDay, recipientsCount, totalRecipients }) {
     const lambdaName = process.env.CHECK_SUBSCRIPTION_LIMITS_FUNCTION;
     debug('= DeliverCampaignService.invokeLambda', lambdaName);
-    const payload = { userId: this.userId, currentState: { sentCampaignsInLastDay, recipientsCount } };
+    const payload = { userId: this.userId, currentState: { sentCampaignsInLastDay: sentCampaignsInLastDay + 1, recipientsCount, totalRecipients } };
     return FunctionsClient.execute(lambdaName, payload)
       .then(response => response.quotaExceeded ? Promise.reject(new Error('User can\'t send more campaigns')) : Promise.resolve({}));
   }
