@@ -137,6 +137,7 @@
   "staticDataBucket": "static.moonmail.${stage}.${region}",
   "recipientsImportBucket": "recipients.moonmail.${stage}.${region}",
   "listsExportBucket": "list-exports.moonmail.${stage}.${region}",
+  "screenshotsFunctionName": "moonmail-screenshots-service-${stage}-takeScreenshotFromHtml",
   "responses": {
     "302": {
       "statusCode": "302",

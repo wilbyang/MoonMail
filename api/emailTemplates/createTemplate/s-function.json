@@ -36,6 +36,7 @@
     "SERVERLESS_STAGE": "${stage}",
     "SERVERLESS_REGION": "${region}",
     "TEMPLATES_TABLE": "$${templatesTable}",
+    "SCREENSHOTS_FUNCTION_NAME": "$${screenshotsFunctionName}",
     "DEBUG": "true"
   },
   "vpc": {
