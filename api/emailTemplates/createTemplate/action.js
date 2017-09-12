@@ -14,7 +14,7 @@ export function respond(event, cb) {
       template.userId = decoded.sub;
       template.id = cuid();
       handleScreenshot(template)
-        .then(thumbnail => Object.assign({}, template, { thumbnail }))
+        .then(thumbnail => Object.assign({}, template, { thumbnail: thumbnail.url }))
         .then(templateToSave => EmailTemplate.save(templateToSave))
         .then(() => cb(null, template))
         .catch((e) => {

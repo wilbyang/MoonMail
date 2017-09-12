@@ -11,7 +11,7 @@ export function respond(event, cb) {
   decrypt(event.authToken).then((decoded) => {
     if (event.template && event.templateId) {
       handleScreenshot(event.template)
-        .then(thumbnail => Object.assign({}, event.template, { thumbnail }))
+        .then(thumbnail => Object.assign({}, event.template, { thumbnail: thumbnail.url }))
         .then(templateToUpdate => EmailTemplate.update(templateToUpdate, decoded.sub, event.templateId))
         .then((template) => {
           debug('= updateTemplate.action', 'Success');
