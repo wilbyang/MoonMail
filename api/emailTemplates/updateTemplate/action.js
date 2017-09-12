@@ -11,7 +11,6 @@ export function respond(event, cb) {
   decrypt(event.authToken).then((decoded) => {
     if (event.template && event.templateId) {
       handleScreenshot(event.template)
-        .then(thumbnail => Object.assign({}, event.template, { thumbnail: thumbnail.url }))
         .then(templateToUpdate => EmailTemplate.update(templateToUpdate, decoded.sub, event.templateId))
         .then((template) => {
           debug('= updateTemplate.action', 'Success');
@@ -27,7 +26,9 @@ export function respond(event, cb) {
 }
 
 function handleScreenshot(template) {
-  if (template.thumbnail) return Promise.resolve(template.thumbnail);
+  if (template.thumbnail) return Promise.resolve(template);
+  if (!template.html) return Promise.resolve(template);
 
-  return FunctionsClient.execute(process.env.SCREENSHOTS_FUNCTION_NAME, { html: template.html });
+  return FunctionsClient.execute(process.env.SCREENSHOTS_FUNCTION_NAME, { html: template.html })
+    .then(thumbnailData => Object.assign({}, template, { thumbnail: thumbnailData.url }));
 }
