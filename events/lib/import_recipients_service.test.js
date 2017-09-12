@@ -1,5 +1,4 @@
-import * as chai from 'chai';
-const expect = chai.expect;
+import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import chaiThings from 'chai-things';
 import sinon from 'sinon';
@@ -8,7 +7,8 @@ import awsMock from 'aws-sdk-mock';
 import AWS from 'aws-sdk';
 import { ImportRecipientsService } from './import_recipients_service';
 import { Recipient, List } from 'moonmail-models';
-import * as sinonAsPromised from 'sinon-as-promised';
+import 'sinon-as-promised';
+const expect = chai.expect;
 chai.use(sinonChai);
 chai.use(chaiAsPromised);
 chai.use(chaiThings);
@@ -34,6 +34,8 @@ em2@examplemail.com;firstName2;lastName2`,
     });
     awsMock.mock('IotData', 'publish', true);
     sinon.stub(List, 'update').resolves('Ok');
+    sinon.stub(List, 'get').resolves({});
+    sinon.spy(List, 'appendMetadataAttributes');
 
     sinon.stub(Recipient, 'saveAll').resolves('Ok');
     awsMock.mock('Lambda', 'invoke', 'ok');
@@ -42,6 +44,18 @@ em2@examplemail.com;firstName2;lastName2`,
     awsMock.mock('SNS', 'publish');
     sns = new AWS.SNS();
     process.env.UPDATE_IMPORT_STATUS_TOPIC_ARN = 'update-import-topic-arn';
+  });
+
+  after(() => {
+    awsMock.restore('S3');
+    awsMock.restore('Lambda');
+    awsMock.restore('IotData');
+    Recipient.saveAll.restore();
+    List.update.restore();
+    List.get.restore();
+    List.appendMetadataAttributes.restore();
+    awsMock.restore('SNS');
+    delete process.env.IOT_ENDPOINT;
   });
 
   // TODO: Add error ocurred case
@@ -82,11 +96,8 @@ em2@examplemail.com;firstName2;lastName2`,
           expect(args[1].isConfirmed).to.be.true;
           expect(args[1].metadata).to.deep.equals({ name: 'firstName2', surname: 'lastName2' });
 
-          expect(List.update).to.have.been.calledOnce;
-          const updateArgs = List.update.lastCall.args;
-          expect(updateArgs[0]).to.deep.equals({ metadataAttributes: ['name', 'surname'], processed: false });
-          expect(updateArgs[1]).to.equals('userId');
-          expect(updateArgs[2]).to.equals('listId#1');
+          expect(List.update).to.have.been.calledWithExactly({processed: false}, 'userId', 'listId#1');
+          expect(List.appendMetadataAttributes).to.have.been.calledWithExactly(['name', 'surname'], {userId: 'userId', listId: 'listId#1'});
 
           // expect(sns.publish.callCount).to.equal(1);
           const payload = JSON.parse(sns.publish.lastCall.args[0].Message);
@@ -96,15 +107,5 @@ em2@examplemail.com;firstName2;lastName2`,
         }).catch((e) => console.log(e, e.stack));
       });
     });
-  });
-
-  after(() => {
-    awsMock.restore('S3');
-    awsMock.restore('Lambda');
-    awsMock.restore('IotData');
-    Recipient.saveAll.restore();
-    List.update.restore();
-    awsMock.restore('SNS');
-    delete process.env.IOT_ENDPOINT;
   });
 });

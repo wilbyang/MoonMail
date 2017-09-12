@@ -37,7 +37,8 @@
     "SERVERLESS_STAGE": "${stage}",
     "SERVERLESS_REGION": "${region}",
     "DEBUG": "true",
-    "RECIPIENTS_TABLE": "$${recipientsTable}"
+    "RECIPIENTS_TABLE": "$${recipientsTable}",
+    "LISTS_TABLE": "$${listsTable}"
   },
   "vpc": {
     "securityGroupIds": [],

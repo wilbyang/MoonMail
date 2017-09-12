@@ -245,7 +245,8 @@ class ImportRecipientsService {
 
   _saveMetadataAttributes() {
     const metadataAttributes = Object.keys(this.recipients[0].metadata);
-    return List.update({ metadataAttributes, processed: false }, this.userId, this.listId);
+    return List.update({processed: false }, this.userId, this.listId)
+      .then(_ => List.appendMetadataAttributes(metadataAttributes, {userId: this.userId, listId: this.listId}));
   }
 
   _publishToSns(message) {

@@ -1,4 +1,4 @@
-import { Recipient } from 'moonmail-models';
+import { Recipient, List } from 'moonmail-models';
 import { debug } from '../../lib/logger';
 import decrypt from '../../lib/auth-token-decryptor';
 import base64url from 'base64-url';
@@ -14,11 +14,15 @@ export function respond(event, cb) {
       recipient.status = recipient.status || Recipient.statuses.subscribed;
       recipient.userId = decoded.sub;
       recipient.subscriptionOrigin = Recipient.subscriptionOrigins.manual;
-      Recipient.save(recipient).then(() => cb(null, recipient)
-      ).catch((e) => {
-        debug(e);
-        return cb(ApiErrors.response(e));
-      });
+      const metadataAttributes = Object.keys(recipient.metadata || {});
+      Recipient.save(recipient)
+        .then(() => List.appendMetadataAttributes(metadataAttributes,
+                      {userId: recipient.userId, listId: recipient.listId}))
+        .then(() => cb(null, recipient))
+        .catch((e) => {
+          debug(e);
+          return cb(ApiErrors.response(e));
+        });
     } else {
       return cb(ApiErrors.response('No recipient specified'));
     }
