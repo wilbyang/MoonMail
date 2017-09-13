@@ -14,7 +14,6 @@ export function respond(event, cb) {
       template.userId = decoded.sub;
       template.id = cuid();
       handleScreenshot(template)
-        .then(thumbnail => Object.assign({}, template, { thumbnail: thumbnail.url }))
         .then(templateToSave => EmailTemplate.save(templateToSave))
         .then(() => cb(null, template))
         .catch((e) => {
@@ -28,6 +27,9 @@ export function respond(event, cb) {
 }
 
 function handleScreenshot(template) {
-  if (template.thumbnail) return Promise.resolve(template.thumbnail);
-  return FunctionsClient.execute(process.env.SCREENSHOTS_FUNCTION_NAME, { html: template.html });
+  if (template.thumbnail) return Promise.resolve(template);
+  if (!template.html) return Promise.resolve(template);
+
+  return FunctionsClient.execute(process.env.SCREENSHOTS_FUNCTION_NAME, { html: template.html })
+    .then(thumbnailData => Object.assign({}, template, { thumbnail: thumbnailData.url }));
 }
