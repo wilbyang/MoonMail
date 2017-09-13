@@ -1,5 +1,3 @@
-'use strict';
-
 import * as chai from 'chai';
 import { respond } from './action';
 import * as sinon from 'sinon';
@@ -9,13 +7,13 @@ import { EmailTemplate } from 'moonmail-models';
 const expect = chai.expect;
 
 describe('createTemplate', () => {
-
   const id = 'some-id';
   const userId = 'some-user-id';
   const name = 'my tempalte';
   const body = 'my tempalte body';
+  const html = '<h1>Hello</h1>';
   const thumbnail = '797891230qsa09183134';
-  const template = { name, body, thumbnail, id, userId };
+  const template = { name, body, html, thumbnail, id, userId };
   let event;
 
   describe('#respond()', () => {

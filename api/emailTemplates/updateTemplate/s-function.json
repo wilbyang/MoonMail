@@ -36,7 +36,8 @@
     "SERVERLESS_PROJECT": "${project}",
     "SERVERLESS_STAGE": "${stage}",
     "SERVERLESS_REGION": "${region}",
-    "TEMPLATES_TABLE": "$${templatesTable}"
+    "TEMPLATES_TABLE": "$${templatesTable}",
+    "SCREENSHOTS_FUNCTION_NAME": "$${screenshotsFunctionName}"
   },
   "vpc": {
     "securityGroupIds": [],

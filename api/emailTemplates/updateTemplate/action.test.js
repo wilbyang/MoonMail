@@ -15,6 +15,7 @@ describe('updateTemplate', () => {
     userId: 'user-id',
     name: 'my template',
     body: 'my template body',
+    html: '<h1>Hello</h1>',
     thumbnail: 's23423s432234'
   };
   let event;
@@ -32,7 +33,6 @@ describe('updateTemplate', () => {
       it('updates the template', (done) => {
         respond(event, (err, result) => {
           const args = EmailTemplate.update.lastCall.args;
-          expect(args[0]).to.equal(template);
           expect(args[2]).to.equal(templateId);
           expect(err).to.not.exist;
           expect(result).to.deep.equal(template);
