@@ -34,12 +34,19 @@ class EnqueuedEmail {
         to: this.message.recipient.email,
         headers: [{key: 'List-Unsubscribe', value: this._listUnsubscribeHeaderValue()}]
       };
+      if (this.message.campaign.attachments) {
+        mailOptions.attachments = this._buildAttachments();
+      }
       const mail = mailcomposer(mailOptions);
       mail.build((err, message) => {
         if (err) return reject(err);
         else return resolve({RawMessage: {Data: message}});
       });
     });
+  }
+
+  _buildAttachments() {
+    return this.message.campaign.attachments.map(att => ({filename: att.name, path: att.url, }));
   }
 
   _listUnsubscribeHeaderValue() {

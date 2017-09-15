@@ -43,6 +43,15 @@ describe('EnqueuedEmail', () => {
     });
   });
 
+  describe('_buildAttachments', () => {
+    it('builds the attachments attribute', (done) => {
+      const email = new EnqueuedEmail(JSON.parse(sqsMessages.Messages[0].Body), 'some_handler');
+      email.message.campaign.attachments = [{ name: 'att1', url: 'http://att1'}];
+      expect(email._buildAttachments()).to.deep.equal([{filename: 'att1', path: 'http://att1'}]);
+      done();
+    });
+  });
+
   describe('#toSentEmail()', () => {
     it('builds SentEmail params', (done) => {
       const messageId = 'my-message-id';
