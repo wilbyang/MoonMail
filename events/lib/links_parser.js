@@ -4,12 +4,15 @@ import { debug } from './index';
 import * as url from 'url';
 import * as cheerio from 'cheerio';
 import cuid from 'cuid';
+import omitEmpty from 'omit-empty';
 
 class LinksParser {
   constructor({ apiHost, context } = {}) {
     this.apiHost = apiHost;
     this.campaignId = context.campaign.id;
     this.recipientId = context.recipient.id;
+    this.listId = context.recipient.listId;
+    this.segmentId = context.campaign.segmentId;
     this.userId = base64url.encode(context.userId);
     this.opensPath = 'links/open';
     this.clicksPath = 'links/click';
@@ -22,7 +25,7 @@ class LinksParser {
         hostname: this.apiHost,
         pathname: `${this.opensPath}/${this.campaignId}`
       };
-      if (this.recipientId) opensUrlObj.query = { r: this.recipientId, u: this.userId };
+      opensUrlObj.query = this._trackingQueryString();
       return url.format(opensUrlObj);
     }
   }
@@ -82,12 +85,14 @@ class LinksParser {
     const uri = url.parse(linkUrl, true);
     if (linkUrl && !this._isUnsubscribeLink(linkUrl) && this._isRedirectionLink(uri)) {
       delete uri.search;
-      uri.query.r = this.recipientId;
-      uri.query.u = this.userId;
+      uri.query = Object.assign({}, uri.query, this._trackingQueryString());
       $(link).attr('href', uri.format());
     }
   }
 
+  _trackingQueryString() {
+    return omitEmpty({ r: this.recipientId, u: this.userId, l: this.listId, s: this.segmentId });
+  }
   _isUnsubscribeLink(linkUrl) {
     return linkUrl && linkUrl.indexOf('unsubscribe_url') > -1;
   }

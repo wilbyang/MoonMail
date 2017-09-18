@@ -3,7 +3,7 @@ import Recipients from '../../lib/recipients/index';
 
 export default function respond(event, cb) {
   logger().info('= enhanceRecipientMetadata.action', JSON.stringify(event));
-  Recipients.processOpenOrClickStream(event.Records)
+  Recipients.processOpenClickEventsStream(event.Records)
     .then(response => cb(null, response))
     .catch((error) => {
       logger().error(error);

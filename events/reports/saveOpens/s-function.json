@@ -5,7 +5,7 @@
   "customName": "${project}-reports-saveOpens",
   "customRole": false,
   "handler": "reports/saveOpens/handler.default",
-  "timeout": 60,
+  "timeout": 300,
   "memorySize": 1024,
   "authorizer": {},
   "custom": {

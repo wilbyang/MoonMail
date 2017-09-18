@@ -15,6 +15,8 @@ export default function respond(event, context, cb) {
     linkId: event.linkId,
     recipientId: event.recipientId,
     userId: event.userId ? base64url.decode(event.userId) : null,
+    listId: event.listId,
+    segmentId: event.segmentId,
     metadata: JSON.parse(event.headers),
     timestamp: moment().unix()
   });

@@ -1,12 +1,13 @@
-'use strict';
-
 import * as chai from 'chai';
+
 const chaiCheerio = require('chai-cheerio');
 const chaiAsPromised = require('chai-as-promised');
 const chaiFuzzy = require('chai-fuzzy');
+
 import { expect } from 'chai';
 import { LinksParser } from './links_parser';
 import * as cheerio from 'cheerio';
+import base64url from 'base64-url';
 
 chai.use(chaiFuzzy);
 chai.use(chaiAsPromised);
@@ -20,8 +21,10 @@ describe('LinksParser', () => {
   const unsubscribeLink = `<a href="${unsubscribeUrl}">${unsubscribeText}</a>`;
   const htmlLinks = [`<a href="${linkUrls[0]}">${linksText[0]}</a>`, `<a href="${linkUrls[1]}">${linksText[1]}</a>`];
   const htmlBody = `This piece of HTML contains not only ${htmlLinks[0]} but ${htmlLinks[1]}, and this is the unsubscribe ${unsubscribeLink}`;
+  const segmentId = 'some-segment-id';
   const campaign = { id: 'campaign-id' };
-  const recipient = { id: 'recipient-id' };
+  const listId = 'some-list-id';
+  const recipient = { id: 'recipient-id', listId };
   const userId = 'user-id';
   const linkId = 'some_link_id';
   const apiHost = 'fakeapi.com';
@@ -37,6 +40,10 @@ describe('LinksParser', () => {
   describe('#opensTrackUrl()', () => {
     it('returns the URL to track opens', (done) => {
       expect(links.opensTrackUrl).to.contain(opensTrackingUrl);
+      expect(links.opensTrackUrl).to.contain(base64url.encode(userId));
+      expect(links.opensTrackUrl).to.contain(recipient.id);
+      expect(links.opensTrackUrl).to.contain(recipient.listId);
+      //expect(links.opensTrackUrl).to.contain(campaign.segmentId);
       done();
     });
   });
@@ -49,7 +56,7 @@ describe('LinksParser', () => {
   });
 
   describe('#clicksTrackUrl()', () => {
-    it('returns the URL to track opens', (done) => {
+    it('returns the URL to track clicks', (done) => {
       const encodedLinkUrl = encodeURIComponent(linkUrls[0]);
       expect(links.clicksTrackUrl(linkId, linkUrls[0])).to.equal(`${clicksTrackingUrl}?url=${encodedLinkUrl}`);
       done();
@@ -72,7 +79,7 @@ describe('LinksParser', () => {
         done();
       }).catch(done);
     });
-    it('skips the unsubscribe_url link', done => {
+    it('skips the unsubscribe_url link', (done) => {
       links.parseLinks(htmlBody).then((result) => {
         expect(result.parsedBody).to.contain(unsubscribeLink);
         done();
