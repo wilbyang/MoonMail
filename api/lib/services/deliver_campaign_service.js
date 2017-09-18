@@ -138,7 +138,8 @@ class DeliverCampaignService {
           senderId: campaign.senderId,
           precompiled: false,
           listIds: campaign.listIds,
-          segmentId: campaign.segmentId
+          segmentId: campaign.segmentId,
+          attachments: campaign.attachments
         }
       }));
     });
