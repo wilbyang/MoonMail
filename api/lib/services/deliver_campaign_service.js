@@ -11,12 +11,13 @@ import FunctionsClient from '../functions_client';
 
 class DeliverCampaignService {
 
-  constructor(snsClient, { campaign, campaignId, userId, userPlan } = {}) {
+  constructor(snsClient, { campaign, campaignId, userId, userPlan, appendFooter } = {}) {
     this.snsClient = snsClient;
     this.campaign = campaign;
     this.campaignId = campaignId;
     this.userId = userId;
     this.userPlan = userPlan || 'free';
+    this.appendFooter = appendFooter;
     this.updateCampaignStatusTopicArn = process.env.UPDATE_CAMPAIGN_TOPIC_ARN;
   }
 
@@ -130,6 +131,7 @@ class DeliverCampaignService {
       resolve(omitEmpty({
         userId: campaign.userId,
         userPlan: this.userPlan,
+        appendFooter: this.appendFooter,
         currentUserState: this.currentState,
         campaign: {
           id: campaign.id,
