@@ -18,6 +18,14 @@ function findDetectedDevice(metadata) {
   return 'unknown';
 }
 
+function stringifyMetadata(metadata) {
+  if (!metadata) return {};
+  return Object.keys(metadata).reduce((acum, key) => {
+    acum[key] = metadata[key].toString();
+    return acum;
+  }, {});
+}
+
 const Recipients = {
   indexName: process.env.ES_RECIPIENTS_INDEX_NAME,
   indexType: process.env.ES_RECIPIENTS_INDEX_TYPE,
@@ -35,13 +43,16 @@ const Recipients = {
 
   createESRecipient(id, recipient) {
     if (!validRecipient(recipient)) return Promise.resolve();
-    return ElasticSearch.createOrUpdateDocument(this.client, this.indexName, this.indexType, id, recipient);
+    const newRecipient = Object.assign({}, newRecipient, { metadata: stringifyMetadata(recipient.metadata) });
+    return ElasticSearch.createOrUpdateDocument(this.client, this.indexName, this.indexType, id, newRecipient);
   },
 
   updateESRecipient(id, newRecipient) {
     if (!validRecipient(newRecipient)) return Promise.resolve();
-    return ElasticSearch.createOrUpdateDocument(this.client, this.indexName, this.indexType, id, newRecipient);
+    const recipient = Object.assign({}, newRecipient, { metadata: stringifyMetadata(newRecipient.metadata) });
+    return ElasticSearch.createOrUpdateDocument(this.client, this.indexName, this.indexType, id, recipient);
   },
+
 
   deleteESRecipient(id) {
     return ElasticSearch.deleteDocument(this.client, this.indexName, this.indexType, id).catch(Promise.resolve);
