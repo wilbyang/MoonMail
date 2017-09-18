@@ -36,6 +36,7 @@ class AttachRecipientsService {
       campaign: this.campaignMessage.campaign,
       userId: this.campaignMessage.userId,
       userPlan: this.campaignMessage.userPlan || 'free',
+      appendFooter: this.campaignMessage.appendFooter,
       listId
     };
   }

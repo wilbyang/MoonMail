@@ -1,5 +1,3 @@
-'use strict';
-
 import * as aws from 'aws-sdk';
 import { debug } from '../../lib/logger';
 import decrypt, { getUserContext } from '../../lib/auth-token-decryptor';
@@ -17,7 +15,8 @@ export function respond(event, cb) {
       debug('= deliverCampaign.action', 'Getting campaign', JSON.stringify(user));
       const userId = user.id;
       const userPlan = user.plan;
-      const deliverService = new DeliverCampaignService(sns, {campaign: event.campaign, campaignId: event.campaignId, userId, userPlan});
+      const appendFooter = user.appendFooter;
+      const deliverService = new DeliverCampaignService(sns, {campaign: event.campaign, campaignId: event.campaignId, userId, userPlan, appendFooter});
       deliverService.sendCampaign()
         .then(res => cb(null, res))
         .catch(err => cb(ApiErrors.response(err)));
