@@ -72,11 +72,13 @@ const Recipients = {
   discoverFieldsFromRequestMetadata(requestMetadata) {
     const cfIpAddress = (requestMetadata['X-Forwarded-For'] || ',').split(',').shift().trim();
     const acceptLanguage = (requestMetadata['Accept-Language'] || ',').split(',').shift().trim();
+    const language = (acceptLanguage || '_').split(/\-|_/).shift().trim();
     const updatedMetadata = omitEmpty({
       ip: cfIpAddress,
       countryCode: requestMetadata['CloudFront-Viewer-Country'],
       acceptLanguageHeader: requestMetadata['Accept-Language'],
       acceptLanguage,
+      language,
       detectedDevice: findDetectedDevice(requestMetadata),
       userAgent: requestMetadata['User-Agent']
     });
@@ -99,6 +101,7 @@ const Recipients = {
   },
 
   storeRecipientSystemMetadata(recipient, systemMetadata) {
+    console.log('storeRecipientSystemMetadata', JSON.stringify(recipient), JSON.stringify(systemMetadata));
     if (systemMetadata.userAgent.match(/GoogleImageProxy/)) return Promise.resolve();
     return Recipient.update({ systemMetadata }, recipient.listId, recipient.id);
   },
@@ -113,9 +116,15 @@ const Recipients = {
       if (!item.metadata || !item.listId || !item.recipientId) return Promise.resolve();
       const recipientId = item.recipientId;
       const listId = item.listId;
+      // We are performing a get before the update before
+      // somehow listId and recipientId sometimes point to non-existing recipients
+      // on this way we can avoid errors instead of recovering from them on the update.
       return Recipient.get(listId, recipientId)
-        .then(recipient => this.discoverFieldsFromRequestMetadata(item.metadata)
-          .then(newMetadata => this.storeRecipientSystemMetadata(recipient, newMetadata)));
+        .then((recipient) => {
+          if (!recipient.id) return Promise.resolve();
+          return this.discoverFieldsFromRequestMetadata(item.metadata)
+            .then(newMetadata => this.storeRecipientSystemMetadata(recipient, newMetadata));
+        });
     }
     return Promise.resolve();
   },

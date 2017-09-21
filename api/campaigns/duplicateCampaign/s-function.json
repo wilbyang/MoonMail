@@ -5,7 +5,7 @@
   "customName": "${project}-campaigns-duplicateCampaign",
   "customRole": false,
   "handler": "campaigns/duplicateCampaign/handler.default",
-  "timeout": 6,
+  "timeout": 300,
   "memorySize": 1024,
   "authorizer": {},
   "custom": {
