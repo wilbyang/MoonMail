@@ -123,7 +123,7 @@ const Recipients = {
   // TODO: migrate to ES
   totalRecipients(userId) {
     return List.allBy('userId', userId)
-      .then(lists => lists.items.filter(l => l.subscribedCount).reduce((accum, next) => (accum + next.subscribedCount), 0));
+      .then(lists => lists.items.filter(l => (!!l.subscribedCount && !l.archived)).reduce((accum, next) => (accum + next.subscribedCount), 0));
   },
 
   syncRecipientStreamWithES(records) {
