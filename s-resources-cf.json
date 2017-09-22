@@ -386,12 +386,32 @@
           {
             "AttributeName": "campaignId",
             "AttributeType": "S"
+          },
+          {
+            "AttributeName": "userId",
+            "AttributeType": "S"
           }
         ],
         "KeySchema": [
           {
             "AttributeName": "campaignId",
             "KeyType": "HASH"
+          }
+        ],
+        "GlobalSecondaryIndexes": [
+          {
+            "IndexName" : "$${reportsUserIndex}",
+            "KeySchema" : [{
+              "AttributeName": "userId",
+              "KeyType": "HASH"
+            }],
+            "Projection" : {
+              "ProjectionType": "ALL"
+            },
+            "ProvisionedThroughput" : {
+              "ReadCapacityUnits": "${defaultRCU}",
+              "WriteCapacityUnits": "${defaultWCU}"
+            }
           }
         ],
         "ProvisionedThroughput": {
@@ -469,8 +489,8 @@
           }
         ],
         "ProvisionedThroughput": {
-          "ReadCapacityUnits": "${defaultRCU}",
-          "WriteCapacityUnits": "${defaultWCU}"
+          "ReadCapacityUnits": "${campaignsRCU}",
+          "WriteCapacityUnits": "${campaignsWCU}"
         },
         "TableName": "$${campaignsTable}"
       }
@@ -670,7 +690,7 @@
           "StreamViewType": "NEW_AND_OLD_IMAGES"
         },
         "ProvisionedThroughput": {
-          "ReadCapacityUnits": "${defaultRCU}",
+          "ReadCapacityUnits": "${usersRCU}",
           "WriteCapacityUnits": "${defaultWCU}"
         },
         "TableName": "$${usersTable}"
@@ -826,7 +846,7 @@
             "Projection" : {"ProjectionType": "ALL"},
             "ProvisionedThroughput" : {
               "ReadCapacityUnits": "${defaultRCU}",
-              "WriteCapacityUnits": "${defaultWCU}"
+              "WriteCapacityUnits": "${recipientsIndexesWCU}"
             }
           },
           {
@@ -844,7 +864,7 @@
             "Projection" : {"ProjectionType": "ALL"},
             "ProvisionedThroughput" : {
               "ReadCapacityUnits": "${defaultRCU}",
-              "WriteCapacityUnits": "${defaultWCU}"
+              "WriteCapacityUnits": "${recipientsIndexesWCU}"
             }
           }
         ]
@@ -1005,8 +1025,8 @@
           }
         ],
         "ProvisionedThroughput": {
-          "ReadCapacityUnits": "${defaultRCU}",
-          "WriteCapacityUnits": "${defaultWCU}"
+          "ReadCapacityUnits": "${listsRCU}",
+          "WriteCapacityUnits": "${listsWCU}"
         },
         "TableName": "$${listsTable}"
       }

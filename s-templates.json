@@ -105,6 +105,7 @@
   "segmentIdIndex": "${project}-${stage}-list-segmentsIdIndex",
   "campaignsSentAtIndex": "${project}-${stage}-campaignsSentAtIndex",
   "campaignsScheduledAtIndex": "${project}-${stage}-campaignsScheduledAtIndex",
+  "reportsUserIndex": "${project}-${stage}-reportsUserIndex",
   "automationsIndex": "${project}-${stage}-automationsIndex",
   "automationsFootprintStatusIndex": "${project}-${stage}-automationsFootprintStatusIndex",
   "automationStatusIndex": "${project}-${stage}-automationStatusIndex",
