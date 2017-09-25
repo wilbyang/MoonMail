@@ -36,10 +36,24 @@ const ElasticSearch = {
     return esClient.search(esQueryRequest);
   },
 
+  // {
+  //   "bool" : {
+  //      "must" :     [], // ANDs (Query scope)
+  //      "should" :   [], // ORs (Query scope)
+  //      "must_not" : [], // NOTs (Query scope)
+  //      "filter":    []  // (Filter scope) Filters: currently supports AND operations between all filters
+  //   }
+  // }
+
+  // Note that to perform term queries we need to access the .keyword field instead of the raw one
+  // For more details visit https://www.elastic.co/guide/en/elasticsearch/reference/5.3/multi-fields.html
   buildQueryFilters(conditions) {
     return conditions
-      .filter(conditionObject => conditionObject.conditionType === 'filter') // we only support filter conditions for now
-      .reduce((aggregatedBody, nextCondition) => aggregatedBody.filter(nextCondition.condition.queryType, nextCondition.condition.fieldToQuery, nextCondition.condition.searchTerm), bodyBuilder());
+      .filter(conditionObject => conditionObject.conditionType === 'filter') // we only support must queries for now
+      .reduce((aggregatedBody, nextCondition) => {
+        const fieldToQuery = nextCondition.condition.queryType.match(/term/) ? `${nextCondition.condition.fieldToQuery}.keyword` : nextCondition.condition.fieldToQuery;
+        return aggregatedBody.filter(nextCondition.condition.queryType, fieldToQuery, nextCondition.condition.searchTerm);
+      }, bodyBuilder());
   },
 
   createClient({ credentials = awsCredentials(), elasticSearchHost = process.env.ES_HOST, elasticSearchRegion = process.env.ES_REGION }) {
