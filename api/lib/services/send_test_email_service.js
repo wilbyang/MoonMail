@@ -1,5 +1,3 @@
-
-
 import { debug } from '../logger';
 import juice from 'juice';
 
@@ -9,12 +7,12 @@ class SendTestEmailService {
     return new SendTestEmailService(sesClient, params);
   }
 
-  constructor(sesClient, { body, subject, emails } = {}) {
+  constructor(sesClient, { body, subject, emails, emailFrom } = {}) {
     this.sesClient = sesClient;
     this.body = body;
     this.subject = subject;
     this.emails = emails;
-    this.emailFrom = process.env.DEFAULT_EMAIL_ADDRESS;
+    this.emailFrom = emailFrom || process.env.DEFAULT_EMAIL_ADDRESS;
   }
 
   sendEmail() {

@@ -1,12 +1,11 @@
-'use strict';
-
-import * as chai from 'chai';
-import * as sinon from 'sinon';
-import { expect } from 'chai';
+import chai from 'chai';
+import sinon from 'sinon';
+import awsMock from 'aws-sdk-mock';
+import AWS from 'aws-sdk';
+import chaiAsPromised from 'chai-as-promised';
 import { SendTestEmailService } from './send_test_email_service';
-const awsMock = require('aws-sdk-mock');
-const AWS = require('aws-sdk');
-const chaiAsPromised = require('chai-as-promised');
+
+const expect = chai.expect;
 chai.use(chaiAsPromised);
 
 describe('SendTestEmailService', () => {
@@ -20,13 +19,14 @@ describe('SendTestEmailService', () => {
 
   describe('#sendEmail', () => {
     context('when the campaign has the needed parameters', () => {
-      before(() => {
+      beforeEach(() => {
         awsMock.mock('SES', 'sendEmail', { MessageId: 'some_message_id' });
         sesClient = new AWS.SES();
-        sendTestService = new SendTestEmailService(sesClient, {subject, body, emails});
       });
+      afterEach(() => awsMock.restore('SES'));
 
       it('sends the campaign', done => {
+        sendTestService = new SendTestEmailService(sesClient, {subject, body, emails});
         sendTestService.sendEmail().then(res => {
           expect(sesClient.sendEmail).to.have.been.calledOnce;
           const sesArgs = sesClient.sendEmail.lastCall.args[0];
@@ -39,8 +39,18 @@ describe('SendTestEmailService', () => {
         .catch(err => done(err));
       });
 
-      after(() => {
-        awsMock.restore('SES');
+      context('and a custom email from is provided', () => {
+        it('should use the custom email', done => {
+          const customEmail = 'my-email@test.com';
+          sendTestService = new SendTestEmailService(sesClient, {subject, body, emails, emailFrom: customEmail});
+          sendTestService.sendEmail().then(res => {
+            expect(sesClient.sendEmail).to.have.been.calledOnce;
+            const sesArgs = sesClient.sendEmail.lastCall.args[0];
+            expect(sesArgs).to.have.property('Source', customEmail);
+            done();
+          })
+          .catch(err => done(err));
+        });
       });
     });
 

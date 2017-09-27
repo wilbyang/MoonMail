@@ -39,6 +39,7 @@
     "DEFAULT_API_SECRET": "${defaultApiSecret}",
     "DEFAULT_DEFAULT_REGION": "${defaultRegion}",
     "DEFAULT_EMAIL_ADDRESS": "${defaultEmailAddress}",
+    "FETCH_SENDER_FN_NAME": "$${fetchSenderFunctionName}",
     "DEBUG": "true"
   },
   "vpc": {

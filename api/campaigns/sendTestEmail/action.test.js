@@ -1,11 +1,13 @@
-'use strict';
-
-import * as sinon from 'sinon';
+import sinon from 'sinon';
+import chai from 'chai';
+import sinonChai from 'sinon-chai';
+import 'sinon-as-promised';
 import { SendTestEmailService } from '../../lib/services/send_test_email_service';
-import * as chai from 'chai';
-import * as sinonAsPromised from 'sinon-as-promised';
 import { respond } from './action';
+import FunctionsClient from '../../lib/functions_client';
+
 const expect = chai.expect;
+chai.use(sinonChai);
 let serviceInstanceStub;
 
 describe('sendTestEmail', () => {
@@ -17,25 +19,54 @@ describe('sendTestEmail', () => {
 
   describe('#respond()', () => {
     context('when the campaign has the needed parameters', () => {
-      before(() => {
+      beforeEach(() => {
         event = {campaign: validCampaign};
         event.authToken = 'some-token';
         serviceInstanceStub = sinon.createStubInstance(SendTestEmailService);
         serviceInstanceStub.sendEmail.resolves(true);
         sinon.stub(SendTestEmailService, 'create').returns(serviceInstanceStub);
       });
+      afterEach(() => {
+        SendTestEmailService.create.restore();
+      });
 
       it('sends the campaign', (done) => {
         respond(event, (err, result) => {
           expect(serviceInstanceStub.sendEmail).to.have.been.calledOnce;
+          expect(SendTestEmailService.create).to.have.been.calledWithMatch(sinon.match.any, event.campaign);
           expect(err).to.not.exist;
           expect(result).to.exist;
           done();
         });
       });
 
-      after(() => {
-        SendTestEmailService.create.restore();
+      context('and it has custom sender', () => {
+        const campaignCustomSender = Object.assign({}, validCampaign, {senderId: 'foo'});
+        const emailFrom = 'my-custom@email.com';
+        const sender = {apiKey: 1, apiSecret: 2, region: 'bar', emailAddress: emailFrom, fromName: 'David'};
+        before(() => {
+          const getSenderFunction = 'get-sender';
+          process.env.FETCH_SENDER_FN_NAME = getSenderFunction;
+          sinon.stub(FunctionsClient, 'execute')
+            .withArgs(getSenderFunction, {userId: sinon.match.any, senderId: 'foo'})
+            .resolves(sender)
+            .withArgs(sinon.match.any).resolves({});
+        });
+        after(() => {
+          delete process.env.FETCH_SENDER_FN_NAME;
+          FunctionsClient.execute.restore();
+        });
+
+        it('should use it', done => {
+          respond({campaign: campaignCustomSender}, (err, result) => {
+            expect(serviceInstanceStub.sendEmail).to.have.been.calledOnce;
+            const expected = Object.assign({}, campaignCustomSender, {emailFrom});
+            expect(SendTestEmailService.create).to.have.been.calledWithMatch(sinon.match.any, expected);
+            expect(err).to.not.exist;
+            expect(result).to.exist;
+            done();
+          });
+        });
       });
     });
 
