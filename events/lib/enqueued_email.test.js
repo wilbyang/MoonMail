@@ -62,6 +62,7 @@ describe('EnqueuedEmail', () => {
       expect(sesEmail).to.have.property('email', email.message.recipient.email);
       expect(sesEmail).to.have.property('listId', email.message.recipient.listId);
       expect(sesEmail).to.have.property('userId', email.message.userId);
+      expect(sesEmail).to.have.property('userPlan', email.message.userPlan);
       expect(sesEmail).to.have.property('status', 'sent');
       done();
     });

@@ -17,6 +17,7 @@ class SendEmailService {
     this.lastReputationCheckedOn = state.lastReputationCheckedOn || 0;
     this.reputation = state.reputation || 15;
     this.userId = null;
+    this.userPlan = null;
   }
 
   get executionThreshold() {
@@ -65,7 +66,7 @@ class SendEmailService {
         .then((enqueuedEmails) => {
           logger().debug('SendEmailService.sendBatch', 'Got', enqueuedEmails.length, 'messages');
           this.setEmailClient(enqueuedEmails[0]);
-          this.setUserId(enqueuedEmails[0]);
+          this.updateUserData(enqueuedEmails[0]);
           async.each(enqueuedEmails, (email, callback) => {
             this.deliver(email)
               .then((result) => {
@@ -240,8 +241,9 @@ class SendEmailService {
     };
   }
 
-  setUserId(enqueuedEmail) {
+  updateUserData(enqueuedEmail) {
     this.userId = enqueuedEmail.getEmailUserId();
+    this.userPlan = enqueuedEmail.getEmailUserPlan();
   }
 
   _invokeGetUserData() {
@@ -256,7 +258,8 @@ class SendEmailService {
   }
 
   _checkReputation() {
-    if (this.counter - this.lastReputationCheckedOn >= 1000) {
+    const reputationCheckInterval = (this.userPlan || 'free') === 'free' ? 50 : 1000;
+    if (this.counter - this.lastReputationCheckedOn >= reputationCheckInterval) {
       this.lastReputationCheckedOn = this.counter;
       logger().debug('SendEmailService._checkReputation, working...');
       return this._invokeGetUserData().then((response) => {
@@ -270,7 +273,7 @@ class SendEmailService {
         }
         return Promise.resolve({});
       }).catch((error) => {
-        logger().warn('SendEmailService._checkReputation error ocurred:', error);
+        logger().warn('SendEmailService._checkReputation error occurred:', error);
         if (error === 'Bad reputation') {
           // return this.queue.purgeQueue().then(() => Promise.reject(error));
           return Promise.reject(error);
