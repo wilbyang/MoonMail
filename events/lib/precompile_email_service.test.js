@@ -47,6 +47,27 @@ describe('PrecompileEmailService', () => {
       expect(precompileService.email.metadata).to.deep.equal(canonicalMessage.recipient.metadata);
       done();
     });
+
+    context('when the campaign has address in metadata', () => {
+      it('should process it and merge it with recipient\'s one', done => {
+        const address = {
+          address: 'C/ Severo Ochoa',
+          address2: 'Edificio Promalaga',
+          city: 'Málaga',
+          company: 'microapps S.L.',
+          country: 'Spain',
+          state: 'Málaga',
+          zipCode: '29590'
+        };
+        const camapaignMetadata = {address};
+        const metadataEmailParams = JSON.parse(JSON.stringify(emailParams));
+        metadataEmailParams.campaign.metadata = camapaignMetadata;
+        const expectedAddressTag = `<p style="text-align: center;"><b>Our address is:</b></br>${address.company}</br>${address.address} ${address.address2}</br>${address.zipCode} ${address.city}</br>${address.state} ${address.country}</br><p>`;
+        const metadataPrecompileService = new PrecompileEmailService(sqsClient, metadataEmailParams);
+        expect(metadataPrecompileService.email.metadata).to.have.property('address', expectedAddressTag);
+        done();
+      });
+    });
   });
 
   describe('#composeEmail()', () => {

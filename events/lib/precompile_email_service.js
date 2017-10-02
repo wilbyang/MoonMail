@@ -10,12 +10,15 @@ class PrecompileEmailService {
     this.apiHost = process.env.API_HOST;
     this.queue = new EmailQueue(sqsClient, { name: this.queueName });
     const uncompressedBody = uncompressString(emailParams.campaign.body);
+    const campaignMetadata = this._buildCampaignMetadata(emailParams.campaign);
+    const recipientMetadata = emailParams.recipient.metadata || {};
+    const metadata = Object.assign({}, recipientMetadata, campaignMetadata);
     this.email = new Email({
       fromEmail: emailParams.sender.emailAddress,
       to: emailParams.recipient.email,
       body: uncompressedBody,
       subject: emailParams.campaign.subject,
-      metadata: emailParams.recipient.metadata,
+      metadata,
       recipientId: emailParams.recipient.id,
       campaignId: emailParams.campaign.id,
       listId: emailParams.recipient.listId
@@ -73,6 +76,16 @@ class PrecompileEmailService {
     const userPlan = emailParams.userPlan;
     const freePlanRegex = /free/;
     return (!userPlan) || (userPlan.match(freePlanRegex)) || (userPlan === 'staff') || (emailParams.appendFooter);
+  }
+
+  _buildCampaignMetadata(campaign = {}) {
+    if (campaign.metadata && campaign.metadata.address) {
+      const address = campaign.metadata.address;
+      const addressTag = `<p style="text-align: center;"><b>Our address is:</b></br>${address.company}</br>${address.address} ${address.address2}</br>${address.zipCode} ${address.city}</br>${address.state} ${address.country}</br><p>`;
+      return {address: addressTag};
+    } else {
+      return {};
+    }
   }
 
   get queueName() {
