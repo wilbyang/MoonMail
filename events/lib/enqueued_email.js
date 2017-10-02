@@ -63,7 +63,8 @@ class EnqueuedEmail {
       email: this.message.recipient.email,
       listId: this.message.recipient.listId,
       status: 'sent',
-      userId: this.getEmailUserId()
+      userId: this.getEmailUserId(),
+      userPlan: this.getEmailUserPlan()
     };
   }
 
@@ -78,6 +79,10 @@ class EnqueuedEmail {
 
   getEmailUserId() {
     return this.message.userId;
+  }
+
+  getEmailUserPlan() {
+    return this.message.userPlan;
   }
 
 }

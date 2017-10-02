@@ -48,7 +48,7 @@ describe('SendEmailService', () => {
 
       before(() => {
         senderService = new SendEmailService(queue, null, contextStub);
-        sinon.stub(senderService, 'setUserId').returns("some-user-id");
+        sinon.stub(senderService, 'updateUserData').returns(true);
         awsMock.mock('SES', 'sendRawEmail', { MessageId: 'some_message_id' });
       });
 
