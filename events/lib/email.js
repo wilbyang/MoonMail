@@ -65,7 +65,7 @@ class Email {
   _appendFooter(body) {
     return new Promise((resolve) => {
       if (this.options.footer) {
-        const footer = this._buildFooter(this._buildUnsubscribeUrl());
+        const footer = this._buildFooter(this._buildUnsubscribeUrl(), this.metadata);
         resolve(`${body} ${footer}`);
       } else {
         resolve(body);
@@ -84,7 +84,7 @@ class Email {
     return url.format(unsubscribeUrl);
   }
 
-  _buildFooter(unsubscribeUrl) {
+  _buildFooter(unsubscribeUrl, metadata = {}) {
     return `<table border="0" cellpadding="0" cellspacing="0" width="100%">
         <tbody>
           <tr>
@@ -97,6 +97,7 @@ class Email {
                       <a href="mailto:${this.to}" style="color:rgb(64,64,64)!important" target="_blank">${this.to}</a><span>&nbsp;|&nbsp;</span>
                       <a href="${unsubscribeUrl}" style="color:rgb(64,64,64)!important" target="_blank">Unsubscribe from this list</a>
                       <br />
+                      ${metadata.address}
                       <a href="https://moonmail.io/?utm_source=newsletter&utm_medium=moonmail-user&utm_campaign=user-campaigns" target="_blank">
                         <img src="https://s3-eu-west-1.amazonaws.com/static.moonmail.prod.eu-west-1/moonmail-logo.png" border="0" alt="Email Marketing Powered by MoonMail" title="MoonMail Email Marketing" width="130" height="28" />
                       </a>
