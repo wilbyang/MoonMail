@@ -1,16 +1,16 @@
-import * as chai from 'chai';
-import * as sinon from 'sinon';
-import { expect } from 'chai';
+import chai from 'chai';
+import sinon from 'sinon';
 import Promise from 'bluebird';
 import { Campaign, List } from 'moonmail-models';
 import 'sinon-as-promised';
+import awsMock from 'aws-sdk-mock';
+import AWS from 'aws-sdk';
+import chaiAsPromised from 'chai-as-promised';
 import { DeliverCampaignService } from './deliver_campaign_service';
 import { compressString } from '../utils';
 import FunctionsClient from '../functions_client';
 
-const awsMock = require('aws-sdk-mock');
-const AWS = require('aws-sdk');
-const chaiAsPromised = require('chai-as-promised');
+const expect = chai.expect;
 chai.use(chaiAsPromised);
 
 describe('DeliverCampaignService', () => {
@@ -126,17 +126,24 @@ describe('DeliverCampaignService', () => {
     });
 
     context('when a campaign object was also provided', () => {
-      before(() => {
+      beforeEach(() => {
         sinon.stub(Campaign, 'update').resolves(updatedCampaign);
-        deliverCampaignService = new DeliverCampaignService(snsClient, { campaign, campaignId, userId, userPlan: 'plan' });
-        sinon.stub(deliverCampaignService, '_updateCampaignStatus').resolves(true);
         sinon.stub(Campaign, 'sentLastNDays').resolves(deliverCampaignService.maxDailyCampaigns - 1);
         sinon.stub(List, 'get').resolves({ userId, id: listIds[0], name: 'Some list', subscribedCount: 25 });
-        sinon.stub(deliverCampaignService, '_getTotalRecipients').resolves(100);
         sinon.stub(FunctionsClient, 'execute').resolves({ quotaExceeded: false });
       });
 
+      afterEach(() => {
+        Campaign.sentLastNDays.restore();
+        List.get.restore();
+        Campaign.update.restore();
+        FunctionsClient.execute.restore();
+      });
+
       it('fetches the campaign from DB and sends it to the topic', (done) => {
+        deliverCampaignService = new DeliverCampaignService(snsClient, { campaign, campaignId, userId, userPlan: 'plan' });
+        sinon.stub(deliverCampaignService, '_updateCampaignStatus').resolves(true);
+        sinon.stub(deliverCampaignService, '_getTotalRecipients').resolves(100);
         deliverCampaignService.sendCampaign().then((result) => {
           const args = Campaign.update.lastCall.args;
           expect(args[1]).to.equal(userId);
@@ -151,16 +158,23 @@ describe('DeliverCampaignService', () => {
           expect(snsPayload).to.have.deep.property('campaign.precompiled', false);
           expect(snsPayload.currentUserState).to.exist;
           done();
-        })
-          .catch(err => done(err));
+        }).catch(err => done(err));
       });
 
-      after(() => {
-        Campaign.sentLastNDays.restore();
-        List.get.restore();
-        Campaign.update.restore();
-        FunctionsClient.execute.restore();
-        deliverCampaignService._getTotalRecipients.restore();
+      context('and campaign metadata was provided', () => {
+        it('should include it in the canonical message', done => {
+          const campaignMetadata = {address: {city: 'A Coruña'}};
+          deliverCampaignService = new DeliverCampaignService(snsClient, { campaign, campaignId, campaignMetadata, userId, userPlan: 'plan' });
+          sinon.stub(deliverCampaignService, '_updateCampaignStatus').resolves(true);
+          sinon.stub(deliverCampaignService, '_getTotalRecipients').resolves(100);
+          deliverCampaignService.sendCampaign().then((result) => {
+            const snsPayload = JSON.parse(snsClient.publish.lastCall.args[0].Message);
+            const actualMetadata = snsPayload.campaign.metadata;
+            expect(actualMetadata).to.deep.equal(campaignMetadata);
+            done();
+          })
+          .catch(err => done(err));
+        });
       });
     });
 

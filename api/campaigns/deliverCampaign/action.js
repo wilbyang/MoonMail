@@ -16,7 +16,8 @@ export function respond(event, cb) {
       const userId = user.id;
       const userPlan = user.plan;
       const appendFooter = user.appendFooter;
-      const deliverService = new DeliverCampaignService(sns, {campaign: event.campaign, campaignId: event.campaignId, userId, userPlan, appendFooter});
+      const campaignMetadata = {address: user.address};
+      const deliverService = new DeliverCampaignService(sns, {campaign: event.campaign, campaignId: event.campaignId, campaignMetadata, userId, userPlan, appendFooter});
       deliverService.sendCampaign()
         .then(res => cb(null, res))
         .catch(err => cb(ApiErrors.response(err)));

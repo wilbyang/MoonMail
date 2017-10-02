@@ -1,19 +1,18 @@
 import Promise from 'bluebird';
 import omitEmpty from 'omit-empty';
-import base64url from 'base64-url';
-import { debug } from '../logger';
 import { Campaign, List } from 'moonmail-models';
-import inlineCss from 'inline-css';
 import juice from 'juice';
+import { debug } from '../logger';
 import { compressString } from '../utils';
 import FunctionsClient from '../functions_client';
 
 
 class DeliverCampaignService {
 
-  constructor(snsClient, { campaign, campaignId, userId, userPlan, appendFooter } = {}) {
+  constructor(snsClient, { campaign, campaignId, campaignMetadata, userId, userPlan, appendFooter } = {}) {
     this.snsClient = snsClient;
     this.campaign = campaign;
+    this.campaignMetadata = campaignMetadata;
     this.campaignId = campaignId;
     this.userId = userId;
     this.userPlan = userPlan || 'free';
@@ -27,7 +26,7 @@ class DeliverCampaignService {
       .then(() => this._getCampaign())
       .then(campaign => this._checkCampaign(campaign))
       .then(campaign => this._compressCampaignBody(campaign))
-      .then(campaign => this._buildCampaignMessage(campaign))
+      .then(campaign => this._buildCampaignMessage(campaign, this.campaignMetadata))
       .then(canonicalMessage => this._publishToSns(canonicalMessage))
       .then(() => this._updateCampaignStatus());
   }
@@ -124,8 +123,8 @@ class DeliverCampaignService {
     });
   }
 
-  _buildCampaignMessage(campaign) {
-    debug('= DeliverCampaignService._buildCampaignMessage', campaign);
+  _buildCampaignMessage(campaign, campaignMetadata) {
+    debug('= DeliverCampaignService._buildCampaignMessage', campaign, campaignMetadata);
     return new Promise((resolve) => {
       const inlinedBody = juice(campaign.body);
       resolve(omitEmpty({
@@ -141,7 +140,8 @@ class DeliverCampaignService {
           precompiled: false,
           listIds: campaign.listIds,
           segmentId: campaign.segmentId,
-          attachments: campaign.attachments
+          attachments: campaign.attachments,
+          metadata: campaignMetadata
         }
       }));
     });
