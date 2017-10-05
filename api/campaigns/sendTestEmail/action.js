@@ -1,8 +1,8 @@
-import { debug } from '../../lib/logger';
+import { SES } from 'aws-sdk';
+import { logger } from '../../lib/index';
 import decrypt from '../../lib/auth-token-decryptor';
 import { SendTestEmailService } from '../../lib/services/send_test_email_service';
 import { ApiErrors } from '../../lib/errors';
-import { SES } from 'aws-sdk';
 import FunctionsClient from '../../lib/functions_client';
 
 const defaultSesCreds = {
@@ -10,10 +10,9 @@ const defaultSesCreds = {
   secretAccessKey: process.env.DEFAULT_API_SECRET,
   region: process.env.DEFAULT_DEFAULT_REGION
 };
-// const sesClient = new SES(defaultSesCreds);
 
 export function respond(event, cb) {
-  debug('= sendTestEmail.action', JSON.stringify(event));
+  logger().info('= sendTestEmail.action', JSON.stringify(event));
   decrypt(event.authToken)
     .then(decoded => getSender(decoded.sub, event.campaign.senderId))
     .then(sender => serviceFactory(event, sender))

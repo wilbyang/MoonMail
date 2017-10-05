@@ -52,6 +52,22 @@ describe('SendTestEmailService', () => {
           .catch(err => done(err));
         });
       });
+
+
+      context('and the body contains liquid tags', () => {
+        it('parses the liquid tags', (done) => {
+          const metadata = {name: 'David'};
+          const bodyTemplate = 'Hi {{ name }} {% if noexisting %}no displayed{% endif %}, this email is for you!';
+          const bodyParsed = `Hi ${metadata.name} , this email is for you!`;
+          sendTestService = new SendTestEmailService(sesClient, {subject, body: bodyTemplate, emails, metadata});
+          sendTestService.sendEmail().then(res => {
+            const sesArgs = sesClient.sendEmail.lastCall.args[0];
+            expect(sesArgs).to.have.deep.property('Message.Body.Html.Data', bodyParsed);
+            done();
+          })
+          .catch(err => done(err));
+        });
+      });
     });
 
     context('when the campaign is incomplete', () => {
