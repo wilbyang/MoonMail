@@ -36,6 +36,7 @@
     "emitter": "0.0.5",
     "inline-css": "^2.2.2",
     "juice": "github:microapps/juice",
+    "liquid-node": "^3.0.0",
     "moment": "^2.15.1",
     "moment-round": "^1.0.1",
     "moonmail-models": "github:microapps/moonmail-models",
