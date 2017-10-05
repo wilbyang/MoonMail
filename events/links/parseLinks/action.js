@@ -1,23 +1,21 @@
-'use strict';
-
 import * as aws from 'aws-sdk';
-import { debug } from '../../lib/index';
+import { logger } from '../../lib/index';
 import { ParseLinksService } from '../../lib/parse_links_service';
 
 aws.config.update({region: process.env.SERVERLESS_REGION});
 const sns = new aws.SNS();
 
 export function respond(event, cb) {
-  debug('= links.parseLinks', JSON.stringify(event));
+  logger().info('= links.parseLinks', JSON.stringify(event));
   const campaignParams = JSON.parse(event.Records[0].Sns.Message);
   if (campaignParams.hasOwnProperty('sender')
         && campaignParams.hasOwnProperty('campaign')
         && !campaignParams.campaign.precompiled) {
-    debug('= links.parseLinks', 'The message is directed to this Lambda function');
+    logger().debug('= links.parseLinks', 'The message is directed to this Lambda function');
     const precompileService = new ParseLinksService(sns, campaignParams);
     precompileService.precompile()
       .then((result) => {
-        debug('= links.parseLinks', 'Success');
+        logger().debug('= links.parseLinks', 'Success');
         const payload = {
           userId: campaignParams.userId,
           campaignId: campaignParams.campaign.id,
@@ -29,17 +27,17 @@ export function respond(event, cb) {
         };
         sns.publish(params, (err, res) => {
           if (err) {
-            debug('= links.parseLinks', 'Error publishing to SNS', err);
+            logger().debug('= links.parseLinks', 'Error publishing to SNS', err);
             cb(err);
           } else {
-            debug('= links.parseLinks', 'Success sending SNS');
+            logger().debug('= links.parseLinks', 'Success sending SNS');
             cb(null, res);
           }
         });
       })
       .catch(cb);
   } else {
-    debug('= links.parseLinks', 'The message is NOT directed to this Lambda function');
+    logger().debug('= links.parseLinks', 'The message is NOT directed to this Lambda function');
     cb(null, 'Message not directed to this service, disregard...');
   }
 }
