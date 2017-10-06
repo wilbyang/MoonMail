@@ -1,5 +1,5 @@
 import { Link } from 'moonmail-models';
-import { debug } from './index';
+import { logger } from './index';
 import { LinksParser } from './links_parser';
 import { compressString, uncompressString } from './utils';
 
@@ -16,7 +16,7 @@ class ParseLinksService {
   }
 
   precompile() {
-    debug('= ParseLinksService.precompile', 'Starting precompilation process');
+    logger().debug('= ParseLinksService.precompile', 'Starting precompilation process');
     return this.addTracking()
       .then((result) => {
         return new Promise((resolve, reject) => {
@@ -30,7 +30,7 @@ class ParseLinksService {
   }
 
   addTracking() {
-    debug('= ParseLinksService.addTracking', 'Adding tracking to body');
+    logger().debug('= ParseLinksService.addTracking', 'Adding tracking to body');
     const linksParser = new LinksParser({
       campaignId: this.campaignParams.campaign.id,
       apiHost: this.apiHost
@@ -39,7 +39,7 @@ class ParseLinksService {
   }
 
   saveLinks(campaignLinks) {
-    debug('= ParseLinksService.saveLinks', 'Saving links');
+    logger().debug('= ParseLinksService.saveLinks', 'Saving links');
     return Link.save(campaignLinks);
   }
 
@@ -54,17 +54,17 @@ class ParseLinksService {
 
   publishToSns(canonicalMessage) {
     return new Promise((resolve, reject) => {
-      debug('= ParseLinksService.publishToSns', 'Sending canonical message', JSON.stringify(canonicalMessage));
+      logger().info('= ParseLinksService.publishToSns', 'Sending canonical message', JSON.stringify(canonicalMessage));
       const params = {
         Message: JSON.stringify(canonicalMessage),
         TopicArn: this.sendCampaignTopicArn
       };
       this.snsClient.publish(params, (err, data) => {
         if (err) {
-          debug('= ParseLinksService.publishToSns', 'Error sending message', err);
+          logger().debug('= ParseLinksService.publishToSns', 'Error sending message', err);
           reject(err);
         } else {
-          debug('= ParseLinksService.publishToSns', 'Message sent');
+          logger().debug('= ParseLinksService.publishToSns', 'Message sent');
           resolve(data);
         }
       });

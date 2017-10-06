@@ -1,19 +1,19 @@
 import 'babel-polyfill';
 import base64url from 'base64-url';
-import { debug } from './index';
 import * as url from 'url';
 import * as cheerio from 'cheerio';
 import cuid from 'cuid';
 import omitEmpty from 'omit-empty';
+import { logger } from './index';
 
 class LinksParser {
-  constructor({ apiHost, context } = {}) {
+  constructor({ apiHost, campaignId, context = {} } = {}) {
     this.apiHost = apiHost;
-    this.campaignId = context.campaign.id;
-    this.recipientId = context.recipient.id;
-    this.listId = context.recipient.listId;
-    this.segmentId = context.campaign.segmentId;
-    this.userId = base64url.encode(context.userId);
+    this.campaignId = campaignId || (context.campaign || {}).id;
+    this.segmentId = (context.campaign || {}).segmentId;
+    this.recipientId = (context.recipient || {}).id;
+    this.listId = (context.recipient || {}).listId;
+    this.userId = base64url.encode(context.userId || '');
     this.opensPath = 'links/open';
     this.clicksPath = 'links/click';
   }
@@ -43,21 +43,19 @@ class LinksParser {
 
   parseLinks(body) {
     return new Promise((resolve) => {
-      const $ = cheerio.load(body);
+      const $ = cheerio.load(body, {decodeEntities: false});
       let campaignLinks = {
         id: this.campaignId,
         links: {}
       };
       $('a').each((i, link) => {
-        const linkUrl = $(link).attr('href');
-        if (linkUrl) {
-          if (!this._isUnsubscribeLink(linkUrl)) {
-            const linkText = $(link).text() || '-';
-            const linkId = cuid();
-            const clickTrackUrl = this.clicksTrackUrl(linkId, linkUrl);
-            $(link).attr('href', clickTrackUrl);
-            campaignLinks.links[linkId] = { url: linkUrl, text: linkText };
-          }
+        if (!this._shouldBeSkipped($, link)) {
+          const linkUrl = $(link).attr('href');
+          const linkText = $(link).text() || '-';
+          const linkId = cuid();
+          const clickTrackUrl = this.clicksTrackUrl(linkId, linkUrl);
+          $(link).attr('href', clickTrackUrl);
+          campaignLinks.links[linkId] = { url: linkUrl, text: linkText };
         }
       });
       const result = {
@@ -71,7 +69,7 @@ class LinksParser {
   appendRecipientIdToLinks(body) {
     if (this.recipientId) {
       return new Promise((resolve, reject) => {
-        const $ = cheerio.load(body);
+        const $ = cheerio.load(body, {decodeEntities: false});
         $('a').each((i, link) => this._appendTrackingInfo(link, $));
         return resolve($.html());
       });
@@ -93,6 +91,13 @@ class LinksParser {
   _trackingQueryString() {
     return omitEmpty({ r: this.recipientId, u: this.userId, l: this.listId, s: this.segmentId });
   }
+
+  _shouldBeSkipped($, link) {
+    const linkUrl = $(link).attr('href');
+    const trackingDisabled = $(link).attr('mm-disable-tracking') === 'true';
+    return (!linkUrl || this._isUnsubscribeLink(linkUrl) || trackingDisabled);
+  }
+
   _isUnsubscribeLink(linkUrl) {
     return linkUrl && linkUrl.indexOf('unsubscribe_url') > -1;
   }
