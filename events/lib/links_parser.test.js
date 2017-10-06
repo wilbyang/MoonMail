@@ -15,12 +15,15 @@ chai.use(chaiCheerio);
 
 describe('LinksParser', () => {
   const linkUrls = ['http://example.com', 'http://anotherexample.com'];
+  const skipLinkUrls = ['http://example-no-skip.com', 'http://anotherexample-no-skip.com'];
   const unsubscribeUrl = '{{ unsubscribe_url }}';
   const unsubscribeText = 'unsubscribe here';
   const linksText = ['some link', 'another link', 'unsubscribe from this list'];
   const unsubscribeLink = `<a href="${unsubscribeUrl}">${unsubscribeText}</a>`;
   const htmlLinks = [`<a href="${linkUrls[0]}">${linksText[0]}</a>`, `<a href="${linkUrls[1]}">${linksText[1]}</a>`];
+  const htmlSkipLinks = [`<a mm-disable-tracking="true" href="${skipLinkUrls[0]}">${linksText[0]}</a>`, `<a mm-disable-tracking="true" href="${skipLinkUrls[1]}">${linksText[1]}</a>`];
   const htmlBody = `This piece of HTML contains not only ${htmlLinks[0]} but ${htmlLinks[1]}, and this is the unsubscribe ${unsubscribeLink}`;
+  const htmlSkipBody = `This piece of HTML contains not only ${htmlSkipLinks[0]} but ${htmlSkipLinks[1]}`;
   const segmentId = 'some-segment-id';
   const campaign = { id: 'campaign-id' };
   const listId = 'some-list-id';
@@ -82,6 +85,12 @@ describe('LinksParser', () => {
     it('skips the unsubscribe_url link', (done) => {
       links.parseLinks(htmlBody).then((result) => {
         expect(result.parsedBody).to.contain(unsubscribeLink);
+        done();
+      }).catch(done);
+    });
+    it('skips the mm-disable-tracking links', (done) => {
+      links.parseLinks(htmlSkipBody).then((result) => {
+        skipLinkUrls.forEach(url => expect(result.parsedBody).to.contain(url))
         done();
       }).catch(done);
     });

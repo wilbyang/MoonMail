@@ -49,15 +49,13 @@ class LinksParser {
         links: {}
       };
       $('a').each((i, link) => {
-        const linkUrl = $(link).attr('href');
-        if (linkUrl) {
-          if (!this._isUnsubscribeLink(linkUrl)) {
-            const linkText = $(link).text() || '-';
-            const linkId = cuid();
-            const clickTrackUrl = this.clicksTrackUrl(linkId, linkUrl);
-            $(link).attr('href', clickTrackUrl);
-            campaignLinks.links[linkId] = { url: linkUrl, text: linkText };
-          }
+        if (!this._shouldBeSkipped($, link)) {
+          const linkUrl = $(link).attr('href');
+          const linkText = $(link).text() || '-';
+          const linkId = cuid();
+          const clickTrackUrl = this.clicksTrackUrl(linkId, linkUrl);
+          $(link).attr('href', clickTrackUrl);
+          campaignLinks.links[linkId] = { url: linkUrl, text: linkText };
         }
       });
       const result = {
@@ -93,6 +91,13 @@ class LinksParser {
   _trackingQueryString() {
     return omitEmpty({ r: this.recipientId, u: this.userId, l: this.listId, s: this.segmentId });
   }
+
+  _shouldBeSkipped($, link) {
+    const linkUrl = $(link).attr('href');
+    const trackingDisabled = $(link).attr('mm-disable-tracking') === 'true';
+    return (!linkUrl || this._isUnsubscribeLink(linkUrl) || trackingDisabled);
+  }
+
   _isUnsubscribeLink(linkUrl) {
     return linkUrl && linkUrl.indexOf('unsubscribe_url') > -1;
   }
