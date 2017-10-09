@@ -79,7 +79,7 @@ class LinksParser {
   }
 
   _appendTrackingInfo(link, $) {
-    const linkUrl = $(link).attr('href');
+    const linkUrl = $(link).attr('href') || '';
     const uri = url.parse(linkUrl, true);
     if (linkUrl && !this._isUnsubscribeLink(linkUrl) && this._isRedirectionLink(uri)) {
       delete uri.search;

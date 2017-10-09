@@ -1,6 +1,5 @@
-'use strict';
-// require('babel-register');
-require('babel-polyfill');
+import 'babel-polyfill';
+import { configureLogger } from '../../lib/index';
 /**
  * Serverless Module: Lambda Handler
  * - Your lambda functions should be a thin wrapper around your own separate
@@ -13,7 +12,7 @@ var action = require('./action');
 
 // Lambda Handler
 module.exports.handler = function(event, context) {
-
+  configureLogger(event, context);
   action.respond(event, function(error, response) {
     return context.done(error, response);
   });
