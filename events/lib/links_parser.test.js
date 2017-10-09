@@ -15,7 +15,7 @@ chai.use(chaiCheerio);
 
 describe('LinksParser', () => {
   const linkUrls = ['http://example.com', 'http://anotherexample.com'];
-  const skipLinkUrls = ['http://example-no-skip.com', 'http://anotherexample-no-skip.com'];
+  const skipLinkUrls = ['http://example-skip.com', 'http://anotherexample-skip.com'];
   const unsubscribeUrl = '{{ unsubscribe_url }}';
   const unsubscribeText = 'unsubscribe here';
   const linksText = ['some link', 'another link', 'unsubscribe from this list'];
@@ -58,6 +58,16 @@ describe('LinksParser', () => {
     });
   });
 
+  describe('#appendRecipientIdToLinks', () => {
+    it('skips malformed links', (done) => {
+      const malformedLinkBody = `${htmlBody} <a>No href</a>`;
+      links.appendRecipientIdToLinks(malformedLinkBody).then((result) => {
+        expect(result).to.exist;
+        done();
+      }).catch(done);
+    });
+  });
+
   describe('#clicksTrackUrl()', () => {
     it('returns the URL to track clicks', (done) => {
       const encodedLinkUrl = encodeURIComponent(linkUrls[0]);
@@ -90,7 +100,7 @@ describe('LinksParser', () => {
     });
     it('skips the mm-disable-tracking links', (done) => {
       links.parseLinks(htmlSkipBody).then((result) => {
-        skipLinkUrls.forEach(url => expect(result.parsedBody).to.contain(url))
+        skipLinkUrls.forEach(url => expect(result.parsedBody).to.contain(url));
         done();
       }).catch(done);
     });

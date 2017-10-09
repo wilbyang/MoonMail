@@ -1,4 +1,4 @@
-import { debug } from './index';
+import { logger } from './index';
 import { EmailQueue } from './email_queue';
 import { Email } from './email';
 import { LinksParser } from './links_parser';
@@ -28,7 +28,7 @@ class PrecompileEmailService {
 
   composeEmail() {
     return new Promise((resolve, reject) => {
-      debug('= PrecompileEmailService.composeEmail', 'Composing email');
+      logger().debug('= PrecompileEmailService.composeEmail', 'Composing email');
       const parsedBodyPromise = this.composeBody();
       const parsedSubjectPromise = this.email.renderSubject();
       Promise.all([parsedBodyPromise, parsedSubjectPromise])
@@ -39,7 +39,7 @@ class PrecompileEmailService {
           const compressedParsedBody = compressString(parsedBody);
           Object.assign(composedEmail.campaign, { subject: parsedSubject, body: compressedParsedBody});
           Object.assign(composedEmail.recipient, { unsubscribeUrl: this.email.unsubscribeUrl});
-          debug('= PrecompileEmailService.composeEmail', 'Composed email', composedEmail);
+          logger().debug('= PrecompileEmailService.composeEmail', 'Composed email', composedEmail);
           resolve(composedEmail);
         })
         .catch(reject);
@@ -59,14 +59,14 @@ class PrecompileEmailService {
 
   enqueueEmail() {
     return new Promise((resolve, reject) => {
-      debug('= PrecompileEmailService.enqueueEmail()', 'Enqueuing email');
+      logger().debug('= PrecompileEmailService.enqueueEmail()', 'Enqueuing email');
       this.composeEmail()
         .then((composedEmail) => {
-          debug('= PrecompileEmailService.enqueueEmail', 'Got the composed email', composedEmail);
+          logger().debug('= PrecompileEmailService.enqueueEmail', 'Got the composed email', composedEmail);
           resolve(this.queue.putMessage(composedEmail));
         })
         .catch((err) => {
-          debug('= PrecompileEmailService.enqueueEmail', 'Some error occurred');
+          logger().debug('= PrecompileEmailService.enqueueEmail', 'Some error occurred');
           reject(err);
         });
     });

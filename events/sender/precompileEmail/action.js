@@ -1,14 +1,12 @@
-'use strict';
-
 import * as aws from 'aws-sdk';
-import { debug } from '../../lib/index';
+import { logger } from '../../lib/index';
 import { PrecompileEmailService } from '../../lib/precompile_email_service';
 
 aws.config.update({region: process.env.SERVERLESS_REGION});
 const sqs = new aws.SQS();
 
 module.exports.respond = (event, cb) => {
-  debug('= sender.precompileEmail', JSON.stringify(event));
+  logger().info('= sender.precompileEmail', JSON.stringify(event));
   const emailParams = JSON.parse(event.Records[0].Sns.Message);
   const precompileService = new PrecompileEmailService(sqs, emailParams);
   precompileService.enqueueEmail()
