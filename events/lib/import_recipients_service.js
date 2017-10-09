@@ -1,5 +1,6 @@
 import AWS from 'aws-sdk';
-import Baby from 'babyparse';
+import Papa from 'papaparse';
+import stripBom from 'strip-bom';
 import { Recipient, List } from 'moonmail-models';
 import base64url from 'base64-url';
 import querystring from 'querystring';
@@ -68,7 +69,7 @@ class ImportRecipientsService {
     };
     return this._publishToSns(importStatus)
       .then(() => this.parseFile())
-      .then(recipients => {
+      .then((recipients) => {
         this.totalRecipientsCount = recipients.length || 0;
         this.recipients = recipients.filter(this.filterByEmail.bind(this));
         return this.saveRecipients();
@@ -80,14 +81,13 @@ class ImportRecipientsService {
       const recipientsBatch = this.recipients.slice(this.importOffset, this.importOffset + this.maxBatchSize);
       const deduplicatedRecipientsBatch = _.uniqBy(recipientsBatch, 'email');
       return Recipient.saveAll(deduplicatedRecipientsBatch)
-        .then(data => {
+        .then((data) => {
           this.importOffset += (data.UnprocessedItems && data.UnprocessedItems instanceof Array) ?
             (this.maxBatchSize - data.UnprocessedItems.length) : Math.min(this.maxBatchSize, recipientsBatch.length);
           this.processedItems += recipientsBatch.length;
           if (this.processedItems % 1000 === 0) this._notifyProgress(1000);
           return this.timeEnough() ? this.saveRecipients() : this.invokeLambda();
-        }).catch(err => {
-          return new Promise((resolve, reject) => {
+        }).catch((err) => new Promise((resolve, reject) => {
             debug('= ImportRecipientsService.saveRecipients', 'Error while saving recipients', err, err.stack);
             const importStatus = {
               listId: this.listId,
@@ -105,8 +105,7 @@ class ImportRecipientsService {
             this._publishToSns(importStatus)
               .then(() => reject(importStatus))
               .catch((e) => reject(importStatus));
-          });
-        });
+          }));
     } else {
       return new Promise((resolve, reject) => {
         const importStatus = {
@@ -124,7 +123,7 @@ class ImportRecipientsService {
         this._saveMetadataAttributes()
           .then(() => this._publishToSns(importStatus))
           .then(() => resolve(importStatus))
-          .catch((error) => reject(error));
+          .catch(error => reject(error));
       });
     }
   }
@@ -162,7 +161,7 @@ class ImportRecipientsService {
           debug('= ImportRecipientsService.parseFile', 'File metadata', data.Metadata);
           if (this.fileExt === 'csv') {
             this.headerMapping = JSON.parse(data.Metadata.headers);
-            return this.parseCSV(data.Body.toString('utf8')).then((recipients) => resolve(recipients)).catch((error) => reject(error));
+            return this.parseCSV(data.Body.toString('utf8')).then(recipients => resolve(recipients)).catch(error => reject(error));
           } else {
             debug('= ImportRecipientsService.parseFile', `${this.fileExt} is not supported`);
             return reject(`${this.fileExt} is not supported`);
@@ -178,7 +177,7 @@ class ImportRecipientsService {
       const userId = this.userId;
       const listId = this.listId;
       const recipients = [];
-      Baby.parse(csvString, {
+      Papa.parse(stripBom(csvString), {
         header: true,
         dynamicTyping: true,
         skipEmptyLines: true,
@@ -189,7 +188,7 @@ class ImportRecipientsService {
             } else {
               const item = results.data[0];
               debug('= ImportRecipientsService.parseCSV', 'Parsing recipient', JSON.stringify(item), headerMapping);
-              let newRecp = {
+              const newRecp = {
                 userId,
                 listId,
                 metadata: {},
@@ -216,9 +215,7 @@ class ImportRecipientsService {
             debug('= ImportRecipientsService.parseCSV', 'Error parsing recipient', JSON.stringify(results.data[0]), headerMapping, error);
           }
         },
-        complete: (results, parser) => {
-          return resolve(recipients);
-        }
+        complete: (results, parser) => resolve(recipients)
       });
     });
   }
