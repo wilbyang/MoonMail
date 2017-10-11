@@ -17,16 +17,16 @@ class AttachRecipientsService {
   notifyAttachSegmentMembers() {
     debug('= AttachRecipientsService.attachSegmentmembers', this.campaignMessage.campaign.segmentId);
     return this._notifyAttachSegmentMembers(this._buildAttachSegmentMembersMessage())
-      .then(() => this._wait(5000))
       .then(() => this._notifyToUpdateCampaignStatus())
+      .then(() => this._wait(20000))
       .then(() => this._notifyToSendEmails());
   }
 
   notifyAttachListRecipients() {
     debug('= AttachRecipientsService.attachListRecipients', this.campaignMessage.campaign.listIds);
     return Promise.map(this.campaignMessage.campaign.listIds, listId => this._notifyAttachListRecipients(this._buildAttachListRecipientsMessage(listId)), { concurrency: 5 })
-      .then(() => this._wait(10000))
       .then(() => this._notifyToUpdateCampaignStatus())
+      .then(() => this._wait(20000))
       .then(() => this._notifyToSendEmails());
   }
 
@@ -90,7 +90,7 @@ class AttachRecipientsService {
       TopicArn: process.env.SEND_EMAILS_TOPIC_ARN,
       Message: JSON.stringify({ QueueName: this.campaignMessage.userId.replace('|', '_') })
     };
-    this.snsClient.publish(snsParams).promise();
+    return this.snsClient.publish(snsParams).promise();
   }
 
   _wait(time) {
