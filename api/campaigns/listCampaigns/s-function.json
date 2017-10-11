@@ -44,8 +44,7 @@
     "SERVERLESS_STAGE": "${stage}",
     "SERVERLESS_REGION": "${region}",
     "CAMPAIGNS_TABLE": "$${campaignsTable}",
-    "ARCHIVED_INDEX_NAME": "$${campaignsArchivedIndex}",
-    "DEBUG": "true"
+    "ARCHIVED_INDEX_NAME": "$${campaignsArchivedIndex}"
   },
   "vpc": {
     "securityGroupIds": [],

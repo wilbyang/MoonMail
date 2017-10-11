@@ -32,7 +32,7 @@
     "ES_RECIPIENTS_INDEX_TYPE": "$${esRecipientsIndexType}",
     "ES_HOST": "${esHost}",
     "ES_REGION": "${esRegion}",
-    "LOG_LEVEL": "info"
+    "LOG_LEVEL": "error"
   },
   "vpc": {
     "securityGroupIds": [],

@@ -18,7 +18,7 @@ export function respond(event, cb) {
         return cb(null, emailTemplate);
       })
       .catch(e => {
-        debug('= getTemplate.action', 'Error getting email template', e);
+        console.log('= getTemplate.action', 'Error getting email template', e);
         return cb(ApiErrors.response(e));
       });
     } else {

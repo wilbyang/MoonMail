@@ -40,8 +40,7 @@
     "SERVERLESS_PROJECT": "${project}",
     "SERVERLESS_STAGE": "${stage}",
     "SERVERLESS_REGION": "${region}",
-    "LISTS_TABLE": "$${listsTable}",
-    "DEBUG": "true"
+    "LISTS_TABLE": "$${listsTable}"
   },
   "vpc": {
     "securityGroupIds": [],

@@ -36,7 +36,7 @@
     "SERVERLESS_STAGE": "${stage}",
     "SERVERLESS_REGION": "${region}",
     "RECIPIENTS_TABLE": "$${recipientsTable}",
-    "LOG_LEVEL": "info"
+    "LOG_LEVEL": "error"
   },
   "vpc": {
     "securityGroupIds": [],
