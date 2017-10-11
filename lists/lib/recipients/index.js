@@ -101,7 +101,6 @@ const Recipients = {
   },
 
   storeRecipientSystemMetadata(recipient, systemMetadata) {
-    console.log('storeRecipientSystemMetadata', JSON.stringify(recipient), JSON.stringify(systemMetadata));
     if (systemMetadata.userAgent.match(/GoogleImageProxy/)) return Promise.resolve();
     return Recipient.update({ systemMetadata }, recipient.listId, recipient.id);
   },

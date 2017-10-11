@@ -58,7 +58,7 @@
     "SERVERLESS_STAGE": "${stage}",
     "SERVERLESS_REGION": "${region}",
     "CLICKS_STREAM_NAME": "${clicksStreamName}",
-    "LOG_LEVEL": "info"
+    "LOG_LEVEL": "error"
   },
   "vpc": {
     "securityGroupIds": [],

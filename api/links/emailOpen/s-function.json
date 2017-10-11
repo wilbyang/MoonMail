@@ -47,7 +47,7 @@
     "SERVERLESS_STAGE": "${stage}",
     "SERVERLESS_REGION": "${region}",
     "OPENS_STREAM_NAME": "${opensStreamName}",
-    "LOG_LEVEL": "info"
+    "LOG_LEVEL": "error"
   },
   "vpc": {
     "securityGroupIds": [],
