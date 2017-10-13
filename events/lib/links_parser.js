@@ -114,7 +114,7 @@ class LinksParser {
         pathname: `${this.clicksPath}/${this.campaignId}/${linkId}`,
         query: { url: linkUrl }
       };
-      return url.format(clicksUrlObj);
+      return url.format(clicksUrlObj).replace(/%7B%7B/g, '{{').replace(/%7D%7D/g, '}}');
     }
   }
 }
