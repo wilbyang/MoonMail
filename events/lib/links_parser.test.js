@@ -114,5 +114,16 @@ describe('LinksParser', () => {
         done();
       }).catch(done);
     });
+
+    it('should maintain liquid tags', done => {
+      const urlsWithTags = ['https://moonmail.io/?q={{some_tag}}&r={{other_tag}}', '{{some_url}}'];
+      const withTagsLinks = urlsWithTags.map(url => `<a href="${url}">some text</a>`);
+      const withTagsBody = `Two links ${withTagsLinks[0]} and ${withTagsLinks[1]}`;
+      const expectedUrls = [encodeURIComponent('https://moonmail.io/?q=') + '{{some_tag}}' + encodeURIComponent('&r=') + '{{other_tag}}', '{{some_url}}'];
+      links.parseLinks(withTagsBody).then((result) => {
+        expectedUrls.forEach(url => expect(result.parsedBody).to.contain(url));
+        done();
+      }).catch(done);
+    });
   });
 });
