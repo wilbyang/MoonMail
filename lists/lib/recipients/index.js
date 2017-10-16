@@ -43,7 +43,7 @@ const Recipients = {
 
   createESRecipient(id, recipient) {
     if (!validRecipient(recipient)) return Promise.resolve();
-    const newRecipient = Object.assign({}, newRecipient, { metadata: stringifyMetadata(recipient.metadata) });
+    const newRecipient = Object.assign({}, recipient, { metadata: stringifyMetadata(recipient.metadata) });
     return ElasticSearch.createOrUpdateDocument(this.client, this.indexName, this.indexType, id, newRecipient);
   },
 
