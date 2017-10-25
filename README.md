@@ -99,4 +99,6 @@ If you need support getting MoonMail into production in your AWS account, contac
 - <a href="mailto:sam@acloud.guru">A Cloud Guru - AWS training & serverless experts</a> (<a href="https://acloud.guru">Visit Web Site</a>)
 - <a href="mailto:hello@goltfisch.de">Just Serverless</a>
 
+[List your Serverless services by creating a MoonMail account] (https://app.moonmail.io/profile/experts)
+
 MoonMail [Email Marketing Software](https://moonmail.io/) done the right way
