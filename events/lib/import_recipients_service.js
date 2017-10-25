@@ -179,7 +179,7 @@ class ImportRecipientsService {
       const recipients = [];
       Papa.parse(stripBom(csvString), {
         header: true,
-        dynamicTyping: true,
+        //dynamicTyping: true,
         skipEmptyLines: true,
         step: (results, parser) => {
           try {
