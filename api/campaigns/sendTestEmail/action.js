@@ -28,7 +28,7 @@ function getSender(userId, senderId) {
 }
 
 function serviceFactory(event, sender = {}) {
-  const serviceParams = Object.assign({}, event.campaign, {emailFrom: sender.emailAddress});
+  const serviceParams = Object.assign({}, event.campaign, { sender });
   return buildSesClient(sender)
     .then(sesClient => SendTestEmailService.create(sesClient, serviceParams));
 }
