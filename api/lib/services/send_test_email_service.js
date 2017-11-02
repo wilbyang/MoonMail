@@ -10,13 +10,13 @@ class SendTestEmailService {
     return new SendTestEmailService(sesClient, params);
   }
 
-  constructor(sesClient, { body, subject, emails, emailFrom, metadata } = {}) {
+  constructor(sesClient, { body, subject, emails, sender, metadata } = {}) {
     this.sesClient = sesClient;
     this.body = body;
     this.subject = subject;
     this.emails = emails;
     this.metadata = metadata || {};
-    this.emailFrom = emailFrom || process.env.DEFAULT_EMAIL_ADDRESS;
+    this.sender = sender || {};
   }
 
   sendEmail() {
@@ -24,7 +24,7 @@ class SendTestEmailService {
     return this._checkParams()
       .then(() => this._buildBody(this.body, this.metadata))
       .then(parsedBody => this._inlineBodyCss(parsedBody))
-      .then(body => this._buildSesRequest({body}))
+      .then(body => this._buildSesRequest({ body }))
       .then(sesParams => this._deliver(sesParams));
   }
 
@@ -44,6 +44,11 @@ class SendTestEmailService {
     return liquid.parseAndRender(body, this.metadata);
   }
 
+  _buildFrom() {
+    if (this.sender.fromName) return `${this.sender.fromName} <${this.sender.emailAddress}>`;
+    return this.sender.emailAddress || process.env.DEFAULT_EMAIL_ADDRESS;
+  }
+
   _inlineBodyCss(body) {
     return new Promise((resolve) => {
       logger().debug('= SendTestEmailService._inlineBodyCss');
@@ -52,11 +57,11 @@ class SendTestEmailService {
     });
   }
 
-  _buildSesRequest({body}) {
+  _buildSesRequest({ body }) {
     return new Promise((resolve) => {
       logger().debug('= SendTestEmailService._buildSesRequest');
       resolve({
-        Source: this.emailFrom,
+        Source: this._buildFrom(),
         Destination: {
           ToAddresses: this.emails
         },
