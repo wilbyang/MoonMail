@@ -11,7 +11,7 @@ With [MoonMail](https://moonmail.io/) you can: create & edit lists of recipients
 
 **The biggest magic of MoonMail: SEND BILLIONS OF EMAILS WITH NO SERVERS!**
 
-[See the wiki for detailed specs and infrastructure graphs.] (https://github.com/microapps/MoonMail/wiki)
+[See the wiki for detailed specs and infrastructure graphs.](https://github.com/microapps/MoonMail/wiki)
 
 
 ## Live Features
