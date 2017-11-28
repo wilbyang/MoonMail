@@ -95,7 +95,8 @@ class LinksParser {
   _shouldBeSkipped($, link) {
     const linkUrl = $(link).attr('href');
     const trackingDisabled = $(link).attr('mm-disable-tracking') === 'true';
-    return (!linkUrl || this._isUnsubscribeLink(linkUrl) || trackingDisabled);
+    const isMailtoLink = /^mailto:*/.test(linkUrl);
+    return (!linkUrl || this._isUnsubscribeLink(linkUrl) || trackingDisabled || isMailtoLink);
   }
 
   _isUnsubscribeLink(linkUrl) {
