@@ -60,3 +60,5 @@ api/lib/auth-token-decryptor.js.bak
 private/
 api/lib/get_*
 api/lib/models/
+
+.serverless

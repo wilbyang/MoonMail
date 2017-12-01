@@ -1,0 +1,38 @@
+{
+  "Records": [
+    {
+      "eventVersion": "2.0",
+      "eventSource": "aws:s3",
+      "awsRegion": "us-east-1",
+      "eventTime": "2017-10-27T08:50:56.140Z",
+      "eventName": "ObjectCreated:Put",
+      "userIdentity": {
+        "principalId": "AWS:AROAJW7NOI34VFVV3TDI2:carloscastellanos"
+      },
+      "requestParameters": {
+        "sourceIPAddress": "194.140.150.210"
+      },
+      "responseElements": {
+        "x-amz-request-id": "97D8A6763E4F33E0",
+        "x-amz-id-2": "hprf49zFHbiVAPREvgfaQlrz048SK7zcJVahOlgo0uz0gObGukBoHe4PREYciFh4gx3wXmqaQsQ="
+      },
+      "s3": {
+        "s3SchemaVersion": "1.0",
+        "configurationId": "0275871f-2618-4ea5-b973-0d0c754779d2",
+        "bucket": {
+          "name": "next-recipients.moonmail.dev.us-east-1",
+          "ownerIdentity": {
+            "principalId": "A14M26HOOYK0HC"
+          },
+          "arn": "arn:aws:s3:::next-recipients.moonmail.dev.us-east-1"
+        },
+        "object": {
+          "key": "google-oauth2%7C113373534076241986701.cj9779ldd000601qffsa3u23x.1508940398000.csv",
+          "size": 6382,
+          "eTag": "659231df0fa8c04281c16585c8162268",
+          "sequencer": "0059F2F3701B03D128"
+        }
+      }
+    }
+  ]
+}
