@@ -63,6 +63,7 @@ async function broadcastImportStatus(userId, listId, index, total) {
     // If imported then wait a bit to give time recipientsCounter to finish
     // FIXME: Remove recipientCounter service and make the calculations here instead
     await wait(200);
+    await UserNotifier.notify(userId, { type: 'LIST_IMPORT_PROCESSED', data: { listId } });
     return UserNotifier.notify(userId, { type: 'LIST_IMPORT_SUCCEDED', data: { listId } });
 
     // // Inmediatelly unlock lists with more than 10000 recipients, poeplo uploading
@@ -93,7 +94,7 @@ function importRecipientsBatch(recipientImportedEvents) {
       finishedAt: totalRecipients === recipientIndex + 1 ? moment().unix() : null
     });
     const recipients = listRecipientEvents
-      .map(rw => Object.assign({}, rw.payload.recipient, { status: RecipientModel.statuses.subscribed, subscriptionOrigin: RecipientModel.subscriptionOrigins.listImport }));
+      .map(rw => Object.assign({}, rw.payload.recipient, { status: RecipientModel.statuses.subscribed, subscriptionOrigin: RecipientModel.subscriptionOrigins.listImport, isConfirmed: true }));
 
     return RecipientModel.saveBatch(recipients)
       .then(() => updateImportStatus(recipient.userId, listId, importId, importStatus))

@@ -27,21 +27,20 @@ function publishKinesisEvents(partitionKey, streamName, events, kinesisClient = 
   // FIXME: Obvious reasons
   return client.putRecords({ Records: records, StreamName: streamName }).promise()
     .then((data) => {
+      if (data.FailedRecordCount === 0) return Promise.resolve(data);
       const unprocessedItems = data.Records
         .map((record, index) => (record.ErrorCode ? index : null))
         .filter(record => !!record)
         .map(current => records[current]);
-
-      if (unprocessedItems.length === 0) return Promise.resolve(data);
       return wait(50)
         .then(() => client.putRecords({ Records: unprocessedItems, StreamName: streamName }).promise());
     }).then((data2) => {
+      if (data2.FailedRecordCount === 0) return Promise.resolve(data2);
       const unprocessedItems2 = data2.Records
         .map((record, index) => (record.ErrorCode ? index : null))
         .filter(record => !!record)
         .map((current, index) => records[index]);
-      if (unprocessedItems2.length === 0) return Promise.resolve(data2);
-      return wait(50)
+      return wait(75)
         .then(() => client.putRecords({ Records: unprocessedItems2, StreamName: streamName }).promise());
     });
 }

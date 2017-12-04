@@ -3,6 +3,7 @@ import { Recipient } from 'moonmail-models';
 import cuid from 'cuid';
 import moment from 'moment';
 import omitEmpty from 'omit-empty';
+import base64url from 'base64-url';
 import chunkArray from '../lib/utils/chunkArray';
 import BaseModelMixin from './BaseModelMixin';
 
@@ -26,7 +27,7 @@ export default class RecipientModel extends Recipient {
   }
 
   static save(item) {
-    const toSaveItem = omitEmpty(Object.assign({}, { id: cuid(), createdAt: moment().unix() }, item));
+    const toSaveItem = omitEmpty(Object.assign({}, { id: base64url.encode(item.email.toString()), createdAt: moment().unix() }, item));
     return this.save(toSaveItem).then(() => toSaveItem);
   }
 
@@ -37,7 +38,7 @@ export default class RecipientModel extends Recipient {
   // TODO: Improve me, retry only unprocessed items
   static saveAll(items) {
     if (items.length === 0) return Promise.resolve({});
-    const itemsToSave = items.map(item => Object.assign({}, { id: cuid(), createdAt: moment().unix() }, item));
+    const itemsToSave = items.map(item => Object.assign({}, { id: base64url.encode(item.email.toString()), createdAt: moment().unix() }, item));
     return super.saveAll(itemsToSave)
       .then((data) => {
         if (data.UnprocessedItems) {
