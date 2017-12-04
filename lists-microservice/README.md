@@ -6,3 +6,7 @@ Required profiles:
 
 MoonMail-v2-lists-dev
 MoonMail-v2-lists-prod
+
+Required configs:
+
+config.<stage>.json

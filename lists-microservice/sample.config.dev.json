@@ -1,0 +1,9 @@
+{
+  "REGION": "eu-west-1",
+  "LOG_LEVEL": "info",
+  "ES_HOST": "...",
+  "ES_REGION": "eu-west-1",
+  "LISTS_TABLE": "...",
+  "RECIPIENTS_TABLE": "...",
+  "IOT_ENDPOINT": "..."
+}
