@@ -17,7 +17,7 @@ export function recipientImportedHandler(event, context, callback) {
     App.logger().error(error);
     callback(new Error(error));
   }
-  return Lists.importRecipientsBatch(recipients)
+  return Lists.importRecipientsBatch(validRecipients)
     .then(result => callback(null, result))
     .catch((err) => {
       App.logger().error(err);
