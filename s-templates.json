@@ -73,6 +73,16 @@
       "*"
     ]
   },
+  "apiGatewayStatementTemplate": {
+    "Effect": "Allow",
+    "Action": [
+      "apigateway:POST",
+      "apigateway:DELETE"
+    ],
+    "Resource": [
+      "${publicApiARN}"
+    ]
+  },
   "fetchSenderFunctionName": "${project}-users-fetchSender",
   "createSegmentFunctionName": "${project}-segments-createSegment",
   "getSegmentFunctionName": "${project}-segments-getSegment",
