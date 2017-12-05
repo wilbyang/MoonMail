@@ -46,6 +46,7 @@
             "$${sesStatementTemplate}",
             "$${kinesisStatementTemplate}",
             "$${iotStatementTemplate}",
+            "$${apiGatewayStatementTemplate}",
             {
               "Effect": "Allow",
               "Action": [
