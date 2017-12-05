@@ -126,6 +126,7 @@
   "usersTable": "${project}-${stage}-users",
   "usersEmailIndex": "${project}-${stage}-usersEmailIndex",
   "usersAmazonCustomerIndex": "${project}-${stage}-usersAmazonCustomerIndex",
+  "usersApiKeyIndex": "${project}-${stage}-usersApiKeyIndex",
   "sentEmailsTable": "${project}-${stage}-sentEmails",
   "listsTable": "${project}-${stage}-lists",
   "recipientsTable": "${project}-${stage}-recipients",
