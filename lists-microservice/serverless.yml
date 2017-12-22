@@ -3,6 +3,7 @@ service: MoonMail-v2-lists
 plugins:
   - serverless-plugin-optimize
   - serverless-offline
+  - serverless-aws-documentation
 
 provider:
   name: aws
@@ -11,6 +12,7 @@ provider:
   region: ${file(./config.${self:custom.currentStage}.json):REGION}
   timeout: 300
   environment:
+    SERVERLESS_REGION: ${file(./config.${self:custom.currentStage}.json):REGION}
     LOG_LEVEL: ${file(./config.${self:custom.currentStage}.json):LOG_LEVEL}
     LISTS_TABLE: ${file(./config.${self:custom.currentStage}.json):LISTS_TABLE}
     RECIPIENTS_TABLE: ${file(./config.${self:custom.currentStage}.json):RECIPIENTS_TABLE}
@@ -18,6 +20,9 @@ provider:
     ES_REGION: ${file(./config.${self:custom.currentStage}.json):ES_REGION}
     LIST_RECIPIENT_STREAM_NAME: ListEventStream
     IOT_ENDPOINT: ${file(./config.${self:custom.currentStage}.json):IOT_ENDPOINT}
+    GET_USER_CONTEXT_FUNCTION: ${file(./config.${self:custom.currentStage}.json):GET_USER_CONTEXT_FUNCTION}
+    ES_RECIPIENTS_INDEX_NAME: ${file(./config.${self:custom.currentStage}.json):ES_RECIPIENTS_INDEX_NAME}
+    ES_RECIPIENTS_INDEX_TYPE: ${file(./config.${self:custom.currentStage}.json):ES_RECIPIENTS_INDEX_TYPE}
     #DEBUG: true
 
   iamRoleStatements:
@@ -42,32 +47,409 @@ custom:
   serverless-offline:
     babelOptions:
       presets: ["es2015"]
-  
+  documentation:
+    api:
+      info:
+        version: '2'
+        title: MoonMail API
+        description: >
+          Welcome to the MoonMail API reference, which lets you easily inject, repair and burn
+          off recipients and metafields from your space.
+
+          The MoonMail API is organized around the REST methodology. It uses resource-oriented
+          URLs, and common HTTP response codes to indicate API errors. All requests are
+          authenticated using an `api-key` which can be obtained from your developer dashboard.
+        termsOfService: http://support.moonmail.io/terms-and-policies/terms-of-service
+        contact:
+          name: MoonMail
+          url: https://moonmail.io/
+          email: hi@moonmail.io
+      tags:
+        -
+          name: Recipients
+          description: Email recipients
+    models:
+      -
+        name: Recipient
+        description: Recipient's model
+        contentType: "application/json"
+        schema:
+          type: object
+          required:
+            - id
+            - listId
+            - userId
+            - email
+            - status
+          properties:
+            id:
+              type: string
+            listId:
+              type: string
+            userId:
+              type: string
+            email:
+              type: string
+            subscriptionOrigin:
+              type: string
+              enum:
+                - signupForm
+                - manual
+                - listImport
+            isConfirmed:
+              type: boolean
+            status:
+              type: string
+              enum:
+                - awaitingConfirmation
+                - subscribed
+            metadata:
+              type: object
+      -
+        name: RecipientsList
+        description: A list of recipients
+        contentType: "application/json"
+        schema:
+          type: object
+          properties:
+            items:
+              type: array
+              items:
+                $ref: "{{model: Recipient}}"
+            total:
+              type: integer
+              description: Count of the recipients contained in the list
+      -
+        name: NewRecipient
+        description: New recipient
+        contentType: "application/json"
+        schema:
+          type: object
+          required:
+            - email
+            - subscriptionOrigin
+            - status
+          properties:
+            email:
+              type: string
+              format: email
+            subscriptionOrigin:
+              enum:
+                - signupForm
+                - listImport
+                - manual
+              type: string
+            status:
+              enum:
+                - subscribed
+                - awaitingConfirmation
+              type: string
+            isConfirmed:
+              type: boolean
+            metadata:
+              type: object
+              properties: {}
+              additionalProperties: true
+      -
+        name: CreateRecipientRequest
+        description: Recipient's model
+        contentType: "application/json"
+        schema:
+          type: object
+          properties:
+            recipient:
+              $ref: "{{model: NewRecipient}}"
+      -
+        name: UpdateRecipientRequest
+        description: Recipient updates model
+        contentType: "application/json"
+        schema:
+          type: object
+          properties:
+            status:
+              enum:
+                - subscribed
+                - awaitingConfirmation
+                - unsubscribed
+              type: string
+            isConfirmed:
+              type: boolean
+            metadata:
+              type: object
+              properties: {}
+              additionalProperties: true
+          additionalProperties: false
+      -
+        name: EmptyResponse
+        description: Empty response
+        contentType: "application/json"
+        schema:
+          type: object
+      - name: RecipientMalformed
+        description: Malformed recipient error
+        contentType: "application/json"
+        schema:
+          type: object
+          properties:
+            name:
+              type: string
+            message:
+              type: string
 
 package:
   individually: true
 
 functions:
-  importRecipients:
-    handler: src/RecipientsCommandHandler.importRecipientsCsvFromS3
-    name: ${self:custom.resourcesPrefix}-importRecipients
-    events:
-      - s3:
-          bucket: ${self:custom.recipientsBucket}
-          event: s3:ObjectCreated:*
-
+  # Event handlers
   recipientImportedEventHandler:
-    handler: src/RecipientsEventHandler.recipientImportedHandler
+    handler: src/RecipientEventProcessorsHandler.recipientImportedProcessor
     name: ${self:custom.resourcesPrefix}-recipientImportedEventHandler
     events:
       - stream:
           type: kinesis
           batchSize: 100
           startingPosition: TRIM_HORIZON
-          arn: 
+          arn:
             Fn::GetAtt:
               - ListEventStream
               - Arn
+
+  recipientCreatedEventHandler:
+    handler: src/RecipientEventProcessorsHandler.recipientCreatedProcessor
+    name: ${self:custom.resourcesPrefix}-recipientCreatedEventHandler
+    events:
+      - stream:
+          type: kinesis
+          batchSize: 100
+          startingPosition: TRIM_HORIZON
+          arn:
+            Fn::GetAtt:
+              - ListEventStream
+              - Arn
+
+  recipientUpdatedEventHandler:
+    handler: src/RecipientEventProcessorsHandler.recipientUpdatedProcessor
+    name: ${self:custom.resourcesPrefix}-recipientUpdatedEventHandler
+    events:
+      - stream:
+          type: kinesis
+          batchSize: 100
+          startingPosition: TRIM_HORIZON
+          arn:
+            Fn::GetAtt:
+              - ListEventStream
+              - Arn
+
+  recipientDeletedEventHandler:
+    handler: src/RecipientEventProcessorsHandler.recipientDeletedProcessor
+    name: ${self:custom.resourcesPrefix}-recipientDeletedEventHandler
+    events:
+      - stream:
+          type: kinesis
+          batchSize: 100
+          startingPosition: TRIM_HORIZON
+          arn:
+            Fn::GetAtt:
+              - ListEventStream
+              - Arn
+
+  importRecipients:
+    handler: src/RecipientCommandsHandler.importRecipientsCsvFromS3
+    name: ${self:custom.resourcesPrefix}-importRecipients
+    events:
+      - s3:
+          bucket: ${self:custom.recipientsBucket}
+          event: s3:ObjectCreated:*
+
+  # Public API
+  createRecipient:
+    handler: src/ApiHandler.createRecipient
+    name: ${self:custom.resourcesPrefix}-createRecipient
+    events:
+      - http:
+          path: /lists/{listId}/recipients
+          method: post
+          private: true
+          request:
+            parameters:
+              paths:
+                listId: true
+          documentation:
+            summary: Creates a recipient
+            tags:
+              - Recipients
+            description: >
+              Creates a recipient within the specified list.
+            pathParams:
+              -
+                name: listId
+                description: The ID of the list the recipient belongs to
+                required: true
+            requestModels:
+              "application/json": CreateRecipientRequest
+            requestBody:
+              description: Recipient create request body
+            methodResponses:
+              -
+                statusCode: "202"
+                description: "Request accepted"
+                responseHeaders:
+                  -
+                    name: Location
+                    description: Path of the newly created recipient
+                    type: string
+              -
+                statusCode: "422"
+                description: "Recipient malformed"
+                responseModels:
+                  "application/json": RecipientMalformed
+
+  updateRecipient:
+    handler: src/ApiHandler.updateRecipient
+    name: ${self:custom.resourcesPrefix}-updateRecipient
+    events:
+      - http:
+          path: /lists/{listId}/recipients/{recipientId}
+          method: put
+          private: true
+          request:
+            parameters:
+              paths:
+                listId: true
+                recipientId: true
+          documentation:
+            summary: Updates a recipient
+            tags:
+              - Recipients
+            description: >
+              Updates the specified recipient.
+            pathParams:
+              -
+                name: listId
+                description: The ID of the list the recipient belongs to
+                required: true
+              -
+                name: recipientId
+                description: The ID of the recipient
+            requestModels:
+              "application/json": UpdateRecipientRequest
+            requestBody:
+              description: Recipient update request body
+            methodResponses:
+              -
+                statusCode: "202"
+                description: "Request accepted"
+              -
+                statusCode: "422"
+                description: "Recipient malformed"
+                responseModels:
+                  "application/json": RecipientMalformed
+
+  # deleteRecipient:
+  #   handler: src/ApiHandler.deleteRecipient
+  #   name: ${self:custom.resourcesPrefix}-deleteRecipient
+  #   events:
+  #     - http:
+  #         path: /lists/{listId}/recipients/{recipientId}
+  #         method: delete
+  #         private: true
+  #         request:
+  #           parameters:
+  #             paths:
+  #               listId: true
+  #               recipientId: true
+  #         documentation:
+  #           summary: Deletes a recipient
+  #           tags:
+  #             - Recipients
+  #           description: >
+  #             Gets a single recipient of the specified list.
+  #           pathParams:
+  #             -
+  #               name: listId
+  #               description: The ID of the list the recipient belongs to
+  #               required: true
+  #             -
+  #               name: recipientId
+  #               description: The ID of the recipient
+
+  getRecipient:
+    handler: src/ApiHandler.getRecipient
+    name: ${self:custom.resourcesPrefix}-getRecipient
+    events:
+      - http:
+          path: /lists/{listId}/recipients/{recipientId}
+          method: get
+          private: true
+          request:
+            parameters:
+              paths:
+                listId: true
+                recipientId: true
+          documentation:
+            summary: Gets a recipient
+            tags:
+              - Recipients
+            description: >
+              Gets a single recipient of the specified list.
+            pathParams:
+              -
+                name: listId
+                description: The ID of the list the recipient belongs to
+                required: true
+              -
+                name: recipientId
+                description: The ID of the recipient
+            methodResponses:
+              -
+                statusCode: "200"
+                description: "OK"
+                responseModels:
+                  "application/json": Recipient
+              -
+                statusCode: "404"
+                description: "Recipient not found"
+
+  listRecipients:
+    handler: src/ApiHandler.listRecipients
+    name: ${self:custom.resourcesPrefix}-listRecipients
+    events:
+      - http:
+          path: /lists/{listId}/recipients
+          method: get
+          private: true
+          request:
+            parameters:
+              paths:
+                listId: true
+              querystring:
+                size: true
+                from: true
+                status: true
+          documentation:
+            summary: Gets a list of recipients
+            tags:
+              - Recipients
+            description: >
+              Gets a set recipients of the specified list.
+            pathParams:
+              -
+                name: listId
+                description: The ID of the list the recipient belongs to
+                required: true
+            queryParams:
+              -
+                name: page
+                description: "Page to show (default: 1)"
+              -
+                name: limit
+                description: "Amount of results (default: 10; maximum: 100)"
+            methodResponses:
+              -
+                statusCode: "200"
+                description: "OK"
+                responseModels:
+                  "application/json": RecipientsList
 
 resources:
   Resources:

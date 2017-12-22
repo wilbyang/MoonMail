@@ -2,23 +2,35 @@ import AWS from 'aws-sdk';
 import AWSESConnection from 'http-aws-es';
 import Elasticsearch from 'elasticsearch';
 import bodyBuilder from 'bodybuilder';
-import { logger } from '../../lib/index';
+import App from '../../App';
 
 function awsCredentials() {
   return new AWS.EnvironmentCredentials('AWS');
 }
 
 const ElasticSearch = {
-  deleteDocument(esClient, indexName, indexType, id) {
-    return esClient.delete({
+  getDocument(indexName, indexType, id, esClient = null) {
+    const client = esClient || this.createClient({});
+    App.logger().debug('ElasticSearch.get', id);
+    return client.get({
       index: indexName,
       type: indexType,
       id
     });
   },
 
-  createOrUpdateDocument(esClient, indexName, indexType, id, item) {
-    return esClient.index({
+  deleteDocument(indexName, indexType, id, esClient = null) {
+    const client = esClient || this.createClient({});
+    return client.delete({
+      index: indexName,
+      type: indexType,
+      id
+    });
+  },
+
+  createOrUpdateDocument(indexName, indexType, id, item, esClient = null) {
+    const client = esClient || this.createClient({});
+    return client.index({
       index: indexName,
       type: indexType,
       id,
@@ -26,14 +38,15 @@ const ElasticSearch = {
     });
   },
 
-  search(esClient, indexName, indexType, queryBody) {
+  search(indexName, indexType, queryBody, esClient = null) {
+    const client = esClient || this.createClient({});
     const esQueryRequest = {
       index: indexName,
       type: indexType,
       body: queryBody
     };
-    logger().debug(JSON.stringify(esQueryRequest));
-    return esClient.search(esQueryRequest);
+    App.logger().debug('ElasticSearch.search', JSON.stringify(esQueryRequest));
+    return client.search(esQueryRequest);
   },
 
   // {
@@ -57,7 +70,7 @@ const ElasticSearch = {
   },
 
   createClient({ credentials = awsCredentials(), elasticSearchHost = process.env.ES_HOST, elasticSearchRegion = process.env.ES_REGION }) {
-    return new Elasticsearch.Client({
+    this.esClient = this.client || new Elasticsearch.Client({
       hosts: elasticSearchHost,
       connectionClass: AWSESConnection,
       amazonES: {
@@ -65,7 +78,10 @@ const ElasticSearch = {
         credentials
       }
     });
-  }
+    return this.esClient;
+  },
+
+  esClient: null
 };
 
 export default ElasticSearch;

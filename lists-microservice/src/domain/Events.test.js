@@ -1,62 +1,154 @@
-import './specHelper';
-import { Recipient } from 'moonmail-models';
+import '../lib/specHelper';
 import Events from './Events';
+import RecipientModel from './RecipientModel';
 
 describe('Events', () => {
   describe('.isValid()', () => {
     const validEvents = [
       {
-        type: 'list.recipient.import',
+        type: Events.listRecipientImported,
         payload: {
           recipient: {
-            id: 'recipient-id',
             email: 'recipient@email.com',
             listId: 'list-id',
             userId: 'user-id',
-            status: Recipient.statuses.subscribed,
-            isConfirmed: true,
             metadata: { random: 'data' }
           },
           totalRecipients: 100,
-          recipientIndex: 5
+          recipientIndex: 5,
+          importId: '1'
+        }
+      },
+      {
+        type: Events.listRecipientCreated,
+        payload: {
+          recipient: {
+            email: 'recipient@email.com',
+            listId: 'list-id',
+            userId: 'user-id',
+            subscriptionOrigin: RecipientModel.subscriptionOrigins.listImport,
+            isConfirmed: true,
+            status: RecipientModel.statuses.subscribed,
+            metadata: {
+              name: 'Carlos'
+            }
+          }
+        }
+      },
+      {
+        type: Events.listRecipientUpdated,
+        payload: {
+          listId: 'list-id',
+          userId: 'user-id',
+          id: 'recipient-id',
+          data: {
+            status: RecipientModel.statuses.subscribed,
+            metadata: {
+              name: 'Carlos'
+            }
+          }
+        }
+      },
+      {
+        type: Events.listRecipientDeleted,
+        payload: {
+          listId: 'list-id',
+          userId: 'user-id',
+          id: 'recipient-id'
         }
       }
     ];
     const invalidEvents = [
       {
-        type: 'list.recipient.import',
+        type: Events.listRecipientImported,
         payload: {
           recipient: {
-            id: 'recipient-id',
             email: 'recipient@email.com',
-            listId: 'list-id',
-            userId: 'user-id',
-            status: 'non-existant',
-            isConfirmed: true
+            listId: 'list-id'
           }
         }
       },
       {
-        type: 'list.recipient.import',
+        type: Events.listRecipientImported,
         payload: {
           recipient: {
-            id: 'recipient-id',
             email: 'wrongemail.com',
             listId: 'list-id',
-            userId: 'user-id',
-            status: Recipient.statuses.subscribed,
-            isConfirmed: true
+            userId: 'user-id'
           }
+        }
+      },
+      {
+        type: Events.listRecipientCreated,
+        payload: {
+          recipient: {
+            email: 'recipient@email.com',
+            listId: 'list-id',
+            userId: 'user-id',
+            status: RecipientModel.statuses.subscribed,
+            isConfirmed: true,
+            metadata: {
+              'Invalid Key': 2
+            }
+          }
+        }
+      },
+      {
+        type: Events.listRecipientCreated,
+        payload: {
+          recipient: {
+            email: 'recipient@email.com',
+            listId: 'list-id',
+            userId: 'user-id',
+            status: 'invalid-status',
+            isConfirmed: true,
+            metadata: {
+              name: 'Carlos'
+            }
+          }
+        }
+      },
+      {
+        type: Events.listRecipientCreated,
+        payload: {
+          recipient: {
+            email: 'recipient@email.com',
+            listId: 'list-id',
+            userId: 'user-id',
+            status: RecipientModel.statuses.subscribed,
+            subscriptionOrigin: 'invalid-subscription-origin',
+            isConfirmed: true,
+            metadata: {
+              name: 'Carlos'
+            }
+          }
+        }
+      },
+      {
+        type: Events.listRecipientUpdated,
+        payload: {
+          listId: 'list-id',
+          id: 'recipient-id',
+          data: {
+            status: RecipientModel.statuses.subscribed
+          }
+        }
+      },
+      {
+        type: Events.listRecipientDeleted,
+        payload: {
+          listId: 'list-id',
+          id: 'recipient-id'
         }
       }
     ];
 
     it('should return true for valid events', () => {
-      validEvents.forEach(event => expect(Events.isValid(event)).to.be.true);
+      validEvents.forEach(event => expect(Events.validate(event).error).not.to.exist);
     });
 
     it('should return false for invalid events', () => {
-      invalidEvents.forEach(event => expect(Events.isValid(event)).to.be.false);
+      invalidEvents.forEach(event => expect(Events.validate(event).error).to.exist);
     });
   });
 });

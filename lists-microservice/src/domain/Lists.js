@@ -21,7 +21,7 @@ function deleteList(userId, listId) {
 }
 
 function createList(list) {
-  return ListModel.save(list);
+  return ListModel.create(list);
 }
 
 function getLists(userId, options) {
@@ -76,6 +76,7 @@ async function broadcastImportStatus(userId, listId, index, total) {
 }
 
 // TODO: Improve me to save in batch recipients regardless of the list it belongs
+// TODO: Extract services
 function importRecipientsBatch(recipientImportedEvents) {
   const importedRecipientEventsByListId = recipientImportedEvents.reduce((result, current) => {
     if (!result[current.payload.recipient.listId]) {
@@ -103,6 +104,25 @@ function importRecipientsBatch(recipientImportedEvents) {
   });
 }
 
+// TODO: Create apiManual subscriptionOrigin
+function createRecipientsBatch(recipientCreatedEvents) {
+  const recipients = recipientCreatedEvents
+    .map(event => Object.assign({}, event.payload.recipient, { subscriptionOrigin: RecipientModel.subscriptionOrigins.listImport }));
+  return RecipientModel.saveBatch(recipients);
+}
+
+function updateRecipientsBatch(recipientUpdatedEvents) {
+  return Promise.map(recipientUpdatedEvents, (recipientUpdatedEvent) => {
+    return RecipientModel.update(recipientUpdatedEvent.payload.data, recipientUpdatedEvent.payload.listId, recipientUpdatedEvent.payload.id);
+  }, { concurrency: 2 });
+}
+
+function deleteRecipientsBatch(recipientDeletedEvents) {
+  return Promise.map(recipientDeletedEvents, (recipientDeletedEvent) => {
+    return RecipientModel.delete(recipientDeletedEvent.listId, recipientDeletedEvent.id);
+  }, { concurrency: 2 });
+}
+
 export default {
   getList,
   createList,
@@ -114,5 +134,8 @@ export default {
   updateImportStatus,
   appendMetadataAttributes,
   setProcessing,
-  importRecipientsBatch
+  importRecipientsBatch,
+  createRecipientsBatch,
+  updateRecipientsBatch,
+  deleteRecipientsBatch
 };
