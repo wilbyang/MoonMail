@@ -16,7 +16,7 @@ function publishKinesisEvent(partitionKey, streamName, payload, kinesisClient = 
   const params = buildKinesisParams(partitionKey, streamName, payload);
   App.logger().debug('EventLog.publishKinesisEvent', JSON.stringify(params));
   const client = kinesisClient || new AWS.Kinesis({ region: process.env.SERVERLESS_REGION });
-  return retry(client.putRecord(params).promise(), { max_tries: 10, interval: 50, backoff: 2 });
+  return client.putRecord(params).promise();
 }
 
 function publishKinesisEvents(partitionKey, streamName, events, kinesisClient = null) {

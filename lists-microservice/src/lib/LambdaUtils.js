@@ -48,10 +48,6 @@ function parseKinesisStreamEvent(event) {
   }));
 }
 
-function createKinesisStreamRouter(routerFn, concurrency) {
-  return records => Promise.map(records, record => routerFn(record), concurrency);
-}
-
 function parseKinesisStreamTopicEvents(event, topic) {
   return parseKinesisStreamEvent(event)
     .filter(e => e.partitionKey === topic)

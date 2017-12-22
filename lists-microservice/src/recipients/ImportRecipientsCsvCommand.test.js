@@ -1,8 +1,8 @@
 import awsMock from 'aws-sdk-mock';
 import AWS from 'aws-sdk';
 import fs from 'fs';
-import '../specHelper';
-import ImportRecipientsCsv from './ImportRecipientsCsv';
+import '../lib/specHelper';
+import ImportRecipientsCsvCommand from './ImportRecipientsCsvCommand';
 
 // const validEmailsCsvContent = fs.readFileSync('./fixtures/250_valid_recipients.csv').toString();
 // const validEmailsCsvBomContent = fs.readFileSync('./fixtures/250_valid_recipients_with_bom.csv').toString();

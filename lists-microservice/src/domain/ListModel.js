@@ -1,11 +1,13 @@
 import cuid from 'cuid';
 import moment from 'moment';
 import omitEmpty from 'omit-empty';
+import Joi from 'joi';
 import { List } from 'moonmail-models';
-import BaseModelMixin from './BaseModelMixin';
 
 // TODO: Improve me, extract changes to the upstream mm-model
+// Take as reference RecipientsModel
 export default class ListModel extends List {
+
   static async find(hash, range, options = {}) {
     const result = await this.get(hash, range, options);
     if (Object.keys(result).length === 0) return Promise.reject(new Error('Item not found'));
