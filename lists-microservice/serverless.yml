@@ -58,7 +58,8 @@ custom:
 
           The MoonMail API is organized around the REST methodology. It uses resource-oriented
           URLs, and common HTTP response codes to indicate API errors. All requests are
-          authenticated using an `api-key` which can be obtained from your developer dashboard.
+          authenticated using an `api-key` which can be obtained from your
+          <a href="https://app.moonmail.io/profile/api" target="_blank">profile</a>.
         termsOfService: http://support.moonmail.io/terms-and-policies/terms-of-service
         contact:
           name: MoonMail
