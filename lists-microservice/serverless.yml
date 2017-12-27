@@ -4,25 +4,26 @@ plugins:
   - serverless-plugin-optimize
   - serverless-offline
   - serverless-aws-documentation
+  - serverless-domain-manager
 
 provider:
   name: aws
   runtime: nodejs6.10
   profile: ${self:service}-${self:custom.currentStage}
-  region: ${file(./config.${self:custom.currentStage}.json):REGION}
+  region: ${self:custom.config.REGION}
   timeout: 300
   environment:
-    SERVERLESS_REGION: ${file(./config.${self:custom.currentStage}.json):REGION}
-    LOG_LEVEL: ${file(./config.${self:custom.currentStage}.json):LOG_LEVEL}
-    LISTS_TABLE: ${file(./config.${self:custom.currentStage}.json):LISTS_TABLE}
-    RECIPIENTS_TABLE: ${file(./config.${self:custom.currentStage}.json):RECIPIENTS_TABLE}
-    ES_HOST: ${file(./config.${self:custom.currentStage}.json):ES_HOST}
-    ES_REGION: ${file(./config.${self:custom.currentStage}.json):ES_REGION}
+    SERVERLESS_REGION: ${self:custom.config.REGION}
+    LOG_LEVEL: ${self:custom.config.LOG_LEVEL}
+    LISTS_TABLE: ${self:custom.config.LISTS_TABLE}
+    RECIPIENTS_TABLE: ${self:custom.config.RECIPIENTS_TABLE}
+    ES_HOST: ${self:custom.config.ES_HOST}
+    ES_REGION: ${self:custom.config.ES_REGION}
     LIST_RECIPIENT_STREAM_NAME: ListEventStream
-    IOT_ENDPOINT: ${file(./config.${self:custom.currentStage}.json):IOT_ENDPOINT}
-    GET_USER_CONTEXT_FUNCTION: ${file(./config.${self:custom.currentStage}.json):GET_USER_CONTEXT_FUNCTION}
-    ES_RECIPIENTS_INDEX_NAME: ${file(./config.${self:custom.currentStage}.json):ES_RECIPIENTS_INDEX_NAME}
-    ES_RECIPIENTS_INDEX_TYPE: ${file(./config.${self:custom.currentStage}.json):ES_RECIPIENTS_INDEX_TYPE}
+    IOT_ENDPOINT: ${self:custom.config.IOT_ENDPOINT}
+    GET_USER_CONTEXT_FUNCTION: ${self:custom.config.GET_USER_CONTEXT_FUNCTION}
+    ES_RECIPIENTS_INDEX_NAME: ${self:custom.config.ES_RECIPIENTS_INDEX_NAME}
+    ES_RECIPIENTS_INDEX_TYPE: ${self:custom.config.ES_RECIPIENTS_INDEX_TYPE}
     #DEBUG: true
 
   iamRoleStatements:
@@ -44,9 +45,16 @@ custom:
   currentStage: ${opt:stage, self:custom.defaultStage}
   resourcesPrefix: ${self:service}-${self:custom.currentStage}
   recipientsBucket: next-recipients.moonmail.${self:custom.currentStage}.${self:provider.region}
+  config: ${file(./config.${self:custom.currentStage}.json)}
   serverless-offline:
     babelOptions:
       presets: ["es2015"]
+  customDomain:
+    domainName: ${self:custom.config.CUSTOM_API_HOST}
+    certificateName: ${self:custom.config.ACM_CERTIFICATE_NAME}
+    basePath: 'lists'
+    stage: ${self:custom.currentStage}
+    createRoute53Record: false
   documentation:
     api:
       info:
@@ -268,7 +276,7 @@ functions:
     name: ${self:custom.resourcesPrefix}-createRecipient
     events:
       - http:
-          path: /lists/{listId}/recipients
+          path: /{listId}/recipients
           method: post
           private: true
           request:
@@ -310,7 +318,7 @@ functions:
     name: ${self:custom.resourcesPrefix}-updateRecipient
     events:
       - http:
-          path: /lists/{listId}/recipients/{recipientId}
+          path: /{listId}/recipients/{recipientId}
           method: put
           private: true
           request:
@@ -351,7 +359,7 @@ functions:
   #   name: ${self:custom.resourcesPrefix}-deleteRecipient
   #   events:
   #     - http:
-  #         path: /lists/{listId}/recipients/{recipientId}
+  #         path: /{listId}/recipients/{recipientId}
   #         method: delete
   #         private: true
   #         request:
@@ -379,7 +387,7 @@ functions:
     name: ${self:custom.resourcesPrefix}-getRecipient
     events:
       - http:
-          path: /lists/{listId}/recipients/{recipientId}
+          path: /{listId}/recipients/{recipientId}
           method: get
           private: true
           request:
@@ -416,7 +424,7 @@ functions:
     name: ${self:custom.resourcesPrefix}-listRecipients
     events:
       - http:
-          path: /lists/{listId}/recipients
+          path: /{listId}/recipients
           method: get
           private: true
           request:
