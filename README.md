@@ -35,7 +35,9 @@ With [MoonMail](https://moonmail.io/) you can: create & edit lists of recipients
 
 ## Getting Started
 
-You need to have installed the [Serverless Framework](https://github.com/serverless/serverless) (version 0.5.2 or higher is required to run the [MoonMail API](http://microapps.github.io/MoonMail/)).
+You need to have installed the [Serverless Framework](https://github.com/serverless/serverless) (version **0.5.x** is required to run the [MoonMail API](http://microapps.github.io/MoonMail/)).
+
+    npm -g install serverless@0.5.6
 
 Install npm packages:
 
@@ -71,6 +73,9 @@ Deploy MoonMail events:
 Create the API Gateway endpoints:
 
     sls endpoint deploy
+    
+## Live demo
+If you have set up everything correctly you'll be able to send an email campaign using our [demo ui](https://microapps.github.io/MoonMail-UI)
     
 ## Questions?
 Please pose your questions in [StackOverflow by tagging them with: moonmail](http://stackoverflow.com/questions/tagged/moonmail?sort=votes&pageSize=50). 
