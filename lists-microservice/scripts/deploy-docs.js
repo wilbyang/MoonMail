@@ -4,6 +4,9 @@ const program = require('commander');
 const aws = require('aws-sdk');
 const fs = require('fs');
 const spectacle = require('spectacle-docs');
+const jsf = require('json-schema-faker');
+const Promise = require('bluebird');
+const traverse = require('traverse');
 
 program
   .usage('[options]')
@@ -23,19 +26,6 @@ const params = {
   exportType: 'swagger',
   restApiId: program.apiId,
   stageName: program.stage,
-<<<<<<< HEAD
-  accepts: 'application/yaml'
-};
-
-function replaceTitle(yamlBody, newTitle) {
-  const titleRE = /title:\s".*?"/;
-  return yamlBody.replace(titleRE, `title: ${newTitle}`);
-}
-
-function generateDocs(swaggerString) {
-  const swaggerFilePath = '/tmp/moonmail-api-swagger.yml';
-  fs.writeFileSync(swaggerFilePath, swaggerString);
-=======
   accepts: 'application/json'
 };
 
@@ -54,10 +44,34 @@ function shiftBasePath(swaggerJson) {
   return Object.assign({}, swaggerJson, { paths, basePath: '' });
 }
 
+function addExamples(swaggerJson) {
+  const definitions = swaggerJson.definitions;
+  const definitionEntries = Object.entries(definitions);
+  const metadataSample = { name: 'Mike', countryCode: 'ES', whatever: 'you want' };
+  jsf.option({ alwaysFakeOptionals: true });
+  return Promise.map(definitionEntries, ([key, schema]) => {
+    return jsf.resolve(Object.assign({}, schema, { definitions }))
+      .then(sample => {
+        traverse(sample).forEach((x) => {
+          if (x.hasOwnProperty('metadata')) x.metadata = metadataSample;
+        });
+        return sample;
+      })
+      .then(sample => ({ [key]: sample }));
+  })
+  .then(samples => samples.reduce((total, el) => Object.assign(total, el), {}))
+  .then((examples) => {
+    return definitionEntries.reduce((total, [key, schema]) => {
+      total[key] = Object.assign({}, schema, { example: examples[key] });
+      return total;
+    }, {});
+  })
+  .then(defs => Object.assign({}, swaggerJson, { definitions: defs }));
+}
+
 function generateDocs(swaggerJson) {
   const swaggerFilePath = '/tmp/moonmail-api-swagger.json';
   fs.writeFileSync(swaggerFilePath, JSON.stringify(swaggerJson));
->>>>>>> Docs generation script; Custom domain configuration
   const options = {
     specFile: swaggerFilePath,
     silent: true,
@@ -67,11 +81,8 @@ function generateDocs(swaggerJson) {
 }
 
 apigateway.getExport(params).promise()
-<<<<<<< HEAD
-  .then(data => replaceTitle(data.body, 'MoonMail API'))
-=======
   .then(data => replaceTitle(JSON.parse(data.body), 'MoonMail API'))
   .then(swaggerBody => shiftBasePath(swaggerBody))
->>>>>>> Docs generation script; Custom domain configuration
+  .then(swaggerBody => addExamples(swaggerBody))
   .then(swaggerBody => generateDocs(swaggerBody))
   .catch(console.log);
