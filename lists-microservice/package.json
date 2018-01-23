@@ -11,7 +11,8 @@
   },
   "scripts": {
     "test": "NODE_ENV=test mocha --require babel-register $(find . -name '*.test.js' -not -path './node_modules/*')",
-    "watch": "NODE_ENV=test mocha --watch --require babel-register $(find . -name '*.test.js' -not -path './node_modules/*')"
+    "watch": "NODE_ENV=test mocha --watch --require babel-register $(find . -name '*.test.js' -not -path './node_modules/*')",
+    "deploy-docs": "./scripts/deploy-docs.js"
   },
   "keywords": [],
   "devDependencies": {
@@ -32,6 +33,7 @@
     "chai-cheerio": "^1.0.0",
     "chai-fuzzy": "^1.6.1",
     "chai-things": "^0.2.0",
+    "commander": "^2.12.2",
     "mocha": "^2.4.5",
     "nock": "^9.0.22",
     "serverless": "^1.24.1",
@@ -40,7 +42,8 @@
     "serverless-plugin-optimize": "^3.0.4-rc.1",
     "sinon": "^1.17.6",
     "sinon-as-promised": "^4.0.2",
-    "sinon-chai": "^2.8.0"
+    "sinon-chai": "^2.8.0",
+    "spectacle-docs": "^0.9.13"
   },
   "dependencies": {
     "async": "^1.5.2",
