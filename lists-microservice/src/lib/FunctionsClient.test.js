@@ -16,7 +16,7 @@ describe('FunctionsClient', () => {
     beforeEach(() => {
       awsMock.mock('Lambda', 'invoke', lambdaResponse);
       lambdaStub = new AWS.Lambda();
-      clientGetterStub = sinon.stub(FunctionsClient, 'client', { get: () => lambdaStub });
+      clientGetterStub = sinon.stub(FunctionsClient, 'client').get(() => lambdaStub);
     });
     afterEach(() => {
       awsMock.restore('Lambda');

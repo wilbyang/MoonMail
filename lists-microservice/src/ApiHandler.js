@@ -5,3 +5,4 @@ module.exports.updateRecipient = Api.updateRecipient;
 module.exports.deleteRecipient = Api.deleteRecipient;
 module.exports.getRecipient = Api.getRecipient;
 module.exports.listRecipients = Api.listRecipients;
+module.exports.getAllLists = Api.getAllLists;

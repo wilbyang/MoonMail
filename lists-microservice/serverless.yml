@@ -53,7 +53,7 @@ custom:
     domainName: ${self:custom.config.CUSTOM_API_HOST}
     certificateName: ${self:custom.config.ACM_CERTIFICATE_NAME}
     basePath: 'lists'
-    stage: ${self:custom.currentStage}
+    stage: prod
     createRoute53Record: false
   documentation:
     api:
@@ -77,6 +77,9 @@ custom:
         -
           name: Recipients
           description: Email recipients
+        -
+          name: Lists
+          description: Email recipients' lists
     models:
       -
         name: Recipient
@@ -115,6 +118,61 @@ custom:
             metadata:
               type: object
       -
+        name: List
+        description: Email list's model
+        contentType: "application/json"
+        schema:
+          type: object
+          required:
+            - id
+            - userId
+            - name
+          properties:
+            id:
+              type: string
+            userId:
+              type: string
+            name:
+              type: string
+            processed:
+              type: boolean
+            archived:
+              type: boolean
+            total:
+              type: integer
+              minimum: 0
+            subscribedCount:
+              type: integer
+              minimum: 0
+            unsubscribedCount:
+              type: integer
+              minimum: 0
+            awaitingConfirmationCount:
+              type: integer
+              minimum: 0
+            complainedCount:
+              type: integer
+              minimum: 0
+            bouncedCount:
+              type: integer
+              minimum: 0
+            totalPostProcessed:
+              type: integer
+              minimum: 0
+            createdAt:
+              type: integer
+              minimum: 0
+            importStatus:
+              type: object
+            metadataAttributes:
+              type: object
+            senderId:
+              type: string
+            successConfirmationUrl:
+              type: string
+            confirmationEmailBody:
+              type: string
+      -
         name: RecipientsList
         description: A list of recipients
         contentType: "application/json"
@@ -127,7 +185,19 @@ custom:
                 $ref: "{{model: Recipient}}"
             total:
               type: integer
+              minimum: 0
               description: Count of the recipients contained in the list
+      -
+        name: Lists
+        description: A set of recipients' lists
+        contentType: "application/json"
+        schema:
+          type: object
+          properties:
+            items:
+              type: array
+              items:
+                $ref: "{{model: List}}"
       -
         name: NewRecipient
         description: New recipient
@@ -354,34 +424,6 @@ functions:
                 responseModels:
                   "application/json": RecipientMalformed
 
-  # deleteRecipient:
-  #   handler: src/ApiHandler.deleteRecipient
-  #   name: ${self:custom.resourcesPrefix}-deleteRecipient
-  #   events:
-  #     - http:
-  #         path: /{listId}/recipients/{recipientId}
-  #         method: delete
-  #         private: true
-  #         request:
-  #           parameters:
-  #             paths:
-  #               listId: true
-  #               recipientId: true
-  #         documentation:
-  #           summary: Deletes a recipient
-  #           tags:
-  #             - Recipients
-  #           description: >
-  #             Gets a single recipient of the specified list.
-  #           pathParams:
-  #             -
-  #               name: listId
-  #               description: The ID of the list the recipient belongs to
-  #               required: true
-  #             -
-  #               name: recipientId
-  #               description: The ID of the recipient
-
   getRecipient:
     handler: src/ApiHandler.getRecipient
     name: ${self:custom.resourcesPrefix}-getRecipient
@@ -459,6 +501,27 @@ functions:
                 description: "OK"
                 responseModels:
                   "application/json": RecipientsList
+
+  getAllLists:
+    handler: src/ApiHandler.getAllLists
+    name: ${self:custom.resourcesPrefix}-getAllLists
+    events:
+      - http:
+          path: /
+          method: get
+          private: true
+          documentation:
+            summary: Gets all the user's lists
+            tags:
+              - Lists
+            description: >
+              Gets all the recipients' lists of the specified user.
+            methodResponses:
+              -
+                statusCode: "200"
+                description: "OK"
+                responseModels:
+                  "application/json": Lists
 
 resources:
   Resources:
