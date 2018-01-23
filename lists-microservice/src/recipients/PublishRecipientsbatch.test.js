@@ -1,5 +1,5 @@
 import '../lib/specHelper';
-import ImportRecipientsCsv from './ImportRecipientsCsv';
+// import ImportRecipientsCsv from './ImportRecipientsCsv';
 
 // const validEmailsCsvContent = fs.readFileSync('./fixtures/250_valid_recipients.csv').toString();
 // const validEmailsCsvBomContent = fs.readFileSync('./fixtures/250_valid_recipients_with_bom.csv').toString();

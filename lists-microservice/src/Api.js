@@ -4,6 +4,7 @@ import UserContext from './lib/UserContext';
 import Events from './domain/Events';
 import RecipientModel from './domain/RecipientModel';
 import Recipients from './domain/Recipients';
+import Lists from './domain/Lists';
 import EventLog from './EventLog';
 import HttpUtils from './lib/HttpUtils';
 
@@ -87,10 +88,27 @@ async function getRecipient(event, context, callback) {
   }
 }
 
+async function getAllLists(event, context, callback) {
+  try {
+    App.configureLogger(event, context);
+    App.logger().info('getAllLists', JSON.stringify(event));
+    const user = await UserContext.byApiKey(event.requestContext.identity.apiKey);
+    const qs = event.queryStringParam
+    const limit = 100;
+    const options = { limit };
+    const { items } = await Lists.getLists(user.id, options);
+    HttpUtils.buildApiResponse({ statusCode: 200, body: { items } }, callback);
+  } catch (error) {
+    console.error(error, error.stack);
+    HttpUtils.apiErrorHandler(error, callback);
+  }
+}
+
 export default {
   createRecipient,
   updateRecipient,
   deleteRecipient,
   listRecipients,
-  getRecipient
+  getRecipient,
+  getAllLists
 };

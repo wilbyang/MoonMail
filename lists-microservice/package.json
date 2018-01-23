@@ -42,11 +42,10 @@
     "serverless-domain-manager": "^2.0.2",
     "serverless-offline": "^3.16.0",
     "serverless-plugin-optimize": "^3.0.4-rc.1",
-    "sinon": "^1.17.6",
-    "sinon-as-promised": "^4.0.2",
-    "sinon-chai": "^2.8.0",
+    "traverse": "^0.6.6",
     "spectacle-docs": "^0.9.13",
-    "traverse": "^0.6.6"
+    "sinon": "^4.2.0",
+    "sinon-chai": "^2.8.0"
   },
   "dependencies": {
     "async": "^1.5.2",
