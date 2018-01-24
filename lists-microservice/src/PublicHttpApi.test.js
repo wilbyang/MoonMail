@@ -1,10 +1,9 @@
-import { expect } from 'chai';
-import sinon from 'sinon';
+import './lib/specHelper';
 import Api from './Api';
+import PublicHttpApi from './PublicHttpApi';
 import UserContext from './lib/UserContext';
-import Lists from './domain/Lists';
 
-describe('Api', () => {
+describe('PublicHttpApi', () => {
   const apiKey = 'the-api-key';
   const user = { id: 'user-id', apiKey };
   const lists = { userId: user.id, items: [1, 2, 3] };
@@ -19,16 +18,16 @@ describe('Api', () => {
 
   describe('#getAllLists', () => {
     beforeEach(() => {
-      sinon.stub(Lists, 'getLists')
+      sinon.stub(Api, 'getAllLists')
         .withArgs(user.id).resolves(lists);
     });
     afterEach(() => {
-      Lists.getLists.restore();
+      Api.getAllLists.restore();
     });
 
     it('should return all the lists of a given user', (done) => {
       const event = { requestContext: { identity: { apiKey } } };
-      Api.getAllLists(event, {}, (err, actual) => {
+      PublicHttpApi.getAllLists(event, {}, (err, actual) => {
         expect(err).to.not.exist;
         const expected = { statusCode: 200, body: JSON.stringify({ items: lists.items }) };
         expect(actual).to.include(expected);

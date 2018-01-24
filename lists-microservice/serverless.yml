@@ -20,11 +20,10 @@ provider:
     ES_HOST: ${self:custom.config.ES_HOST}
     ES_REGION: ${self:custom.config.ES_REGION}
     LIST_RECIPIENT_STREAM_NAME: ListEventStream
-    IOT_ENDPOINT: ${self:custom.config.IOT_ENDPOINT}
-    GET_USER_CONTEXT_FUNCTION: ${self:custom.config.GET_USER_CONTEXT_FUNCTION}
-    ES_RECIPIENTS_INDEX_NAME: ${self:custom.config.ES_RECIPIENTS_INDEX_NAME}
-    ES_RECIPIENTS_INDEX_TYPE: ${self:custom.config.ES_RECIPIENTS_INDEX_TYPE}
-    #DEBUG: true
+    IOT_ENDPOINT: ${file(./config.${self:custom.currentStage}.json):IOT_ENDPOINT}
+    GET_USER_CONTEXT_FUNCTION: ${file(./config.${self:custom.currentStage}.json):GET_USER_CONTEXT_FUNCTION}
+    ES_RECIPIENTS_INDEX_NAME: ${file(./config.${self:custom.currentStage}.json):ES_RECIPIENTS_INDEX_NAME}
+    ES_RECIPIENTS_INDEX_TYPE: ${file(./config.${self:custom.currentStage}.json):ES_RECIPIENTS_INDEX_TYPE}
 
   iamRoleStatements:
     - Effect: "Allow"
@@ -46,6 +45,7 @@ custom:
   resourcesPrefix: ${self:service}-${self:custom.currentStage}
   recipientsBucket: next-recipients.moonmail.${self:custom.currentStage}.${self:provider.region}
   config: ${file(./config.${self:custom.currentStage}.json)}
+  recipientsTableStreamArn: ${self:custom.config.RECIPIENTS_TABLE_STREAM_ARN}
   serverless-offline:
     babelOptions:
       presets: ["es2015"]
@@ -281,7 +281,7 @@ package:
 functions:
   # Event handlers
   recipientImportedEventHandler:
-    handler: src/RecipientEventProcessorsHandler.recipientImportedProcessor
+    handler: handler.recipientImportedProcessor
     name: ${self:custom.resourcesPrefix}-recipientImportedEventHandler
     events:
       - stream:
@@ -294,7 +294,7 @@ functions:
               - Arn
 
   recipientCreatedEventHandler:
-    handler: src/RecipientEventProcessorsHandler.recipientCreatedProcessor
+    handler: handler.recipientCreatedProcessor
     name: ${self:custom.resourcesPrefix}-recipientCreatedEventHandler
     events:
       - stream:
@@ -307,7 +307,7 @@ functions:
               - Arn
 
   recipientUpdatedEventHandler:
-    handler: src/RecipientEventProcessorsHandler.recipientUpdatedProcessor
+    handler: handler.recipientUpdatedProcessor
     name: ${self:custom.resourcesPrefix}-recipientUpdatedEventHandler
     events:
       - stream:
@@ -319,30 +319,40 @@ functions:
               - ListEventStream
               - Arn
 
-  recipientDeletedEventHandler:
-    handler: src/RecipientEventProcessorsHandler.recipientDeletedProcessor
-    name: ${self:custom.resourcesPrefix}-recipientDeletedEventHandler
-    events:
-      - stream:
-          type: kinesis
-          batchSize: 100
-          startingPosition: TRIM_HORIZON
-          arn:
-            Fn::GetAtt:
-              - ListEventStream
-              - Arn
+  # recipientDeletedEventHandler:
+  #   handler: handler.recipientDeletedProcessor
+  #   name: ${self:custom.resourcesPrefix}-recipientDeletedEventHandler
+  #   events:
+  #     - stream:
+  #         type: kinesis
+  #         batchSize: 100
+  #         startingPosition: TRIM_HORIZON
+  #         arn:
+  #           Fn::GetAtt:
+  #             - ListEventStream
+  #             - Arn
 
   importRecipients:
-    handler: src/RecipientCommandsHandler.importRecipientsCsvFromS3
+    handler: handler.importRecipientsCsvFromS3
     name: ${self:custom.resourcesPrefix}-importRecipients
     events:
       - s3:
           bucket: ${self:custom.recipientsBucket}
           event: s3:ObjectCreated:*
 
+  syncRecipientStreamWithES:
+    handler: handler.syncRecipientStreamWithES
+    name: ${self:custom.resourcesPrefix}-syncRecipientStreamWithES
+    events:
+      - stream:
+          type: dynamodb
+          batchSize: 25
+          startingPosition: TRIM_HORIZON
+          arn: ${self:custom.recipientsTableStreamArn}
+              
   # Public API
   createRecipient:
-    handler: src/ApiHandler.createRecipient
+    handler: handler.createRecipient
     name: ${self:custom.resourcesPrefix}-createRecipient
     events:
       - http:
@@ -384,7 +394,7 @@ functions:
                   "application/json": RecipientMalformed
 
   updateRecipient:
-    handler: src/ApiHandler.updateRecipient
+    handler: handler.updateRecipient
     name: ${self:custom.resourcesPrefix}-updateRecipient
     events:
       - http:
@@ -425,7 +435,7 @@ functions:
                   "application/json": RecipientMalformed
 
   getRecipient:
-    handler: src/ApiHandler.getRecipient
+    handler: handler.getRecipient
     name: ${self:custom.resourcesPrefix}-getRecipient
     events:
       - http:
@@ -462,7 +472,7 @@ functions:
                 description: "Recipient not found"
 
   listRecipients:
-    handler: src/ApiHandler.listRecipients
+    handler: handler.listRecipients
     name: ${self:custom.resourcesPrefix}-listRecipients
     events:
       - http:
@@ -503,7 +513,7 @@ functions:
                   "application/json": RecipientsList
 
   getAllLists:
-    handler: src/ApiHandler.getAllLists
+    handler: handler.getAllLists
     name: ${self:custom.resourcesPrefix}-getAllLists
     events:
       - http:

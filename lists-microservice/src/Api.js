@@ -1,114 +1,63 @@
 import omitEmpty from 'omit-empty';
-import App from './App';
-import UserContext from './lib/UserContext';
 import Events from './domain/Events';
-import RecipientModel from './domain/RecipientModel';
 import Recipients from './domain/Recipients';
 import Lists from './domain/Lists';
 import EventLog from './EventLog';
-import HttpUtils from './lib/HttpUtils';
+import RecipientModel from './domain/RecipientModel';
+import RecipientESModel from './domain/RecipientESModel';
 
-async function createRecipient(event, context, callback) {
-  try {
-    App.configureLogger(event, context);
-    App.logger().info('createRecipient', JSON.stringify(event));
-    const { recipient } = JSON.parse(event.body);
-    const user = await UserContext.byApiKey(event.requestContext.identity.apiKey);
-    const recipientCreatedEvent = await Events.buildRecipientCreatedEvent({ listId: event.pathParameters.listId, userId: user.id, recipient });
-    await EventLog.write({ topic: Events.listRecipientCreated, streamName: process.env.LIST_RECIPIENT_STREAM_NAME, payload: recipientCreatedEvent });
-    HttpUtils.buildApiResponse({ statusCode: 202, body: {}, headers: { Location: `/lists/${event.pathParameters.listId}/recipients/${RecipientModel.buildId(recipient)}` } }, callback);
-  } catch (error) {
-    App.logger().error(error);
-    HttpUtils.apiErrorHandler(error, callback);
-  }
+function publishRecipientCreatedEvent({ listId, userId, createRecipientPayload, subscriptionOrigin }) {
+  return Events.buildRecipientCreatedEvent({ listId, userId, recipient: createRecipientPayload, subscriptionOrigin })
+    .then(recipientCreatedEvent => EventLog.write({ topic: Events.listRecipientCreated, streamName: process.env.LIST_RECIPIENT_STREAM_NAME, payload: recipientCreatedEvent }));
 }
 
-async function updateRecipient(event, context, callback) {
-  try {
-    App.configureLogger(event, context);
-    App.logger().info('updateRecipient', JSON.stringify(event));
-    const params = JSON.parse(event.body);
-    const user = await UserContext.byApiKey(event.requestContext.identity.apiKey);
-    const recipientUpdatedEvent = await Events.buildRecipientUpdatedEvent({ listId: event.pathParameters.listId, userId: user.id, id: event.pathParameters.recipientId, data: params });
-    await EventLog.write({ topic: Events.listRecipientUpdated, streamName: process.env.LIST_RECIPIENT_STREAM_NAME, payload: recipientUpdatedEvent });
-    HttpUtils.buildApiResponse({ statusCode: 202 }, callback);
-  } catch (error) {
-    App.logger().error(error);
-    HttpUtils.apiErrorHandler(error, callback);
-  }
+function publishRecipientUpdatedEvent({ listId, userId, recipientId, updateRecipientPayload }) {
+  return Events.buildRecipientUpdatedEvent({ listId, userId, id: recipientId, data: updateRecipientPayload })
+    .then(recipientUpdatedEvent => EventLog.write({ topic: Events.listRecipientUpdated, streamName: process.env.LIST_RECIPIENT_STREAM_NAME, payload: recipientUpdatedEvent }));
 }
 
-async function deleteRecipient(event, context, callback) {
-  try {
-    App.configureLogger(event, context);
-    App.logger().info('deleteRecipient', JSON.stringify(event));
-    const user = await UserContext.byApiKey(event.requestContext.identity.apiKey);
-    const recipientDeletedEvent = await Events.buildRecipientDeleteEvent({ listId: event.pathParameters.listId, userId: user.id, recipient: event.pathParameters.recipientId });
-    await EventLog.write({ topic: Events.listRecipientDeleted, streamName: process.env.LIST_RECIPIENT_STREAM_NAME, payload: recipientDeletedEvent });
-    HttpUtils.buildApiResponse({ statusCode: 202 }, callback);
-  } catch (error) {
-    App.logger().error(error);
-    HttpUtils.apiErrorHandler(error, callback);
-  }
+function publishRecipientDeletedEvent({ listId, userId, recipientId }) {
+  return Events.buildRecipientDeleteEvent({ listId, userId, id: recipientId })
+    .then(recipientDeletedEvent => EventLog.write({ topic: Events.listRecipientDeleted, streamName: process.env.LIST_RECIPIENT_STREAM_NAME, payload: recipientDeletedEvent }));
 }
 
-async function listRecipients(event, context, callback) {
-  try {
-    App.configureLogger(event, context);
-    App.logger().info('listRecipients', JSON.stringify(event));
-    const user = await UserContext.byApiKey(event.requestContext.identity.apiKey);
-    const qs = event.queryStringParameters || {};
-    const page = qs.page || 1;
-    const limit = qs.limit || 10;
-    const options = { from: (page - 1) * limit, size: Math.min(limit, 100) };
-    // FIXME: Improve according to:
-    // https://bitbucket.org/micro-apps/monei-core-serverless/src/38856c21a98cacc775cf0518e0d2bd8f488b45e9/node/users/lib/index.js?at=master&fileviewer=file-view-default
-    const conditions = qs.status ? [{ condition: { queryType: 'match', fieldToQuery: 'status', searchTerm: qs.status }, conditionType: 'filter' }] : [];
-    // const conditions = qs.status ? [{ condition: { queryType: 'match', fieldToQuery: 'status.keyword', searchTerm: qs.status }, conditionType: 'filter' }] : [];
-    // const conditions = qs.status ? [{ condition: { queryType: 'terms', fieldToQuery: 'status.keyword', searchTerm: [qs.status] }, conditionType: 'filter' }] : [];
-    const recipients = await Recipients.searchRecipientsByListAndConditions(event.pathParameters.listId, conditions, omitEmpty(options));
-    HttpUtils.buildApiResponse({ statusCode: 200, body: recipients }, callback);
-  } catch (error) {
-    App.logger().error(error, error.stack);
-    HttpUtils.apiErrorHandler(error, callback);
-  }
+function listRecipients({ listId, conditions, options }) {
+  return Recipients.searchByListAndConditions(listId, conditions, omitEmpty(options));
 }
 
-async function getRecipient(event, context, callback) {
-  try {
-    App.configureLogger(event, context);
-    App.logger().info('getRecipient', JSON.stringify(event));
-    App.logger().info('getRecipient', JSON.stringify(event.pathParameters));
-    const user = await UserContext.byApiKey(event.requestContext.identity.apiKey);
-    const recipient = await Recipients.getRecipient({ listId: event.pathParameters.listId, recipientId: event.pathParameters.recipientId });
-    HttpUtils.buildApiResponse({ statusCode: 200, body: recipient }, callback);
-  } catch (error) {
-    App.logger().error(error, error.stack);
-    HttpUtils.apiErrorHandler(error, callback);
-  }
+function getRecipient({ listId, recipientId }) {
+  return Recipients.find({ listId, recipientId });
 }
 
-async function getAllLists(event, context, callback) {
-  try {
-    App.configureLogger(event, context);
-    App.logger().info('getAllLists', JSON.stringify(event));
-    const user = await UserContext.byApiKey(event.requestContext.identity.apiKey);
-    const qs = event.queryStringParam
-    const limit = 100;
-    const options = { limit };
-    const { items } = await Lists.getLists(user.id, options);
-    HttpUtils.buildApiResponse({ statusCode: 200, body: { items } }, callback);
-  } catch (error) {
-    console.error(error, error.stack);
-    HttpUtils.apiErrorHandler(error, callback);
-  }
+function createRecipientsBatch(recipientCreatedEvents) {
+  return Recipients.createBatchFromEvents(recipientCreatedEvents);
+}
+
+function updateRecipientsBatch(recipientUpdatedEvents) {
+  return Recipients.updateBatchFromEvents(recipientUpdatedEvents);
+}
+
+function importRecipientsBatch(recipientImportedEvents, importStatusListner = null) {
+  return Recipients.importFromEvents(recipientImportedEvents)
+    .then(() => Lists.updateMetadataAttrsAndImportStatusFromEvents(recipientImportedEvents, importStatusListner));
+}
+
+function deleteRecipientEs(recipient) {
+  const globalId = RecipientModel.buildGlobalId({ recipient });
+  return RecipientESModel.remove(globalId);
 }
 
 export default {
-  createRecipient,
-  updateRecipient,
-  deleteRecipient,
+  publishRecipientCreatedEvent,
+  publishRecipientUpdatedEvent,
+  publishRecipientDeletedEvent,
   listRecipients,
   getRecipient,
-  getAllLists
+  createRecipientsBatch,
+  updateRecipientsBatch,
+  importRecipientsBatch,
+  getAllLists: Lists.all,
+  createRecipientEs: Recipients.createEs,
+  updateRecipientEs: Recipients.updateEs,
+  deleteRecipientEs
 };

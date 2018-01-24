@@ -6,5 +6,10 @@
   "LISTS_TABLE": "...",
   "RECIPIENTS_TABLE": "...",
   "IOT_ENDPOINT": "...",
-  "GET_USER_CONTEXT_FUNCTION": "MoonMail-v2-users-getUserContext"
+  "GET_USER_CONTEXT_FUNCTION": "MoonMail-v2-users-getUserContext",
+  "ES_RECIPIENTS_INDEX_NAME": "mm_dev_recipients_index",
+  "ES_RECIPIENTS_INDEX_TYPE": "recipients",
+  "CUSTOM_API_HOST": "api2.moonmail.io",
+  "ACM_CERTIFICATE_NAME": "moonmail.io",
+  "RECIPIENTS_TABLE_STREAM_ARN": "..."
 }

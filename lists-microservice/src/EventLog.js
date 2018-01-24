@@ -1,5 +1,4 @@
 import AWS from 'aws-sdk';
-import retry from 'retry-promise';
 import App from './App';
 import wait from './lib/utils/wait';
 

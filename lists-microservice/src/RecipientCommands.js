@@ -36,6 +36,7 @@ function importRecipientsCsvFromS3(event, context, callback) {
     });
 }
 
+// TODO: Refactor me!
 async function importRecipientsCsvCommand(importRecipientsParams, context) {
   try {
     await Lists.setImportingStarted(importRecipientsParams.userId, importRecipientsParams.listId, importRecipientsParams.fileName);

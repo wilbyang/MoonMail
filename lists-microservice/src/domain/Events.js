@@ -78,10 +78,10 @@ const isValid = (event) => {
   }
 };
 
-function buildRecipientCreatedEvent({ listId, userId, recipient }) {
+function buildRecipientCreatedEvent({ listId, userId, recipient, subscriptionOrigin }) {
   return validate({
     type: listRecipientCreated,
-    payload: { recipient: Object.assign({}, recipient, { listId, userId }) }
+    payload: { recipient: Object.assign({}, recipient, { listId, userId, subscriptionOrigin }) }
   });
 }
 

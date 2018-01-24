@@ -1,41 +1,61 @@
 import cuid from 'cuid';
 import moment from 'moment';
-import omitEmpty from 'omit-empty';
 import Joi from 'joi';
-import { List } from 'moonmail-models';
+import { BaseModel } from 'moonmail-models';
 
-// TODO: Improve me, extract changes to the upstream mm-model
-// Take as reference RecipientsModel
-export default class ListModel extends List {
-
-  static async find(hash, range, options = {}) {
-    const result = await this.get(hash, range, options);
-    if (Object.keys(result).length === 0) return Promise.reject(new Error('Item not found'));
-    return result;
+export default class ListModel extends BaseModel {
+  static get tableName() {
+    return process.env.LISTS_TABLE;
   }
 
-  // To be ported to the upstream Model
-  static update(params, hash, range) {
-    if (Object.keys(params).length === 0) return Promise.resolve({});
-    return super.update(params, hash, range);
+  static get hashKey() {
+    return 'userId';
   }
 
-  static create(item) {
-    return this.save(item);
+  static get rangeKey() {
+    return 'id';
   }
 
-  static save(item) {
-    const toSaveItem = omitEmpty(Object.assign({}, { id: cuid(), createdAt: moment().unix() }, item));
-    return this.save(toSaveItem).then(() => toSaveItem);
+  static get createSchema() {
+    return Joi.object({
+      userId: Joi.string().required(),
+      id: Joi.string().default(cuid()),
+      createdAt: Joi.number().default(moment().unix()),
+      importStatus: Joi.object(),
+      isDelete: Joi.string().default(false.toString()),
+      name: Joi.string().required(),
+      // Not sure if this should be required
+      senderId: Joi.string()
+    });
   }
 
-  static batchCreate(items) {
-    return this.saveAll(items);
+  static createFileImportStatus(userId, listId, file, status) {
+    const addParams = {
+      Key: {
+        userId,
+        id: listId
+      },
+      TableName: this.tableName,
+      UpdateExpression: 'SET #importStatus.#file = :newStatus',
+      ExpressionAttributeNames: {
+        '#importStatus': 'importStatus',
+        '#file': file
+      },
+      ExpressionAttributeValues: {
+        ':newStatus': status
+      }
+    };
+    return this._client('update', addParams);
   }
 
-  static saveAll(items) {
-    if (items.length === 0) return Promise.resolve({});
-    const itemsToSave = items.map(item => Object.assign({}, { id: cuid(), createdAt: moment().unix() }, item));
-    return super.saveAll(itemsToSave).then(() => itemsToSave);
+  static appendMetadataAttributes(metadataAttributes = [], { listId, userId, list }) {
+    return (list ? Promise.resolve(list) : this.get(userId, listId))
+      .then((emailList) => {
+        const oldMetadata = emailList.metadataAttributes || [];
+        const newMetadata = [...new Set(oldMetadata.concat(metadataAttributes))];
+        return (oldMetadata.length < newMetadata.length)
+          ? this.update({ metadataAttributes: newMetadata }, emailList.userId, emailList.id)
+          : emailList;
+      });
   }
 }

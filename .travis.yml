@@ -4,6 +4,7 @@ node_js:
 env:
   - TEST_DIR=events CXX=g++-4.8
   - TEST_DIR=api
+  - TEST_DIR=list-microservice
 addons:
   apt:
     sources:
