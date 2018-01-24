@@ -1,84 +1,89 @@
-import Joi from 'joi';
-import ElasticSearch from '../lib/elasticsearch';
+import Promise from 'bluebird';
 import RecipientModel from './RecipientModel';
-import stringifyObjectValues from '../lib/utils/stringifyObjectValues';
+import RecipientESModel from './RecipientESModel';
 
-const indexName = process.env.ES_RECIPIENTS_INDEX_NAME;
-const indexType = process.env.ES_RECIPIENTS_INDEX_TYPE;
+function importFromEvents(recipientImportedEvents) {
+  const recipients = recipientImportedEvents
+    .map(event => Object.assign({}, event.payload.recipient, { status: RecipientModel.statuses.subscribed, subscriptionOrigin: RecipientModel.subscriptionOrigins.listImport, isConfirmed: true }));
 
-const listFilterCondition = listId => ({ condition: { queryType: 'match', fieldToQuery: 'listId', searchTerm: listId }, conditionType: 'filter' });
-const subscribedCondition = () => ({ condition: { queryType: 'match', fieldToQuery: 'status', searchTerm: 'subscribed' }, conditionType: 'filter' });
-
-function conditionsSchema() {
-  return Joi.array().items(Joi.object().keys({
-    conditionType: Joi.string().default('filter'),
-    condition: Joi.object().keys({
-      queryType: Joi.string().required(),
-      fieldToQuery: Joi.string().required(),
-      searchTerm: Joi.any().required()
-    })
-  })).min(1);
+  return RecipientModel.batchCreate(recipients)
+    .then((data) => {
+      if (data.UnprocessedItems) {
+        if (Object.keys(data.UnprocessedItems).length > 0) return Promise.reject(new Error('Unprocessed items'));
+      }
+      return data;
+    });
 }
 
-function defaultConditions(listId) {
-  return [listFilterCondition(listId)];
+function createBatchFromEvents(recipientCreatedEvents) {
+  const recipients = recipientCreatedEvents
+    .map(event => event.payload.recipient);
+  return RecipientModel.batchCreate(recipients)
+    .then((data) => {
+      if (data.UnprocessedItems) {
+        if (Object.keys(data.UnprocessedItems).length > 0) return Promise.reject(new Error('Unprocessed items'));
+      }
+      return data;
+    });
 }
 
-function stringifyMetadata(recipient) {
-  return Object.assign({}, recipient, { metatada: stringifyObjectValues(recipient.metadata || {}) });
+function updateBatchFromEvents(recipientUpdatedEvents) {
+  return Promise.map(recipientUpdatedEvents, (recipientUpdatedEvent) => {
+    return RecipientModel.update(recipientUpdatedEvent.payload.data, recipientUpdatedEvent.payload.listId, recipientUpdatedEvent.payload.id);
+  }, { concurrency: 2 });
 }
 
-function updateRecipient(listId, recipientId, newRecipient) {
-  return RecipientModel.update(newRecipient, listId, recipientId);
+function fixMetadataAttrs(m) {
+  if (!m) return {};
+  return Object.keys(m)
+    .filter(r => r.match(/^\S+$/))
+    .filter(r => r.match(/^[A-Za-z]/))
+    .reduce((acum, key) => {
+      acum[key] = m[key].toString();
+      return acum;
+    }, {});
 }
 
-function deleteRecipient(listId, recipientId) {
-  return RecipientModel.delete(listId, recipientId);
-}
+function cleanseRecipientAttributes(recipient) {
+  const newRecipient = {
+    listId: recipient.listId,
+    userId: recipient.userId,
+    id: (recipient.id || '').toString(),
+    email: recipient.email,
+    subscriptionOrigin: recipient.subscriptionOrigin || 'listImport',
+    isConfirmed: recipient.isConfirmed,
+    status: recipient.status,
+    riskScore: recipient.riskScore,
+    metadata: fixMetadataAttrs(recipient.metadata),
+    systemMetadata: recipient.systemMetadata,
+    unsubscribedAt: recipient.subscribedAt,
+    subscribedAt: recipient.subscribedAt,
+    unsubscribedCampaignId: recipient.unsubscribedCampaignId,
+    bouncedAt: recipient.bouncedAt,
+    complainedAt: recipient.complainedAt,
+    createdAt: recipient.createdAt,
+    updatedAt: recipient.updatedAt
+  };
 
-function createRecipient(recipient) {
-  return RecipientModel.create(stringifyMetadata(recipient));
-}
-
-function createESRecipient(recipient) {
-  const esId = RecipientModel.buildGlobalId(recipient);
-  return RecipientModel.validate(recipient)
-    .then(newRecipient => ElasticSearch.createOrUpdateDocument(indexName, indexType, esId, newRecipient));
-}
-
-function updateESRecipient(recipient) {
-  return createESRecipient(recipient);
-}
-
-
-function deleteESRecipient(id) {
-  return ElasticSearch.deleteDocument(client, indexName, indexType, id);
-}
-
-function getRecipient({ listId, recipientId }) {
-  return ElasticSearch.getDocument(indexName, indexType, RecipientModel.buildGlobalId({ listId, recipientId }))
-    .then(result => result._source);
-}
-
-function searchRecipientsByListAndConditions(listId, conditions, { from = 0, size = 10 }) {
-  return searchRecipientsByConditions([...conditions, ...defaultConditions(listId)], { from, size });
-}
-
-function searchRecipientsByConditions(conditions, { from = 0, size = 10 }) {
-  return Joi.validate(conditions, conditionsSchema())
-    .then(validConditions => ElasticSearch.buildQueryFilters(validConditions).from(from).size(size))
-    .then(query => ElasticSearch.search(indexName, indexType, query.build()))
-    .then(esResult => ({ items: esResult.hits.hits.map(hit => hit._source), total: esResult.hits.total }));
+  if (!newRecipient.email || !newRecipient.listId || !newRecipient.userId || !newRecipient.id) {
+    return {};
+  }
+  return newRecipient;
 }
 
 export default {
-  getRecipient,
-  createRecipient,
-  createESRecipient,
-  updateRecipient,
-  updateESRecipient,
-  deleteRecipient,
-  deleteESRecipient,
-  searchRecipientsByListAndConditions
+  buildId: RecipientModel.buildId,
+  create: RecipientModel.create,
+  batchCreate: RecipientModel.batchCreate,
+  update: RecipientModel.update,
+  delete: RecipientModel.delete,
+  createBatchFromEvents,
+  updateBatchFromEvents,
+  importFromEvents,
+  find: RecipientESModel.find,
+  createEs: RecipientESModel.create,
+  updateEs: RecipientESModel.update,
+  deleteEs: RecipientESModel.remove,
+  searchByListAndConditions: RecipientESModel.searchByListAndConditions,
+  cleanseRecipientAttributes
 };
-

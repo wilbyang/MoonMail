@@ -1,4 +1,4 @@
-import '../specHelper';
+import '../../lib/specHelper';
 import ElasticSearch from '../elasticsearch';
 
 const dummyEsClient = {
@@ -6,6 +6,7 @@ const dummyEsClient = {
   search() { },
   delete() { }
 }
+
 describe('ElasticSearch', () => {
   describe('#buildQueryBuilders', () => {
     const conditions = [

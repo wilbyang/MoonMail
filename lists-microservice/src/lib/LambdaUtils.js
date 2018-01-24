@@ -1,7 +1,7 @@
 import AWS from 'aws-sdk';
 import Promise from 'bluebird';
 // import { parse } from 'aws-event-parser';
-// import { strip } from 'eskimo-stripper';
+import { strip } from 'eskimo-stripper';
 import querystring from 'querystring';
 
 const s3Client = new AWS.S3({ region: process.env.SERVERLESS_REGION });
@@ -33,13 +33,13 @@ const s3Client = new AWS.S3({ region: process.env.SERVERLESS_REGION });
 //   return { deletes, inserts, updates };
 // }
 
-// function parseDynamoDBStreamEvent(records) {
-//   return records.map((record) => {
-//     const oldImage = record.dynamodb.OldImage ? strip(record.dynamodb.OldImage) : {};
-//     const newImage = record.dynamodb.NewImage ? strip(record.dynamodb.NewImage) : {};
-//     return { eventName: record.eventName, oldImage, newImage };
-//   });
-// }
+function parseDynamoDBStreamEvent(event) {
+  return event.Records.map((record) => {
+    const oldImage = record.dynamodb.OldImage ? strip(record.dynamodb.OldImage) : {};
+    const newImage = record.dynamodb.NewImage ? strip(record.dynamodb.NewImage) : {};
+    return { eventName: record.eventName, oldImage, newImage };
+  });
+}
 
 function parseKinesisStreamEvent(event) {
   return event.Records.map(record => ({
@@ -73,7 +73,7 @@ export default {
   // createDynamoDBStreamRouter,
   // createKinesisStreamRouter,
   // parseDynamoDBStreamEventGroups,
-  // parseDynamoDBStreamEvent,
+  parseDynamoDBStreamEvent,
   parseKinesisStreamEvent,
   parseKinesisStreamTopicEvents,
   parseS3Event

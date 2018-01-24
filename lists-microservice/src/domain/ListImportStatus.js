@@ -1,6 +1,14 @@
 import omitEmpty from 'omit-empty';
+import moment from 'moment';
 
-function createImportStatus({ status, message, createdAt, finishedAt }) {
+function buildFromImportProgress({ recipientIndex, totalRecipients }) {
+  return omitEmpty({
+    status: totalRecipients === recipientIndex + 1 ? 'success' : 'importing',
+    finishedAt: totalRecipients === recipientIndex + 1 ? moment().unix() : null
+  });
+}
+
+function create({ status, message, createdAt, finishedAt }) {
   return omitEmpty({
     // Legacy to be deprecated in the future
     importing: status === 'importing',
@@ -16,7 +24,7 @@ function createImportStatus({ status, message, createdAt, finishedAt }) {
 function aggregateImportStatus(importId, existingImportStatus, { status, message, createdAt, finishedAt }) {
   const sImportId = importId.split('.')[2];
 
-  const importStatus = createImportStatus({ status, message, createdAt, finishedAt });
+  const importStatus = create({ status, message, createdAt, finishedAt });
 
   if (!existingImportStatus) {
     return { [sImportId]: importStatus };
@@ -32,6 +40,7 @@ function aggregateImportStatus(importId, existingImportStatus, { status, message
 }
 
 export default {
-  create: createImportStatus,
+  create,
+  buildFromImportProgress,
   aggregateImportStatus
 };

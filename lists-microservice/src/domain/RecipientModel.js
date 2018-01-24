@@ -1,14 +1,57 @@
-import Promise from 'bluebird';
-import { Recipient } from 'moonmail-models';
 import Joi from 'joi';
 import moment from 'moment';
-import omitEmpty from 'omit-empty';
 import base64url from 'base64-url';
-import chunkArray from '../lib/utils/chunkArray';
+import { BaseModel } from 'moonmail-models';
+import stringifyObjectValues from '../lib/utils/stringifyObjectValues';
 
+const statuses = {
+  subscribed: 'subscribed',
+  awaitingConfirmation: 'awaitingConfirmation',
+  unsubscribed: 'unsubscribed',
+  bounced: 'bounced',
+  complaint: 'complained'
+};
 
-// TODO: Improve me, extract changes to the upstream mm-model
-export default class RecipientModel extends Recipient {
+const subscriptionOrigins = {
+  signupForm: 'signupForm',
+  listImport: 'listImport',
+  manual: 'manual',
+  api: 'api'
+};
+
+export default class RecipientModel extends BaseModel {
+  static get tableName() {
+    return process.env.RECIPIENTS_TABLE;
+  }
+
+  static get emailIndex() {
+    return process.env.EMAIL_INDEX_NAME;
+  }
+
+  static get statusIndex() {
+    return process.env.RECIPIENT_STATUS_INDEX_NAME;
+  }
+
+  static get globalEmailIndex() {
+    return process.env.RECIPIENT_GLOBAL_EMAIL_INDEX_NAME;
+  }
+
+  static get hashKey() {
+    return 'listId';
+  }
+
+  static get rangeKey() {
+    return 'id';
+  }
+
+  static get statuses() {
+    return statuses;
+  }
+
+  static get subscriptionOrigins() {
+    return subscriptionOrigins;
+  }
+
   static get createSchema() {
     return Joi.object({
       listId: Joi.string().required(),
@@ -19,7 +62,8 @@ export default class RecipientModel extends Recipient {
       isConfirmed: Joi.boolean().when('status', { is: RecipientModel.statuses.awaitingConfirmation, then: Joi.only(false).default(false), otherwise: Joi.only(true).default(true) }),
       status: Joi.string().valid(RecipientModel.statuses.subscribed, RecipientModel.statuses.awaitingConfirmation).required(),
       metadata: Joi.object().pattern(/^\S+$/, Joi.required()),
-      systemMetadata: Joi.object().pattern(/^\S+$/, Joi.required())
+      systemMetadata: Joi.object().pattern(/^\S+$/, Joi.required()),
+      createdAt: Joi.number().default(moment().unix())
     });
   }
 
@@ -27,70 +71,56 @@ export default class RecipientModel extends Recipient {
     return Joi.object({
       status: Joi.string().valid(Object.values(RecipientModel.statuses)),
       isConfirmed: Joi.boolean(),
-      metadata: Joi.object().pattern(/^\S+$/, Joi.required())
+      metadata: Joi.object().pattern(/^\S+$/, Joi.required()),
+      updatedAt: Joi.number().default(moment().unix())
     });
   }
 
-  // TODO: Move me to MM-models
-  static validate(schema, recipient, options = {}) {
-    if (!schema) return Promise.resolve(recipient);
-    return Joi.validate(recipient, schema, options);
-  }
 
   static buildId(recipient) {
     return base64url.encode(recipient.email);
   }
 
   static buildGlobalId({ listId, recipientId, recipient }) {
-    const idBuilder = (lId, recptId) => `${lId}-${recptId}`;
-    if (recipient) return idBuilder(recipient.listId, recipient.id);
-    return idBuilder(listId, recipientId);
+    const gidBuilder = (lId, recptId) => `${lId}-${recptId}`;
+    if (recipient) return gidBuilder(recipient.listId, recipient.id);
+    return gidBuilder(listId, recipientId);
   }
 
-  static async find(hash, range, options = {}) {
-    const result = await this.get(hash, range, options);
-    if (Object.keys(result).length === 0) return Promise.reject(new Error('Item not found'));
-    return result;
+  static emailBeginsWith(listId, email, options = {}) {
+    const indexOptions = {
+      indexName: this.emailIndex,
+      range: { bw: { email } }
+    };
+    const dbOptions = Object.assign({}, indexOptions, options);
+    return this.allBy(this.hashKey, listId, dbOptions);
   }
 
-  // To be ported to the upstream Model
-  static update(params, hash, range) {
-    return this.validate(this.updateSchema, params)
-      .then(() => super.update(params, hash, range));
+  static allByStatus(listId, status, options = {}) {
+    const indexOptions = {
+      indexName: this.statusIndex,
+      range: { eq: { status } }
+    };
+    const dbOptions = Object.assign({}, indexOptions, options);
+    return this.allBy(this.hashKey, listId, dbOptions);
   }
 
-  static create(item) {
-    const toSaveItem = omitEmpty(Object.assign({}, { id: this.buildId(item), createdAt: moment().unix() }, item));
-    return this.validate(this.createSchema, toSaveItem)
-      .then(() => this.save(toSaveItem))
-      .then(() => toSaveItem);
+  static allByEmail(email, options = {}) {
+    const indexOptions = {
+      indexName: this.globalEmailIndex
+    };
+    const dbOptions = Object.assign({}, indexOptions, options);
+    return this.allBy('email', email, dbOptions);
   }
 
-  static save(item) {
-    return super.save(item);
+  static create(item, validationOptions) {
+    const itemToSave = Object.assign({}, { id: this.buildId(item) }, item, { metadata: stringifyObjectValues(item.metadata || {}) });
+    return super.create(itemToSave, validationOptions);
   }
 
   static batchCreate(items) {
-    return this.saveAll(items);
-  }
-
-  // TODO: Improve me, retry only unprocessed items
-  // Improve error and probably move it to saveBatch
-  static saveAll(items) {
-    if (items.length === 0) return Promise.resolve({});
-    const itemsToSave = items.map(item => Object.assign({}, { id: this.buildId(item), createdAt: moment().unix() }, item));
-    return super.saveAll(itemsToSave)
-      .then((data) => {
-        if (data.UnprocessedItems) {
-          if (Object.keys(data.UnprocessedItems).length > 0) return Promise.reject(new Error('Unprocessed items'));
-        }
-        return data;
-      });
-  }
-
-  static saveBatch(items) {
-    return Promise.resolve(chunkArray(items, 25))
-      .then(itemsChunks => Promise.map(itemsChunks, itms => this.saveAll(itms), { concurrency: 1 }));
+    const itemsToSave = items.map(item => Object.assign({}, { id: this.buildId(item) }, item, { metadata: stringifyObjectValues(item.metadata || {}) }));
+    return super.batchCreate(itemsToSave);
   }
 }
 

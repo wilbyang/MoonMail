@@ -1,4 +1,4 @@
-import './specHelper';
+import '../lib/specHelper';
 import awsMock from 'aws-sdk-mock';
 import AWS from 'aws-sdk';
 import FunctionsClient from './FunctionsClient';
@@ -16,7 +16,7 @@ describe('FunctionsClient', () => {
     beforeEach(() => {
       awsMock.mock('Lambda', 'invoke', lambdaResponse);
       lambdaStub = new AWS.Lambda();
-      clientGetterStub = sinon.stub(FunctionsClient, 'client').get(() => lambdaStub);
+      clientGetterStub = sinon.stub(FunctionsClient, 'client').returns(lambdaStub);
     });
     afterEach(() => {
       awsMock.restore('Lambda');

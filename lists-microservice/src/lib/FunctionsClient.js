@@ -10,7 +10,7 @@ export default class FunctionsClient {
       FunctionName: functionName,
       InvocationType: inovkationType
     };
-    return this.client.invoke(params).promise()
+    return this.client().invoke(params).promise()
       .then(result => this._handleResponse(result));
   }
 
@@ -45,7 +45,7 @@ export default class FunctionsClient {
     return validStatusCodes.includes(lambdaResult.StatusCode);
   }
 
-  static get client() {
+  static client() {
     return lambdaClient;
   }
 }

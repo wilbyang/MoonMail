@@ -1,11 +1,11 @@
 import chai from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
-import chaiAsPromised from 'chai-as-promised';
+// import chaiAsPromised from 'chai-as-promised';
 
 
 const expect = chai.expect;
-chai.use(chaiAsPromised);
+// chai.use(chaiAsPromised);
 chai.use(sinonChai);
 
 global.sinon = sinon;
