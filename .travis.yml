@@ -1,10 +1,12 @@
 language: node_js
 node_js:
 - '6.11'
+before_install:
+  - npm install -g npm@latest
 env:
   - TEST_DIR=events CXX=g++-4.8
   - TEST_DIR=api
-  - TEST_DIR=list-microservice
+  - TEST_DIR=lists-microservice
 addons:
   apt:
     sources:
@@ -17,3 +19,4 @@ cache:
     - node_modules
     - events/node_modules
     - api/node_modules
+    - lists-microservice/node_modules
