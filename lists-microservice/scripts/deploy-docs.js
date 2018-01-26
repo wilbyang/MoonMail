@@ -72,12 +72,12 @@ function addFakerTypes(swaggerJson) {
       schema.chance = 'url';
       parentSchema[key] = schema;
     }
-    if (key === 'metadata') {
-      schema.chance = 'metadata';
+    if (key.match(/email$/i)) {
+      schema.chance = 'email';
       parentSchema[key] = schema;
     }
-    if (key === 'email') {
-      schema.chance = 'email';
+    if (key === 'metadata') {
+      schema.chance = 'metadata';
       parentSchema[key] = schema;
     }
   });
