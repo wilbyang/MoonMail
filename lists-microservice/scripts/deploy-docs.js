@@ -102,12 +102,12 @@ function addExamples(swaggerJson) {
 }
 
 function generateDocs(swaggerJson) {
-  const swaggerFilePath = './tmp/moonmail-api-swagger.json';
+  const swaggerFilePath = '/tmp/moonmail-api-swagger.json';
   fs.writeFileSync(swaggerFilePath, JSON.stringify(swaggerJson));
   const options = {
     specFile: swaggerFilePath,
     silent: true,
-    targetDir: './tmp/moonmail-docs/'
+    targetDir: '/tmp/moonmail-docs/'
   };
   spectacle(options);
 }
