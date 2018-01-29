@@ -83,7 +83,7 @@ describe('TimeAggregatorService', () => {
         { id: 5, value: 5, timestamp: moment().startOf('year').add(6, 'year').unix() },
         { id: 6, value: 5, timestamp: moment().startOf('year').add(10, 'year').unix() }
       ];
-      const expectedGroups = 5;
+      const expectedGroups = 4;
       const result = TimeAggregatorService.aggregate(events, [2, 'y'], { eventName: 'valCount' });
       expect(Object.keys(result).length).to.equal(expectedGroups);
       done();
