@@ -2,20 +2,22 @@ language: node_js
 node_js:
 - '6.11'
 before_install:
-  - npm install -g npm@latest
+  - npm install -g npm@latest && npm install
 env:
-  - TEST_DIR=events CXX=g++-4.8
+  # - TEST_DIR=events CXX=g++-4.8
+  - TEST_DIR=events
   - TEST_DIR=api
   - TEST_DIR=lists-microservice
-addons:
-  apt:
-    sources:
-      - ubuntu-toolchain-r-test
-    packages:
-      - g++-4.8
+# addons:
+#   apt:
+#     sources:
+#       - ubuntu-toolchain-r-test
+#     packages:
+#       - g++-4.8
 script: cd $TEST_DIR && npm install && npm test
 cache:
   directories:
+    - $(npm config get prefix)/lib/node_modules
     - node_modules
     - events/node_modules
     - api/node_modules

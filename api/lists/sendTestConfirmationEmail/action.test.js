@@ -6,7 +6,6 @@ import * as chai from 'chai';
 import * as sinonAsPromised from 'sinon-as-promised';
 import { respond } from './action';
 const expect = chai.expect;
-let serviceInstanceStub;
 
 describe('sendTestConfirmationEmail', () => {
   const subject = 'my campaign subject';
@@ -14,10 +13,11 @@ describe('sendTestConfirmationEmail', () => {
   const validCampaign = {subject, body};
   const incompleteCampaign = {subject};
   let event;
+  let serviceInstanceStub;
 
   describe('#respond()', () => {
     context('when the campaign has the needed parameters', () => {
-      before(() => {
+      beforeEach(() => {
         event = {campaign: validCampaign};
         event.authToken = 'some-token';
         serviceInstanceStub = sinon.createStubInstance(SendTestEmailService);
@@ -34,7 +34,7 @@ describe('sendTestConfirmationEmail', () => {
         });
       });
 
-      after(() => {
+      afterEach(() => {
         SendTestEmailService.create.restore();
       });
     });
