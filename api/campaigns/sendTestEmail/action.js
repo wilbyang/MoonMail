@@ -18,7 +18,10 @@ export function respond(event, cb) {
     .then(sender => serviceFactory(event, sender))
     .then(service => service.sendEmail())
     .then(res => cb(null, res))
-    .catch(err => cb(ApiErrors.response(err), null));
+    .catch(err => {
+      console.log(err);
+      cb(ApiErrors.response(err), null)
+    });
 }
 
 function getSender(userId, senderId) {
