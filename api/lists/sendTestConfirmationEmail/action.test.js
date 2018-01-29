@@ -27,7 +27,7 @@ describe('sendTestConfirmationEmail', () => {
 
       it('sends the campaign', (done) => {
         respond(event, (err, result) => {
-          expect(serviceInstanceStub.sendEmail).to.have.been.calledOnce;
+          expect(serviceInstanceStub.sendEmail).to.have.been.called;
           expect(err).to.not.exist;
           expect(result).to.exist;
           done();
