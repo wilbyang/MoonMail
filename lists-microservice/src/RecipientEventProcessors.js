@@ -135,8 +135,8 @@ function syncRecipientStreamWithES(event, context, callback) {
     .catch((err) => {
       App.logger().error(err);
       // During migration we don't want to explode if we can't remove the recipient from ES
-      if ((err.errorMessage || '').match(/Not Found/)) callback(null, err);
-      callback(err);
+      if ((err.errorMessage || '').match(/Not Found/)) return callback(null, err);
+      callback(null, err);
     });
 }
 

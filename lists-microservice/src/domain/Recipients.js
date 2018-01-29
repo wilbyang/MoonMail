@@ -36,10 +36,9 @@ function updateBatchFromEvents(recipientUpdatedEvents) {
 function fixMetadataAttrs(m) {
   if (!m) return {};
   return Object.keys(m)
-    .filter(r => r.match(/^\S+$/))
-    .filter(r => r.match(/^[A-Za-z]/))
+    .filter(r => r.match(/^[A-Za-z_]+[A-Za-z0-9_]*$/))
     .reduce((acum, key) => {
-      acum[key] = m[key].toString();
+      acum[key.toString()] = m[key].toString();
       return acum;
     }, {});
 }
@@ -56,7 +55,7 @@ function cleanseRecipientAttributes(recipient) {
     riskScore: recipient.riskScore,
     metadata: fixMetadataAttrs(recipient.metadata),
     systemMetadata: recipient.systemMetadata,
-    unsubscribedAt: recipient.subscribedAt,
+    unsubscribedAt: recipient.unsubscribedAt,
     subscribedAt: recipient.subscribedAt,
     unsubscribedCampaignId: recipient.unsubscribedCampaignId,
     bouncedAt: recipient.bouncedAt,

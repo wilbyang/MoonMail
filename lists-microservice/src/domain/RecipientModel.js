@@ -61,8 +61,8 @@ export default class RecipientModel extends BaseModel {
       subscriptionOrigin: Joi.string().valid(Object.values(RecipientModel.subscriptionOrigins)).required(),
       isConfirmed: Joi.boolean().when('status', { is: RecipientModel.statuses.awaitingConfirmation, then: Joi.only(false).default(false), otherwise: Joi.only(true).default(true) }),
       status: Joi.string().valid(RecipientModel.statuses.subscribed, RecipientModel.statuses.awaitingConfirmation).required(),
-      metadata: Joi.object().pattern(/^\S+$/, Joi.required()),
-      systemMetadata: Joi.object().pattern(/^\S+$/, Joi.required()),
+      metadata: Joi.object().pattern(/^[A-Za-z_]+[A-Za-z0-9_]*$/, Joi.required()),
+      systemMetadata: Joi.object().pattern(/^[A-Za-z_]+[A-Za-z0-9_]*$/, Joi.required()),
       createdAt: Joi.number().default(moment().unix())
     });
   }
