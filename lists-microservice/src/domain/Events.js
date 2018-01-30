@@ -15,7 +15,8 @@ const eventSchemas = {
           email: Joi.string().required().email(),
           listId: Joi.string().required(),
           userId: Joi.string().required(),
-          metadata: Joi.object().pattern(/^\S+$/, Joi.any())
+          // TODO: Should we enforce string types on values here?
+          metadata: Joi.object().pattern(/^[A-Za-z_]+[A-Za-z0-9_]*$/, Joi.any())
         }).required(),
         totalRecipients: Joi.number().required(),
         recipientIndex: Joi.number().required(),
@@ -34,8 +35,8 @@ const eventSchemas = {
           subscriptionOrigin: Joi.string().valid(Object.values(RecipientModel.subscriptionOrigins)),
           isConfirmed: Joi.boolean().when('status', { is: RecipientModel.statuses.awaitingConfirmation, then: Joi.only(false).default(false), otherwise: Joi.only(true).default(true) }),
           status: Joi.string().valid(RecipientModel.statuses.subscribed, RecipientModel.statuses.awaitingConfirmation).required(),
-          metadata: Joi.object().pattern(/^\S+$/, Joi.required())
-          // systemMetadata: Joi.object().pattern(/^\S+$/, Joi.any())
+          metadata: Joi.object().pattern(/^[A-Za-z_]+[A-Za-z0-9_]*$/, Joi.required())
+          // systemMetadata: Joi.object().pattern(/^[A-Za-z_]+[A-Za-z0-9_]*$/, Joi.required()),
         }
       }).required()
     })
@@ -50,7 +51,7 @@ const eventSchemas = {
         data: Joi.object({
           status: Joi.string().valid(Object.values(RecipientModel.statuses)),
           isConfirmed: Joi.boolean().when('status', { is: RecipientModel.statuses.awaitingConfirmation, then: Joi.only(false).default(false), otherwise: Joi.only(true).default(true) }),
-          metadata: Joi.object().pattern(/^\S+$/, Joi.required())
+          metadata: Joi.object().pattern(/^[A-Za-z_]+[A-Za-z0-9_]*$/, Joi.required())
         }).required()
       }).required()
     })
@@ -77,6 +78,18 @@ const isValid = (event) => {
     return false;
   }
 };
+
+function buildRecipientImportedEvent({ recipient, importId, recipientIndex, total }) {
+  return validate({
+    type: listRecipientImported,
+    payload: {
+      recipient,
+      totalRecipients: total,
+      recipientIndex,
+      importId
+    }
+  });
+}
 
 function buildRecipientCreatedEvent({ listId, userId, recipient, subscriptionOrigin }) {
   return validate({
@@ -108,5 +121,6 @@ export default {
   validate,
   buildRecipientCreatedEvent,
   buildRecipientDeleteEvent,
-  buildRecipientUpdatedEvent
+  buildRecipientUpdatedEvent,
+  buildRecipientImportedEvent
 };

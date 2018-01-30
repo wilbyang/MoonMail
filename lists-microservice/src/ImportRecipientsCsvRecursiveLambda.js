@@ -1,13 +1,16 @@
 import { SimpleStatefulRecursiveService } from 'recursive-lambda';
-import MapCsvStringToRecipients from './MapCsvStringToRecipients';
-import PublishRecipientsBatch from './PublishRecipientsBatch';
-import wait from '../lib/utils/wait';
+import wait from './lib/utils/wait';
+import Api from './Api';
 
 // FIXME: This mixes bussines logic and application logic
-export default class ImportRecipientsCsv extends SimpleStatefulRecursiveService {
+export default class ImportRecipientsCsvRecursiveLamda extends SimpleStatefulRecursiveService {
 
-  static execute(params, lambdaClient, context) {
-    return new ImportRecipientsCsv(params, lambdaClient, context).execute();
+  static async execute(params, lambdaClient, context) {
+    const instance = new ImportRecipientsCsvRecursiveLamda(params, lambdaClient, context);
+    await instance.execute();
+    const state = instance.state;
+    if (state.error) throw state.error;
+    return state;
   }
 
   constructor(params, lambdaClient, context) {
@@ -44,22 +47,32 @@ export default class ImportRecipientsCsv extends SimpleStatefulRecursiveService 
   }
 
   async importRecipients(state) {
-    await wait(500);
-    const startIndex = state.processingOffset;
-    const lastIndex = startIndex + this.batchSize;
-    const recipients = await this.getRecipients();
-    const recipientsBatch = recipients.slice(startIndex, lastIndex);
-    await PublishRecipientsBatch.execute(recipientsBatch, this.fileName, startIndex, this.batchSize, recipients.length);
-    return this.updateState({
-      recipients,
-      processingOffset: lastIndex,
-      processCompleted: recipients.length - 1 <= lastIndex
-    });
+    try {
+      await wait(500);
+      const startIndex = state.processingOffset;
+      const lastIndex = startIndex + this.batchSize;
+      const recipients = await this.getRecipients();
+      const recipientsBatch = recipients.slice(startIndex, lastIndex);
+      await Api.publishRecipientImportedEvents(recipientsBatch, this.fileName, startIndex, recipients.length);
+      return this.updateState({
+        recipients,
+        processingOffset: lastIndex,
+        processCompleted: recipients.length - 1 <= lastIndex
+      });
+    } catch (error) {
+      const errorMessage = error.message || error.errorMessage;
+      if (!errorMessage.match(/ImportError/)) throw error;
+      return this.updateState({
+        processingOffset: 0,
+        error,
+        processCompleted: true
+      });
+    }
   }
 
   getRecipients() {
     if (this.state.recipients) return Promise.resolve(this.state.recipients);
-    return MapCsvStringToRecipients.execute({
+    return Api.mapCsvStringToRecipients({
       csvString: this.body,
       userId: this.userId,
       listId: this.listId,

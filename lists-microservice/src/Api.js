@@ -5,6 +5,25 @@ import Lists from './domain/Lists';
 import EventLog from './EventLog';
 import RecipientModel from './domain/RecipientModel';
 import RecipientESModel from './domain/RecipientESModel';
+import MapCsvStringToRecipients from './recipients/MapCsvStringToRecipients';
+
+function publishRecipientImportedEvents(recipientsBatch, importId, batchFirstIndex, total) {
+  const eventsBatch = recipientsBatch
+    .map((recipient, index) => Events.buildRecipientImportedEvent({ recipient, importId, recipientIndex: batchFirstIndex + index, total }));
+  const failed = eventsBatch.filter(validationResult => !!validationResult.error);
+
+  if (failed.length > 0) return Promise.reject(new Error('ImportError - ValidationFailed'));
+
+  const batchToWrite = eventsBatch
+    .filter(validationResult => !validationResult.error)
+    .map(validationResult => validationResult.value);
+
+  return EventLog.batchWrite({
+    topic: Events.listRecipientImported,
+    streamName: process.env.LIST_RECIPIENT_STREAM_NAME,
+    data: batchToWrite
+  });
+}
 
 function publishRecipientCreatedEvent({ listId, userId, createRecipientPayload, subscriptionOrigin }) {
   return Events.buildRecipientCreatedEvent({ listId, userId, recipient: createRecipientPayload, subscriptionOrigin })
@@ -51,6 +70,8 @@ export default {
   publishRecipientCreatedEvent,
   publishRecipientUpdatedEvent,
   publishRecipientDeletedEvent,
+  publishRecipientImportedEvents,
+  mapCsvStringToRecipients: MapCsvStringToRecipients.execute,
   listRecipients,
   getRecipient,
   createRecipientsBatch,

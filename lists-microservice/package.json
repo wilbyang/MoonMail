@@ -10,8 +10,8 @@
     "url": "git://github.com/"
   },
   "scripts": {
-    "test": "NODE_ENV=test mocha --require babel-register $(find . \\( -name '*.test.js' -o -name '*.spec.js' \\) -not -path './node_modules/*' -not -path './**/node_modules/*')",
-    "watch": "NODE_ENV=test mocha --watch --require babel-register $(find . \\( -name '*.test.js' -o -name '*.spec.js' \\) -not -path './node_modules/*' -not -path './**/node_modules/*')",
+    "test": "NODE_ENV=test mocha --require choma --require babel-register $(find . \\( -name '*.test.js' -o -name '*.spec.js' \\) -not -path './node_modules/*' -not -path './**/node_modules/*')",
+    "watch": "NODE_ENV=test mocha --watch --require choma  --require babel-register $(find . \\( -name '*.test.js' -o -name '*.spec.js' \\) -not -path './node_modules/*' -not -path './**/node_modules/*')",
     "deploy-docs": "./scripts/deploy-docs.js"
   },
   "keywords": [],
@@ -33,6 +33,7 @@
     "chai-cheerio": "^1.0.0",
     "chai-fuzzy": "^1.6.1",
     "chai-things": "^0.2.0",
+    "choma": "^1.1.0",
     "commander": "^2.12.2",
     "json-schema-faker": "^0.5.0-rc12",
     "mocha": "^4.1.0",
