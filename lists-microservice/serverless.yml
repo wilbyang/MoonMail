@@ -346,7 +346,7 @@ functions:
     events:
       - stream:
           type: dynamodb
-          batchSize: 25
+          batchSize: 50
           startingPosition: TRIM_HORIZON
           arn: ${self:custom.recipientsTableStreamArn}
               

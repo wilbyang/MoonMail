@@ -15,6 +15,10 @@ function setImportingStarted(userId, listId, importId) {
     .then(() => setProcessing(userId, listId, true));
 }
 
+function setAsProcessed(userId, listId) {
+  return setProcessing(userId, listId, false);
+}
+
 async function updateImportStatus(userId, listId, importId, { status, message, createdAt, finishedAt }) {
   const list = await ListModel.find(userId, listId);
   const existingImportStatus = list.importStatus;
@@ -58,6 +62,7 @@ export default {
   all: allBy,
   allRecursive,
   setImportingStarted,
+  setAsProcessed,
   updateImportStatus,
   updateMetadataAttrsAndImportStatusFromEvents
 };
