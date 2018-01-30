@@ -12,8 +12,9 @@ async function createRecipient(event, context, callback) {
     const { recipient } = JSON.parse(event.body);
     const user = await UserContext.byApiKey(event.requestContext.identity.apiKey);
     await Api.publishRecipientCreatedEvent({ listId: event.pathParameters.listId, userId: user.id, createRecipientPayload: recipient, subscriptionOrigin: RecipientModel.subscriptionOrigins.api });
-    const recourceLocation = `/${event.pathParameters.listId}/recipients/${Recipients.buildId(recipient)}`;
-    HttpUtils.buildApiResponse({ statusCode: 202, headers: { Location: recourceLocation } }, callback);
+    const recipientId = Recipients.buildId(recipient);
+    const recourceLocation = `/${event.pathParameters.listId}/recipients/${recipientId}`;
+    HttpUtils.buildApiResponse({ statusCode: 202, headers: { Location: recourceLocation }, body: { recipient: { id: recipientId } } }, callback);
   } catch (error) {
     App.logger().error(error);
     HttpUtils.apiErrorHandler(error, callback);
