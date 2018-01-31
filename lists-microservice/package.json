@@ -65,6 +65,7 @@
     "http-aws-es": "^4.0.0",
     "joi": "^13.0.1",
     "json-schema-traverse": "^0.3.1",
+    "lodash": "^4.17.4",
     "moment": "^2.15.1",
     "moonmail-models": "github:microapps/moonmail-models",
     "nodent": "^3.1.0",

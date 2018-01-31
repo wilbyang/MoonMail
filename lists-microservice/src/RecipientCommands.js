@@ -8,21 +8,6 @@ import UserNotifier from './lib/UserNotifier';
 
 const lambdaClient = new AWS.Lambda();
 
-function buildImportRecipientsParams(s3Data, event) {
-  const fileKey = s3Data.key;
-  const fileTokens = fileKey.split('.');
-  return {
-    userId: fileTokens[0],
-    listId: fileTokens[1],
-    fileName: fileKey,
-    body: s3Data.body,
-    headerMapping: JSON.parse(s3Data.metadata.headers),
-    processingOffset: event.processingOffset || 0,
-    // The event clone so to be used on recursive calls
-    s3Event: event
-  };
-}
-
 function importRecipientsCsvFromS3(event, context, callback) {
   App.configureLogger(event, context);
   App.logger().info('importRecipientsCsvFromS3', JSON.stringify(event));
@@ -38,6 +23,21 @@ function importRecipientsCsvFromS3(event, context, callback) {
       App.logger().error(err);
       return handlerErrors(err, state, callback);
     });
+}
+
+function buildImportRecipientsParams(s3Data, event) {
+  const fileKey = s3Data.key;
+  const fileTokens = fileKey.split('.');
+  return {
+    userId: fileTokens[0],
+    listId: fileTokens[1],
+    fileName: fileKey,
+    body: s3Data.body,
+    headerMapping: JSON.parse(s3Data.metadata.headers),
+    processingOffset: event.processingOffset || 0,
+    // The event clone so to be used on recursive calls
+    s3Event: event
+  };
 }
 
 async function handlerErrors(error, importRecipientsParams, callback) {

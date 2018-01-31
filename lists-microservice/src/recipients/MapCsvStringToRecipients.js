@@ -1,9 +1,10 @@
 import Papa from 'papaparse';
 import Promise from 'bluebird';
-import base64 from 'base64-url';
 import _ from 'lodash';
 import stripBom from 'strip-bom';
+import omitEmpty from 'omit-empty';
 
+const systemMetadataKeyPattern = /^systemMedatadata__/;
 
 function addMetadata(recipient, row, headerMapping = {}) {
   const metadata = Object.entries(headerMapping)
@@ -11,9 +12,22 @@ function addMetadata(recipient, row, headerMapping = {}) {
     .reduce((metadata, columnMetadataMapping) => {
       const csvColumn = columnMetadataMapping[0];
       const metadataKey = columnMetadataMapping[1];
-      return Object.assign({}, metadata, { [metadataKey]: row[csvColumn] });
-    }, {});
-  return Object.assign({}, recipient, { metadata });
+      const normalizedKey = normalizedMetadataKey(metadataKey);
+      const metadataPath = isSystemMetadata(metadataKey)
+        ? `systemMetadata.${normalizedKey}`
+        : `metadata.${normalizedKey}`;
+      _.set(metadata, metadataPath, row[csvColumn]);
+      return metadata;
+    }, { metadata: {}, systemMetadata: {} });
+  return Object.assign({}, recipient, omitEmpty(metadata));
+}
+
+function isSystemMetadata(key) {
+  return systemMetadataKeyPattern.test(key);
+}
+
+function normalizedMetadataKey(key = '') {
+  return key.replace(systemMetadataKeyPattern, '');
 }
 
 function buildBaseRecipient(row, userId, listId, headerMapping = {}) {
@@ -51,6 +65,7 @@ function mapCsvRecipients({ csvString, userId, listId, headerMapping }) {
             isValidEmail(recipient.email) && recipients.push(recipient);
           }
         } catch (err) {
+          // console.log(err)
         }
       },
       error: (err, file, inputElem, reason) => {
