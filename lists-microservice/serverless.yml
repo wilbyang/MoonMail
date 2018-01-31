@@ -243,7 +243,8 @@ custom:
             recipient:
               type: object
               properties:
-                id: string
+                id:
+                  type: string
       -
         name: CreateRecipientRequest
         description: Recipient's model
