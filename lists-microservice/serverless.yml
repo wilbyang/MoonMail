@@ -108,6 +108,7 @@ custom:
                 - signupForm
                 - manual
                 - listImport
+                - api
             isConfirmed:
               type: boolean
             status:
@@ -212,12 +213,13 @@ custom:
             email:
               type: string
               format: email
-            subscriptionOrigin:
-              enum:
-                - signupForm
-                - listImport
-                - manual
-              type: string
+            #subscriptionOrigin:
+            #  enum:
+            #    - signupForm
+            #    - listImport
+            #    - manual
+            #    - api
+            #  type: string
             status:
               enum:
                 - subscribed
@@ -229,6 +231,20 @@ custom:
               type: object
               properties: {}
               additionalProperties: true
+      -
+        name: RecipientCreatedResponse
+        description: Create recipient response
+        contentType: "application/json"
+        schema:
+          type: object
+          required:
+            - recipient
+          properties:
+            recipient:
+              type: object
+              properties:
+                id:
+                  type: string
       -
         name: CreateRecipientRequest
         description: Recipient's model
@@ -382,6 +398,8 @@ functions:
               -
                 statusCode: "202"
                 description: "Request accepted"
+                responseModels:
+                  "application/json": RecipientCreatedResponse
                 responseHeaders:
                   -
                     name: Location

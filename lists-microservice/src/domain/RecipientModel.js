@@ -71,7 +71,7 @@ export default class RecipientModel extends BaseModel {
     return Joi.object({
       status: Joi.string().valid(Object.values(RecipientModel.statuses)),
       isConfirmed: Joi.boolean(),
-      metadata: Joi.object().pattern(/^\S+$/, Joi.required()),
+      metadata: Joi.object().pattern(/^[A-Za-z_]+[A-Za-z0-9_]*$/, Joi.required()),
       updatedAt: Joi.number().default(moment().unix())
     });
   }
