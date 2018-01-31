@@ -27,7 +27,7 @@ With [MoonMail](https://moonmail.io/) you can: create & edit lists of recipients
 * Filter lists by Segments
 * [React powered frontend / UI to send campaigns](https://microapps.github.io/MoonMail-UI/)
 * Apply [liquid](https://shopify.github.io/liquid/) syntax within the campaigns
-* [Public API to interact with the SAAS version](http://microapps.github.io/MoonMail/)
+* [Public API to interact with the SAAS version](http://docs.moonmail.io)
 
 ## Free Perks
 
