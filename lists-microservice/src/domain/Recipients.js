@@ -84,5 +84,6 @@ export default {
   updateEs: RecipientESModel.update,
   deleteEs: RecipientESModel.remove,
   searchByListAndConditions: RecipientESModel.searchByListAndConditions,
+  search: RecipientESModel.search,
   cleanseRecipientAttributes
 };

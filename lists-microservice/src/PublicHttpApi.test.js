@@ -11,6 +11,7 @@ describe('PublicHttpApi', () => {
   const lists = { userId: user.id, items: [1, 2, 3] };
   const listId = 'some-list-id';
   const createRecipientPayload = { email: 'test@example.com' };
+  const searchRecipientsParams = { q: 'some-query', status: 'some-status' };
 
   describe('#getAllLists', () => {
     beforeEach(() => {
@@ -39,7 +40,7 @@ describe('PublicHttpApi', () => {
     beforeEach(() => {
       sinon.stub(UserContext, 'byApiKey')
         .withArgs(apiKey).resolves(user);
-      sinon.stub(Api, 'publishRecipientCreatedEvent')      
+      sinon.stub(Api, 'publishRecipientCreatedEvent')
         .withArgs({ listId, userId, createRecipientPayload, subscriptionOrigin: RecipientModel.subscriptionOrigins.api })
         .resolves({});
     });
@@ -53,6 +54,30 @@ describe('PublicHttpApi', () => {
       PublicHttpApi.createRecipient(event, {}, (err, actual) => {
         expect(err).to.not.exist;
         const expected = { statusCode: 202, body: JSON.stringify({ recipient: { id: RecipientModel.buildId(createRecipientPayload) } }) };
+        expect(actual).to.include(expected);
+        done();
+      });
+    });
+  });
+
+  describe('#listRecipients', () => {
+    beforeEach(() => {
+      sinon.stub(UserContext, 'byApiKey')
+        .withArgs(apiKey).resolves(user);
+      sinon.stub(Api, 'searchRecipients')
+        .withArgs(Object.assign({}, searchRecipientsParams, { from: 0, size: 10 }, { listId }))
+        .resolves({ items: [] });
+    });
+    afterEach(() => {
+      UserContext.byApiKey.restore();
+      Api.searchRecipients.restore();
+    });
+
+    it('searchs applying the filters', (done) => {
+      const event = { requestContext: { identity: { apiKey } }, pathParameters: { listId }, queryStringParameters: searchRecipientsParams };
+      PublicHttpApi.listRecipients(event, {}, (err, actual) => {
+        expect(err).to.not.exist;
+        const expected = { statusCode: 200, body: JSON.stringify({ items: [] }) };
         expect(actual).to.include(expected);
         done();
       });
