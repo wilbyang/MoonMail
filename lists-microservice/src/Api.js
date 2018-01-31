@@ -40,10 +40,6 @@ function publishRecipientDeletedEvent({ listId, userId, recipientId }) {
     .then(recipientDeletedEvent => EventLog.write({ topic: Events.listRecipientDeleted, streamName: process.env.LIST_RECIPIENT_STREAM_NAME, payload: recipientDeletedEvent }));
 }
 
-function listRecipients({ listId, conditions, options }) {
-  return Recipients.searchByListAndConditions(listId, conditions, omitEmpty(options));
-}
-
 function getRecipient({ listId, recipientId }) {
   return Recipients.find({ listId, recipientId });
 }
@@ -72,7 +68,7 @@ export default {
   publishRecipientDeletedEvent,
   publishRecipientImportedEvents,
   mapCsvStringToRecipients: MapCsvStringToRecipients.execute,
-  listRecipients,
+  searchRecipients: Recipients.search,
   getRecipient,
   createRecipientsBatch,
   updateRecipientsBatch,

@@ -489,6 +489,10 @@ functions:
                 statusCode: "404"
                 description: "Recipient not found"
 
+  searchRecipientsRaw:
+    handler: handler.searchRecipientsRaw
+    name: ${self:custom.resourcesPrefix}-searchRecipientsRaw
+
   listRecipients:
     handler: handler.listRecipients
     name: ${self:custom.resourcesPrefix}-listRecipients
@@ -502,9 +506,10 @@ functions:
               paths:
                 listId: true
               querystring:
-                size: true
-                from: true
+                limit: true
+                page: true
                 status: true
+                q: true
           documentation:
             summary: Gets a list of recipients
             tags:

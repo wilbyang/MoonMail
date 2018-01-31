@@ -1,0 +1,52 @@
+{
+  "from": 0,
+  "size": 10,
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "bool": {
+            "should": [
+              {
+                "multi_match": {
+                  "query": "carlos",
+                  "type": "phrase",
+                  "fields": [
+                    "email",
+                    "metadata.name",
+                    "metadata.surname"
+                  ]
+                }
+              },
+              {
+                "multi_match": {
+                  "query": "carlos",
+                  "type": "phrase_prefix",
+                  "fields": [
+                    "email",
+                    "metadata.name",
+                    "metadata.surname"
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "filter": [
+        {
+          "terms": {
+            "status.keyword": [
+              "subscribed"
+            ]
+          }
+        },
+        {
+          "term": {
+            "listId.keyword": "my-list-id"
+          }
+        }
+      ]
+    }
+  }
+}

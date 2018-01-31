@@ -71,11 +71,63 @@ function searchByConditions(conditions, { from = 0, size = 10 }) {
     .then(esResult => ({ items: esResult.hits.hits.map(hit => hit._source), total: esResult.hits.total }));
 }
 
+function buildEsQuery({ q, status, listId, from = 0, size = 10 }) {
+  const filters = [
+    status ? { terms: { 'status.keyword': [].concat.apply([], [status]) } } : null,
+    listId ? { term: { 'listId.keyword': listId } } : null
+  ].filter(f => !!f);
+
+  const fullTextSearch = q ? [
+    // { multi_match: { query: q, fuzziness: 'AUTO', fields: ['name', 'email', 'companyName'] } },
+    { multi_match: { query: q, type: 'phrase', fields: ['email', 'metadata.name', 'metadata.surname'] } },
+    { multi_match: { query: q, type: 'phrase_prefix', fields: ['email', 'metadata.name', 'metadata.surname'] } }
+  ] : [];
+  const queryTemplate = {
+    from,
+    size,
+    query: {
+      bool: {
+        // -> This part declares the fulltext search part
+        // must:
+        // [{
+        //  bool: {
+        //     should: fullTextSearch
+        //  }
+        // }],
+
+        // -> This part declares the filters
+        // filter: filters
+      }
+    }
+  };
+  if (fullTextSearch.length > 0) queryTemplate.query.bool.must = [{ bool: { should: fullTextSearch } }];
+  if (filters.length > 0) queryTemplate.query.bool.filter = filters;
+  if (fullTextSearch.length === 0 && filters.length === 0) {
+    delete queryTemplate.query.bool;
+    queryTemplate.query = {
+      match_all: {}
+    };
+  }
+  return queryTemplate;
+}
+
+function search({ q, status, listId, from = 0, size = 10 }) {
+  const query = buildEsQuery({ q, status, listId, from, size });
+  return Promise.resolve(query)
+    .then(esQuery => ElasticSearch.search(indexName, indexType, esQuery))
+    .then(esResult => ({ items: esResult.hits.hits.map(hit => hit._source), total: esResult.hits.total }));
+}
+
+
 export default {
   find,
   create,
   update,
   remove,
-  searchByListAndConditions
+  // Useful for segments matching
+  // TODO: We probably want to change this to use buildESQuery
+  searchByListAndConditions,
+  buildEsQuery,
+  search
 };
 

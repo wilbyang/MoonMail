@@ -1,6 +1,7 @@
 import PublicHttpApi from './src/PublicHttpApi';
 import RecipientCommands from './src/RecipientCommands';
 import RecipientEventProcessors from './src/RecipientEventProcessors';
+import RecipientQueries from './src/RecipientQueries';
 
 // The public HTTP Api endpoints
 module.exports.createRecipient = PublicHttpApi.createRecipient;
@@ -18,3 +19,6 @@ module.exports.recipientImportedProcessor = RecipientEventProcessors.recipientIm
 module.exports.recipientCreatedProcessor = RecipientEventProcessors.recipientCreatedProcessor;
 module.exports.recipientUpdatedProcessor = RecipientEventProcessors.recipientUpdatedProcessor;
 module.exports.syncRecipientStreamWithES = RecipientEventProcessors.syncRecipientStreamWithES;
+
+// Recipient queries
+module.exports.searchRecipientsRaw = RecipientQueries.searchRecipients;
