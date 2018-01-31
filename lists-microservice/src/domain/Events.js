@@ -1,10 +1,13 @@
 import Joi from 'joi';
+import isoCountryCodes from 'iso-3166-2';
 import RecipientModel from './RecipientModel';
 
 const listRecipientImported = 'lists.recipientImported';
 const listRecipientCreated = 'lists.recipientCreated';
 const listRecipientUpdated = 'lists.recipientUpdated';
 const listRecipientDeleted = 'lists.recipientDeleted';
+
+const alpha2CountryCodes = Object.values(isoCountryCodes.codes);
 
 const eventSchemas = {
   [listRecipientImported]: {
@@ -16,7 +19,10 @@ const eventSchemas = {
           listId: Joi.string().required(),
           userId: Joi.string().required(),
           // TODO: Should we enforce string types on values here?
-          metadata: Joi.object().pattern(/^[A-Za-z_]+[A-Za-z0-9_]*$/, Joi.any())
+          metadata: Joi.object().pattern(/^[A-Za-z_]+[A-Za-z0-9_]*$/, Joi.any()),
+          systemMetadata: Joi.object({
+            countryCode: Joi.string().valid(alpha2CountryCodes)
+          })
         }).required(),
         totalRecipients: Joi.number().required(),
         recipientIndex: Joi.number().required(),
