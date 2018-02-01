@@ -20,6 +20,21 @@ describe('Events', () => {
         }
       },
       {
+        type: Events.listRecipientImported,
+        payload: {
+          recipient: {
+            email: 'recipient@email.com',
+            listId: 'list-id',
+            userId: 'user-id',
+            metadata: { random: 'data' },
+            systemMetadata: { countryCode: 'ES' }
+          },
+          totalRecipients: 100,
+          recipientIndex: 5,
+          importId: '1'
+        }
+      },
+      {
         type: Events.listRecipientCreated,
         payload: {
           recipient: {
@@ -66,6 +81,36 @@ describe('Events', () => {
             email: 'recipient@email.com',
             listId: 'list-id'
           }
+        }
+      },
+      {
+        type: Events.listRecipientImported,
+        payload: {
+          recipient: {
+            email: 'recipient@email.com',
+            listId: 'list-id',
+            userId: 'user-id',
+            metadata: { random: 'data' },
+            systemMetadata: { countryCode: 'NOISO' }
+          },
+          totalRecipients: 100,
+          recipientIndex: 5,
+          importId: '1'
+        }
+      },
+      {
+        type: Events.listRecipientImported,
+        payload: {
+          recipient: {
+            email: 'recipient@email.com',
+            listId: 'list-id',
+            userId: 'user-id',
+            metadata: { random: 'data' },
+            systemMetadata: { noAllowed: 'ES' }
+          },
+          totalRecipients: 100,
+          recipientIndex: 5,
+          importId: '1'
         }
       },
       {
