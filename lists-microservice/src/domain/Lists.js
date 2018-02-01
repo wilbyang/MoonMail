@@ -49,7 +49,7 @@ function updateMetadataAttrsAndImportStatusFromEvents(recipientImportedEvents, i
     const { recipient, importId, recipientIndex, totalRecipients } = sampleRecipientImportedEvent.payload;
     const importStatus = ListImportStatus.buildFromImportProgress({ recipientIndex, totalRecipients });
     return updateImportStatus(recipient.userId, listId, importId, importStatus)
-      .then(() => ListModel.appendMetadataAttributes(Object.keys(recipient.metadata), { userId: recipient.userId, listId }))
+      .then(() => ListModel.appendMetadataAttributes(Object.keys(recipient.metadata || {}), { userId: recipient.userId, listId }))
       .then(() => (importStatusListener ? importStatusListener({ listId, userId: recipient.userId, importStatus }) : { listId, userId: recipient.userId, importStatus }));
   });
 }
