@@ -11,7 +11,7 @@ function allBy(userId, options) {
 }
 
 function setImportingStarted(userId, listId, importId) {
-  return updateImportStatus(userId, listId, importId, { status: 'importing', createdAt: moment().unix() })
+  return Lists.updateImportStatus(userId, listId, importId, { status: 'importing', createdAt: moment().unix() })
     .then(() => setProcessing(userId, listId, true));
 }
 
@@ -48,21 +48,23 @@ function updateMetadataAttrsAndImportStatusFromEvents(recipientImportedEvents, i
 
     const { recipient, importId, recipientIndex, totalRecipients } = sampleRecipientImportedEvent.payload;
     const importStatus = ListImportStatus.buildFromImportProgress({ recipientIndex, totalRecipients });
-    return updateImportStatus(recipient.userId, listId, importId, importStatus)
+    return Lists.updateImportStatus(recipient.userId, listId, importId, importStatus)
       .then(() => ListModel.appendMetadataAttributes(Object.keys(recipient.metadata || {}), { userId: recipient.userId, listId }))
       .then(() => (importStatusListener ? importStatusListener({ listId, userId: recipient.userId, importStatus }) : { listId, userId: recipient.userId, importStatus }));
   });
 }
 
-export default {
+const Lists = {
   create: ListModel.create,
   update: ListModel.update,
   delete: ListModel.delete,
   find: ListModel.find,
   all: allBy,
   allRecursive,
+  updateImportStatus,
   setImportingStarted,
   setAsProcessed,
-  updateImportStatus,
   updateMetadataAttrsAndImportStatusFromEvents
-};
+}
+
+export default Lists;
