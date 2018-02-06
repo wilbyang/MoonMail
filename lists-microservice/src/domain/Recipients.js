@@ -76,14 +76,14 @@ export default {
   batchCreate: RecipientModel.batchCreate,
   update: RecipientModel.update,
   delete: RecipientModel.delete,
-  createBatchFromEvents,
-  updateBatchFromEvents,
-  importFromEvents,
   find: RecipientESModel.find,
   createEs: RecipientESModel.create,
   updateEs: RecipientESModel.update,
   deleteEs: RecipientESModel.remove,
   searchByListAndConditions: RecipientESModel.searchByListAndConditions,
   search: RecipientESModel.search,
+  createBatchFromEvents,
+  importFromEvents,
+  updateBatchFromEvents,
   cleanseRecipientAttributes
 };

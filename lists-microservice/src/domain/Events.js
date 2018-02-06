@@ -106,7 +106,7 @@ function buildRecipientCreatedEvent({ listId, userId, recipient, subscriptionOri
 
 function buildRecipientDeleteEvent({ listId, userId, id }) {
   return validate({
-    type: listRecipientUpdated,
+    type: listRecipientDeleted,
     payload: { listId, userId, id }
   });
 }
