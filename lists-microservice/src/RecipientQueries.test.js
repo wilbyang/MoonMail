@@ -20,7 +20,7 @@ describe('PublicHttpApi', () => {
     });
 
     it('searchs applying the filters from the event', (done) => {
-      const event = Object.assign({}, { listId }, searchRecipientsParams);
+      const event = Object.assign({}, { listId }, { options: searchRecipientsParams });
       RecipientQueries.searchRecipients(event, {}, (err, actual) => {
         expect(err).to.not.exist;
         const expected = { items: [] };
