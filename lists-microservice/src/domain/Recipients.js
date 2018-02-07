@@ -48,7 +48,7 @@ function cleanseRecipientAttributes(recipient) {
     listId: recipient.listId,
     userId: recipient.userId,
     id: (recipient.id || '').toString(),
-    email: recipient.email,
+    email: (recipient.email || '').trim(),
     subscriptionOrigin: recipient.subscriptionOrigin || 'listImport',
     isConfirmed: recipient.isConfirmed,
     status: recipient.status,
