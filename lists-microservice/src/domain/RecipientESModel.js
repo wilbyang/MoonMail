@@ -25,7 +25,7 @@ const createSchema = Joi.object({
   listId: Joi.string().required(),
   userId: Joi.string().required(),
   id: Joi.string().required(),
-  email: Joi.string().required().email(),
+  email: Joi.string().regex(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/).required(),
   subscriptionOrigin: Joi.string().valid(Object.values(RecipientModel.subscriptionOrigins)).required(),
   isConfirmed: Joi.boolean(),
   status: Joi.string().valid(Object.values(RecipientModel.statuses)).required(),

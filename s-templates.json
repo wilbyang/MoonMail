@@ -150,6 +150,7 @@
   "recipientsImportBucket": "recipients.moonmail.${stage}.${region}",
   "listsExportBucket": "list-exports.moonmail.${stage}.${region}",
   "screenshotsFunctionName": "moonmail-screenshots-service-${stage}-takeScreenshotFromHtml",
+  "listRecipientsFunctionName": "${project}-lists-${stage}-searchRecipientsRaw",
   "responses": {
     "302": {
       "statusCode": "302",

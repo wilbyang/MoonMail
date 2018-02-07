@@ -130,13 +130,20 @@ function syncRecipientStreamWithES(event, context, callback) {
   const events = LambdaUtils
     .parseDynamoDBStreamEvent(event);
 
-  return Promise.map(events, evt => syncRecipientRecordWithES(evt), { concurrency: 10 })
+  return Promise.map(events, evt => {
+    return syncRecipientRecordWithES(evt)
+      .catch((err) => {
+        App.logger().error(err);
+        if ((err.name || '').match(/ValidationError/)) return Promise.resolve(err);
+        // During migration we don't want to explode if we can't remove the recipient from ES
+        if ((err.displayName || '').match(/NotFound/)) return Promise.resolve(err);
+        return Promise.reject(err);
+      });
+  }, { concurrency: 10 })
     .then(result => callback(null, result))
     .catch((err) => {
       App.logger().error(err);
-      // During migration we don't want to explode if we can't remove the recipient from ES
-      if ((err.errorMessage || '').match(/Not Found/)) return callback(null, err);
-      callback(null, err);
+      callback(err);
     });
 }
 
