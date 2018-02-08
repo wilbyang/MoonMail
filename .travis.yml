@@ -8,12 +8,12 @@ env:
     - TEST_DIR=events
     - TEST_DIR=api
     - TEST_DIR=lists-microservice
-    
+
 script:
 - cd $TEST_DIR && npm install && npm test
 - |
   if [ $TEST_DIR == "lists-microservice" && $TRAVIS_PULL_REQUEST == "false" ]; then
-    npm run system:test;
+    npm run test:system;
   fi
 
 cache:

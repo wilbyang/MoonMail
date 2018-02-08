@@ -12,7 +12,7 @@
   "scripts": {
     "test": "NODE_ENV=test mocha --require choma --require babel-register $(find ./src \\( -name '*.test.js' -o -name '*.spec.js' \\) -not -path './node_modules/*' -not -path './**/node_modules/*')",
     "watch": "NODE_ENV=test mocha --watch --require choma  --require babel-register $(find ./src \\( -name '*.test.js' -o -name '*.spec.js' \\) -not -path './node_modules/*' -not -path './**/node_modules/*')",
-    "system:test": "NODE_ENV=test mocha --require choma --timeout 30000 --require babel-register specs",
+    "test:system": "NODE_ENV=test mocha --require choma --timeout 30000 --require babel-register specs",
     "deploy-docs": "./scripts/deploy-docs.js"
   },
   "devEngines": {
