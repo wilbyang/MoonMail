@@ -10,9 +10,13 @@
     "url": "git://github.com/"
   },
   "scripts": {
-    "test": "NODE_ENV=test mocha --require choma --require babel-register $(find . \\( -name '*.test.js' -o -name '*.spec.js' \\) -not -path './node_modules/*' -not -path './**/node_modules/*')",
-    "watch": "NODE_ENV=test mocha --watch --require choma  --require babel-register $(find . \\( -name '*.test.js' -o -name '*.spec.js' \\) -not -path './node_modules/*' -not -path './**/node_modules/*')",
+    "test": "NODE_ENV=test mocha --require choma --require babel-register $(find ./src \\( -name '*.test.js' -o -name '*.spec.js' \\) -not -path './node_modules/*' -not -path './**/node_modules/*')",
+    "watch": "NODE_ENV=test mocha --watch --require choma  --require babel-register $(find ./src \\( -name '*.test.js' -o -name '*.spec.js' \\) -not -path './node_modules/*' -not -path './**/node_modules/*')",
+    "system:test": "NODE_ENV=test mocha --require choma --timeout 30000 --require babel-register specs",
     "deploy-docs": "./scripts/deploy-docs.js"
+  },
+  "devEngines": {
+    "node": "8.9 || 9.x"
   },
   "keywords": [],
   "devDependencies": {
@@ -33,6 +37,7 @@
     "chai-cheerio": "^1.0.0",
     "chai-fuzzy": "^1.6.1",
     "chai-things": "^0.2.0",
+    "chakram": "^1.5.0",
     "choma": "^1.1.0",
     "commander": "^2.12.2",
     "json-schema-faker": "^0.5.0-rc12",
