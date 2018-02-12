@@ -118,6 +118,9 @@ function search({ q, status, listId, from = 0, size = 10 }) {
     .then(esResult => ({ items: esResult.hits.hits.map(hit => hit._source), total: esResult.hits.total }));
 }
 
+function undeliverableRecipients({ listId, from = 0, size = 10 }) {
+  return search({ status: [RecipientModel.statuses.bounced, RecipientModel.statuses.complaint, RecipientModel.statuses.unsubscribed], listId, from, size });
+}
 
 export default {
   find,
@@ -128,6 +131,7 @@ export default {
   // TODO: We probably want to change this to use buildESQuery
   searchByListAndConditions,
   buildEsQuery,
-  search
+  search,
+  undeliverableRecipients
 };
 

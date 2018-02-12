@@ -40,7 +40,7 @@
     "liquid-node": "^3.0.0",
     "moment": "^2.15.1",
     "moment-round": "^1.0.1",
-    "moonmail-models": "github:microapps/moonmail-models",
+    "moonmail-models": "github:microapps/moonmail-models#a5e8b31",
     "omit-empty": "^0.4.1",
     "request": "^2.74.0",
     "request-promise": "^4.1.1",

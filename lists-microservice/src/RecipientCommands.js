@@ -3,8 +3,11 @@ import moment from 'moment';
 import LambdaUtils from './lib/LambdaUtils';
 import ImportRecipientsCsvRecursiveLambda from './ImportRecipientsCsvRecursiveLambda';
 import App from './App';
+import Api from './Api';
 import Lists from './domain/Lists';
 import UserNotifier from './lib/UserNotifier';
+import Recipients from './domain/Recipients';
+import RecipientModel from './domain/RecipientModel';
 
 const lambdaClient = new AWS.Lambda();
 
@@ -56,12 +59,13 @@ async function handlerErrors(error, importRecipientsParams, callback) {
 
 // TODO: Refactor me!
 async function importRecipientsCsvCommand(importRecipientsParams, context) {
+  const blacklistedRecipients = await Api.fetchUndeliverableRecipients({ listId: importRecipientsParams.listId });
   await Lists.setImportingStarted(importRecipientsParams.userId, importRecipientsParams.listId, importRecipientsParams.fileName);
   await UserNotifier.notify(importRecipientsParams.userId, { type: 'LIST_UPDATED', data: { id: importRecipientsParams.listId, processed: false } });
   await UserNotifier.notify(importRecipientsParams.userId, { type: 'LIST_IMPORT_PROCESSED', data: { listId: importRecipientsParams.listId } });
-  return ImportRecipientsCsvRecursiveLambda.execute(importRecipientsParams, lambdaClient, context);
+  return ImportRecipientsCsvRecursiveLambda.execute(Object.assign({}, { blacklistedRecipients: blacklistedRecipients.items.map(recipient => recipient.email) }, importRecipientsParams), lambdaClient, context);
 }
 
 export default {
-  importRecipientsCsvFromS3
+  importRecipientsCsvFromS3,
 };

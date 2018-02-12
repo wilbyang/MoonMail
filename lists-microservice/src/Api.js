@@ -62,6 +62,21 @@ function deleteRecipientEs(recipient) {
   return RecipientESModel.remove(globalId);
 }
 
+async function fetchUndeliverableRecipients({ listId }) {
+  const batchSize = 250;
+  const start = 0;
+  let recipientsResult = {};
+  let result = await RecipientESModel.undeliverableRecipients({ listId, from: 0, size: batchSize });
+  if (!result.items) return { items: [], total: 0 };
+  recipientsResult = result;
+  while (result.total > start + batchSize) {
+    result = await RecipientESModel.undeliverableRecipients({ listId, from: start + batchSize, size: batchSize });
+    recipientsResult.items.push(result.items);
+    recipientsResult.total = result.total;
+  }
+  return recipientsResult;
+}
+
 export default {
   publishRecipientCreatedEvent,
   publishRecipientUpdatedEvent,
@@ -76,5 +91,6 @@ export default {
   getAllLists: Lists.all,
   createRecipientEs: Recipients.createEs,
   updateRecipientEs: Recipients.updateEs,
-  deleteRecipientEs
+  deleteRecipientEs,
+  fetchUndeliverableRecipients
 };

@@ -22,6 +22,7 @@ export default class ImportRecipientsCsvRecursiveLamda extends SimpleStatefulRec
     this.headerMapping = params.headerMapping;
     this.fileName = params.fileName;
     this.s3Event = params.s3Event;
+    this.blacklistedRecipients = params.blacklistedRecipients;
     this.initState({
       processingOffset: this.processingOffset,
       processCompleted: false
@@ -77,7 +78,7 @@ export default class ImportRecipientsCsvRecursiveLamda extends SimpleStatefulRec
       userId: this.userId,
       listId: this.listId,
       headerMapping: this.headerMapping
-    });
+    }).filter(recipient => !this.blacklistedRecipients.includes(recipient.email));
   }
 }
 
