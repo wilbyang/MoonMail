@@ -234,6 +234,16 @@ describe('Api', () => {
     });
   });
 
+  describe('.fetchUndeliveredRecipients', () => {
+    before(() => sinon.stub(RecipientESModel, 'undeliverableRecipients').resolves({ items: [1, 2], total: 2 }));
+    after(() => RecipientESModel.undeliverableRecipients.restore());
+
+    it('fetches all bounced, complaint and unsubscribed recipients for a particular list', async () => {
+      await Api.fetchUndeliverableRecipients({ listId: 'some-list-id'});
+      expect(RecipientESModel.undeliverableRecipients).to.have.been.calledWithExactly({ listId: 'some-list-id', from: 0, size: 250 });
+    });
+  });
+
   describe('.createRecipientEs', () => {
     it('delegates on Recipients.createEs', () => {
       expect(Api.createRecipientEs).to.equal(Recipients.createEs);

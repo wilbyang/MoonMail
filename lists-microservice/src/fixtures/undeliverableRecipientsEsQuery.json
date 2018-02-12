@@ -1,0 +1,22 @@
+{
+  "from": 0,
+  "size": 10,
+  "query": {
+    "bool": {
+      "filter": [
+        {
+          "terms": {
+            "status.keyword": [
+              "bounced", "complained", "unsubscribed"
+            ]
+          }
+        },
+        {
+          "term": {
+            "listId.keyword": "my-list-id"
+          }
+        }
+      ]
+    }
+  }
+}
