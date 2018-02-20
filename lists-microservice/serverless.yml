@@ -384,7 +384,9 @@ functions:
             tags:
               - Recipients
             description: >
-              Creates a recipient within the specified list.
+              Creates a recipient within the specified list. You can get the list
+              ID in your <a target="_blank" href="https://app.moonmail.io/lists">MoonMail
+              dashboard</a>, under the Settings tab after selecting your list
             pathParams:
               -
                 name: listId
@@ -429,7 +431,9 @@ functions:
             tags:
               - Recipients
             description: >
-              Updates the specified recipient.
+              Updates the specified recipient. You can get the list
+              ID in your <a target="_blank" href="https://app.moonmail.io/lists">MoonMail
+              dashboard</a>, under the Settings tab after selecting your list
             pathParams:
               -
                 name: listId
@@ -470,7 +474,9 @@ functions:
             tags:
               - Recipients
             description: >
-              Gets a single recipient of the specified list.
+              Gets a single recipient of the specified list. You can get the list
+              ID in your <a target="_blank" href="https://app.moonmail.io/lists">MoonMail
+              dashboard</a>, under the Settings tab after selecting your list
             pathParams:
               -
                 name: listId
@@ -515,7 +521,9 @@ functions:
             tags:
               - Recipients
             description: >
-              Gets a set recipients of the specified list.
+              Gets a set recipients of the specified list. You can get the list
+              ID in your <a target="_blank" href="https://app.moonmail.io/lists">MoonMail
+              dashboard</a>, under the Settings tab after selecting your list
             pathParams:
               -
                 name: listId
@@ -548,7 +556,9 @@ functions:
             tags:
               - Lists
             description: >
-              Gets all the recipients' lists of the specified user.
+              Gets all the recipients' lists of the specified user. You can get the list
+              ID in your <a target="_blank" href="https://app.moonmail.io/lists">MoonMail
+              dashboard</a>, under the Settings tab after selecting your list
             methodResponses:
               -
                 statusCode: "200"
