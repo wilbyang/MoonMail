@@ -3,6 +3,7 @@ import moment from 'moment';
 import base64url from 'base64-url';
 import { BaseModel } from 'moonmail-models';
 import stringifyObjectValues from '../lib/utils/stringifyObjectValues';
+import uniqueArray from '../lib/utils/uniqueArray';
 
 const statuses = {
   subscribed: 'subscribed',
@@ -120,7 +121,7 @@ export default class RecipientModel extends BaseModel {
 
   static batchCreate(items) {
     const itemsToSave = items.map(item => Object.assign({}, { id: this.buildId(item) }, item, { metadata: stringifyObjectValues(item.metadata || {}) }));
-    return super.batchCreate(itemsToSave);
+    return super.batchCreate(uniqueArray(itemsToSave));
   }
 }
 
