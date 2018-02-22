@@ -1,0 +1,58 @@
+service: MoonMail-v2-events-router
+
+plugins:
+  - serverless-plugin-optimize
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  profile: ${self:custom.config.PROFILE}
+  region: ${self:custom.config.REGION}
+  timeout: 300
+  environment:
+    REGION: ${self:custom.config.REGION}
+    DEAD_LETTER_QUEUE_URL:
+      Ref: EventsDeadLetterQueue
+    EVENT_SUBSCRIPTIONS: ${self:custom.config.EVENT_SUBSCRIPTIONS}
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "lambda:*"
+        - "kinesis:*"
+        - "logs:*"
+        - "sqs:*"
+      Resource: "*"
+
+package:
+  individually: true
+
+custom:
+  defaultStage: dev
+  currentStage: ${opt:stage, self:custom.defaultStage}
+  resourcesPrefix: ${self:service}-${self:custom.currentStage}
+  recipientsBucket: next-recipients.moonmail.${self:custom.currentStage}.${self:provider.region}
+  config: ${file(./config.${self:custom.currentStage}.json)}
+
+functions:
+  routeEvents:
+    handler: handler.routeEvents
+    events:
+      - stream:
+          type: kinesis
+          arn:
+            Fn::GetAtt:
+              - EventsIngestionStream
+              - Arn
+
+resources:
+  Resources:
+    EventsIngestionStream:
+      Type: "AWS::Kinesis::Stream"
+      Properties:
+        Name: ${self:custom.resourcesPrefix}-EventsIngestionStream
+        RetentionPeriodHours: 168
+        ShardCount: ${self:custom.config.KINESIS_SHARDS}
+    EventsDeadLetterQueue:
+      Type: "AWS::SQS::Queue"
+      Properties:
+        QueueName: EventsDeadLetterQueue

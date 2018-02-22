@@ -8,6 +8,7 @@ env:
     - TEST_DIR=events
     - TEST_DIR=api
     - TEST_DIR=lists-microservice
+    - TEST_DIR=events-router
 
 script:
 - cd $TEST_DIR && npm install && npm test
