@@ -40,11 +40,18 @@ export class LinkClicksAggregatorService extends DynamoStreamsAggregator {
   }
 
   _incrementCounters(aggregated) {
-    debug('= LinkClicksAggregatorService._incrementCounters', aggregated);
+    debug('= LinkClicksAggregatorService._incrementCounters', JSON.stringify(aggregated));
     const linkIds = Object.keys(aggregated);
     const incrementPromises = linkIds.map(linkId => {
       const campaignId = aggregated[linkId][0].campaignId.S;
-      return Link.incrementClicks(campaignId, linkId, aggregated[linkId].length);
+      return Link.incrementClicks(campaignId, linkId, aggregated[linkId].length)
+        .catch((error) => {
+          if (error.errorType) {
+            console.log("WARNING", 'Skipping error saving links stats due to a really unlikely case', JSON.stringify(aggregated));
+            if (error.errorType.match(/ValidationException/)) return Promise.resolve();
+          }
+          return Promise.reject(error);
+        });
     });
     return Promise.all(incrementPromises);
   }
