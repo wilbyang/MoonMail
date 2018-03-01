@@ -46,9 +46,9 @@ export class LinkClicksAggregatorService extends DynamoStreamsAggregator {
       const campaignId = aggregated[linkId][0].campaignId.S;
       return Link.incrementClicks(campaignId, linkId, aggregated[linkId].length)
         .catch((error) => {
-          if (error.errorType) {
+          if ((error.message || '').match(/The document path provided in the update expression is invalid for update/)) {
             console.log("WARNING", 'Skipping error saving links stats due to a really unlikely case', JSON.stringify(aggregated));
-            if (error.errorType.match(/ValidationException/)) return Promise.resolve();
+            return Promise.resolve();
           }
           return Promise.reject(error);
         });
