@@ -28,7 +28,7 @@ async function broadcastImportStatus({ listId, userId, importStatus }) {
 
 function recipientImportedProcessor(event, context, callback) {
   App.configureLogger(event, context);
-  App.logger().info('recipientImportedHandler', JSON.stringify(event));
+  App.logger().debug('recipientImportedHandler', JSON.stringify(event));
 
   const recipients = LambdaUtils
     .parseKinesisStreamTopicEvents(event, Events.listRecipientImported);
@@ -50,7 +50,7 @@ function recipientImportedProcessor(event, context, callback) {
 
 function recipientCreatedProcessor(event, context, callback) {
   App.configureLogger(event, context);
-  App.logger().info('recipientCreatedProcessor', JSON.stringify(event));
+  App.logger().debug('recipientCreatedProcessor', JSON.stringify(event));
 
   const recipients = LambdaUtils
     .parseKinesisStreamTopicEvents(event, Events.listRecipientCreated);
@@ -73,7 +73,7 @@ function recipientCreatedProcessor(event, context, callback) {
 
 function recipientUpdatedProcessor(event, context, callback) {
   App.configureLogger(event, context);
-  App.logger().info('recipientCreatedProcessor', JSON.stringify(event));
+  App.logger().debug('recipientCreatedProcessor', JSON.stringify(event));
 
   const recipients = LambdaUtils
     .parseKinesisStreamTopicEvents(event, Events.listRecipientUpdated);
@@ -125,7 +125,7 @@ function syncRecipientRecordWithES(record) {
 
 function syncRecipientStreamWithES(event, context, callback) {
   App.configureLogger(event, context);
-  App.logger().info('syncRecipientStreamWithES', JSON.stringify(event));
+  App.logger().debug('syncRecipientStreamWithES', JSON.stringify(event));
 
   const events = LambdaUtils
     .parseDynamoDBStreamEvent(event);
