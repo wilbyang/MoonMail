@@ -15,9 +15,10 @@ module.exports.getAllLists = PublicHttpApi.getAllLists;
 module.exports.importRecipientsCsvFromS3 = RecipientCommands.importRecipientsCsvFromS3;
 
 // Recipient event processors
-module.exports.recipientImportedProcessor = RecipientEventProcessors.recipientImportedProcessor;
-module.exports.recipientCreatedProcessor = RecipientEventProcessors.recipientCreatedProcessor;
-module.exports.recipientUpdatedProcessor = RecipientEventProcessors.recipientUpdatedProcessor;
+// module.exports.recipientImportedProcessor = RecipientEventProcessors.recipientImportedProcessor;
+// module.exports.recipientCreatedProcessor = RecipientEventProcessors.recipientCreatedProcessor;
+// module.exports.recipientUpdatedProcessor = RecipientEventProcessors.recipientUpdatedProcessor;
+module.exports.eventStreamProcessor = RecipientEventProcessors.eventStreamProcessor;
 module.exports.syncRecipientStreamWithES = RecipientEventProcessors.syncRecipientStreamWithES;
 
 // Recipient queries

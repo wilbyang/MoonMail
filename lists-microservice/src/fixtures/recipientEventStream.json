@@ -1,0 +1,116 @@
+{
+  "Records": [
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "lists.recipientCreated",
+        "sequenceNumber": "49579552868828174823032604425448964515081321348992073730",
+        "data": "eyJ0eXBlIjoibGlzdHMucmVjaXBpZW50Q3JlYXRlZCIsInBheWxvYWQiOnsicmVjaXBpZW50Ijp7ImVtYWlsIjoidGVzdC1yZWNpcGllbnQtMjY4NjYxNDJAZXhhbXBsZS5jb20iLCJzdGF0dXMiOiJhd2FpdGluZ0NvbmZpcm1hdGlvbiIsIm1ldGFkYXRhIjp7Im5hbWUiOiJUZXN0IG5hbWUiLCJzdXJuYW1lIjoiVGVzdCBzdXJuYW1lIn0sImxpc3RJZCI6ImNqYW5wNHp1bDAwMDEwMW5yMGR5cThmcHEiLCJ1c2VySWQiOiJnb29nbGUtb2F1dGgyfDExMzM3MzUzNDA3NjI0MTk4NjcwMSIsInN1YnNjcmlwdGlvbk9yaWdpbiI6ImFwaSIsImlzQ29uZmlybWVkIjpmYWxzZX19fQ==",
+        "approximateArrivalTimestamp": 1520419396.789
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49579552868828174823032604425448964515081321348992073730",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-lists-dev-us-east-1-lambdaRole",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/ListEventStream"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "lists.recipientUpdated",
+        "sequenceNumber": "49579552868828174823032604425450173440900936527922593794",
+        "data": "eyJ0eXBlIjoibGlzdHMucmVjaXBpZW50VXBkYXRlZCIsInBheWxvYWQiOnsibGlzdElkIjoiY2phbnA0enVsMDAwMTAxbnIwZHlxOGZwcSIsInVzZXJJZCI6Imdvb2dsZS1vYXV0aDJ8MTEzMzczNTM0MDc2MjQxOTg2NzAxIiwiaWQiOiJkR1Z6ZEMxeVpXTnBjR2xsYm5RdE1qWTROall4TkRKQVpYaGhiWEJzWlM1amIyMCIsImRhdGEiOnsic3RhdHVzIjoic3Vic2NyaWJlZCIsImlzQ29uZmlybWVkIjp0cnVlfX19",
+        "approximateArrivalTimestamp": 1520419403.524
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49579552868828174823032604425450173440900936527922593794",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-lists-dev-us-east-1-lambdaRole",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/ListEventStream"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "lists.recipientCreated",
+        "sequenceNumber": "49579552868828174823032604425451382366720568199527530498",
+        "data": "eyJ0eXBlIjoibGlzdHMucmVjaXBpZW50Q3JlYXRlZCIsInBheWxvYWQiOnsicmVjaXBpZW50Ijp7ImVtYWlsIjoidGVzdC1yZWNpcGllbnQtNzY3NjU1NTVAZXhhbXBsZS5jb20iLCJzdGF0dXMiOiJhd2FpdGluZ0NvbmZpcm1hdGlvbiIsIm1ldGFkYXRhIjp7Im5hbWUiOiJUZXN0IG5hbWUiLCJzdXJuYW1lIjoiVGVzdCBzdXJuYW1lIn0sImxpc3RJZCI6ImNqYW5wNHp1bDAwMDEwMW5yMGR5cThmcHEiLCJ1c2VySWQiOiJnb29nbGUtb2F1dGgyfDExMzM3MzUzNDA3NjI0MTk4NjcwMSIsInN1YnNjcmlwdGlvbk9yaWdpbiI6ImFwaSIsImlzQ29uZmlybWVkIjpmYWxzZX19fQ==",
+        "approximateArrivalTimestamp": 1520419651.663
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49579552868828174823032604425451382366720568199527530498",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-lists-dev-us-east-1-lambdaRole",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/ListEventStream"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "lists.recipientCreated",
+        "sequenceNumber": "49579552868828174823032604425452591292540182828702236674",
+        "data": "eyJ0eXBlIjoibGlzdHMucmVjaXBpZW50Q3JlYXRlZCIsInBheWxvYWQiOnsicmVjaXBpZW50Ijp7ImVtYWlsIjoidGVzdC1yZWNpcGllbnQtMjIyNDc3NUBleGFtcGxlLmNvbSIsInN0YXR1cyI6ImF3YWl0aW5nQ29uZmlybWF0aW9uIiwibWV0YWRhdGEiOnsibmFtZSI6IlRlc3QgbmFtZSIsInN1cm5hbWUiOiJUZXN0IHN1cm5hbWUifSwibGlzdElkIjoiY2phbnA0enVsMDAwMTAxbnIwZHlxOGZwcSIsInVzZXJJZCI6Imdvb2dsZS1vYXV0aDJ8MTEzMzczNTM0MDc2MjQxOTg2NzAxIiwic3Vic2NyaXB0aW9uT3JpZ2luIjoiYXBpIiwiaXNDb25maXJtZWQiOmZhbHNlfX19",
+        "approximateArrivalTimestamp": 1520419652.181
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49579552868828174823032604425452591292540182828702236674",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-lists-dev-us-east-1-lambdaRole",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/ListEventStream"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "lists.recipientUpdated",
+        "sequenceNumber": "49579552868828174823032604425453800218359797801474326530",
+        "data": "eyJ0eXBlIjoibGlzdHMucmVjaXBpZW50VXBkYXRlZCIsInBheWxvYWQiOnsibGlzdElkIjoiY2phbnA0enVsMDAwMTAxbnIwZHlxOGZwcSIsInVzZXJJZCI6Imdvb2dsZS1vYXV0aDJ8MTEzMzczNTM0MDc2MjQxOTg2NzAxIiwiaWQiOiJkR1Z6ZEMxeVpXTnBjR2xsYm5RdE1qSXlORGMzTlVCbGVHRnRjR3hsTG1OdmJRIiwiZGF0YSI6eyJzdGF0dXMiOiJzdWJzY3JpYmVkIiwiaXNDb25maXJtZWQiOnRydWV9fX0=",
+        "approximateArrivalTimestamp": 1520419657.468
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49579552868828174823032604425453800218359797801474326530",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-lists-dev-us-east-1-lambdaRole",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/ListEventStream"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "lists.recipientImported",
+        "sequenceNumber": "49579552868828174823032604427444901043266442939689074690",
+        "data": "eyJ0eXBlIjoibGlzdHMucmVjaXBpZW50SW1wb3J0ZWQiLCJwYXlsb2FkIjp7InJlY2lwaWVudCI6eyJlbWFpbCI6ImZhYmlvdmFuZGVybGVpLmRldmVsb3BlckBnbWFpbC5jb20iLCJ1c2VySWQiOiJnb29nbGUtb2F1dGgyfDExMzM3MzUzNDA3NjI0MTk4NjcwMSIsImxpc3RJZCI6ImNqZWg1eWtqOTAwMDAwMW5leG9hNzdrdGgiLCJtZXRhZGF0YSI6eyJuYW1lIjoiRsOhYmlvIFZhbmRlcmxlaSJ9fSwidG90YWxSZWNpcGllbnRzIjoxNjgxLCJyZWNpcGllbnRJbmRleCI6MTQwMCwiaW1wb3J0SWQiOiJnb29nbGUtb2F1dGgyfDExMzM3MzUzNDA3NjI0MTk4NjcwMS5jamVoNXlrajkwMDAwMDFuZXhvYTc3a3RoLjE1MTYwMTA2OTQwMDAuY3N2In19",
+        "approximateArrivalTimestamp": 1520439315.246
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49579552868828174823032604427444901043266442939689074690",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-lists-dev-us-east-1-lambdaRole",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/ListEventStream"
+    },
+    {
+      "kinesis": {
+        "kinesisSchemaVersion": "1.0",
+        "partitionKey": "lists.recipientImported",
+        "sequenceNumber": "49579552868828174823032604427446109969086057568863780866",
+        "data": "eyJ0eXBlIjoibGlzdHMucmVjaXBpZW50SW1wb3J0ZWQiLCJwYXlsb2FkIjp7InJlY2lwaWVudCI6eyJlbWFpbCI6Im1pY2hhZWwwMzExMTk4MEBnbWFpbC5jb20iLCJ1c2VySWQiOiJnb29nbGUtb2F1dGgyfDExMzM3MzUzNDA3NjI0MTk4NjcwMSIsImxpc3RJZCI6ImNqZWg1eWtqOTAwMDAwMW5leG9hNzdrdGgiLCJtZXRhZGF0YSI6eyJuYW1lIjoiU2hhcmsgQm95In19LCJ0b3RhbFJlY2lwaWVudHMiOjE2ODEsInJlY2lwaWVudEluZGV4IjoxNDAxLCJpbXBvcnRJZCI6Imdvb2dsZS1vYXV0aDJ8MTEzMzczNTM0MDc2MjQxOTg2NzAxLmNqZWg1eWtqOTAwMDAwMW5leG9hNzdrdGguMTUxNjAxMDY5NDAwMC5jc3YifX0=",
+        "approximateArrivalTimestamp": 1520439315.249
+      },
+      "eventSource": "aws:kinesis",
+      "eventVersion": "1.0",
+      "eventID": "shardId-000000000000:49579552868828174823032604427446109969086057568863780866",
+      "eventName": "aws:kinesis:record",
+      "invokeIdentityArn": "arn:aws:iam::862946620411:role/MoonMail-v2-lists-dev-us-east-1-lambdaRole",
+      "awsRegion": "us-east-1",
+      "eventSourceARN": "arn:aws:kinesis:us-east-1:862946620411:stream/ListEventStream"
+    }
+  ]
+}
