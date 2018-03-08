@@ -296,9 +296,9 @@ package:
 
 functions:
   # Event handlers
-  recipientImportedEventHandler:
-    handler: handler.recipientImportedProcessor
-    name: ${self:custom.resourcesPrefix}-recipientImportedEventHandler
+  eventStreamProcessorHandler:
+    handler: handler.eventStreamProcessor
+    name: ${self:custom.resourcesPrefix}-eventStreamProcessor
     events:
       - stream:
           type: kinesis
@@ -309,31 +309,31 @@ functions:
               - ListEventStream
               - Arn
 
-  recipientCreatedEventHandler:
-    handler: handler.recipientCreatedProcessor
-    name: ${self:custom.resourcesPrefix}-recipientCreatedEventHandler
-    events:
-      - stream:
-          type: kinesis
-          batchSize: 100
-          startingPosition: TRIM_HORIZON
-          arn:
-            Fn::GetAtt:
-              - ListEventStream
-              - Arn
+  # recipientCreatedEventHandler:
+  #   handler: handler.recipientCreatedProcessor
+  #   name: ${self:custom.resourcesPrefix}-recipientCreatedEventHandler
+  #   events:
+  #     - stream:
+  #         type: kinesis
+  #         batchSize: 100
+  #         startingPosition: TRIM_HORIZON
+  #         arn:
+  #           Fn::GetAtt:
+  #             - ListEventStream
+  #             - Arn
 
-  recipientUpdatedEventHandler:
-    handler: handler.recipientUpdatedProcessor
-    name: ${self:custom.resourcesPrefix}-recipientUpdatedEventHandler
-    events:
-      - stream:
-          type: kinesis
-          batchSize: 100
-          startingPosition: TRIM_HORIZON
-          arn:
-            Fn::GetAtt:
-              - ListEventStream
-              - Arn
+  # recipientUpdatedEventHandler:
+  #   handler: handler.recipientUpdatedProcessor
+  #   name: ${self:custom.resourcesPrefix}-recipientUpdatedEventHandler
+  #   events:
+  #     - stream:
+  #         type: kinesis
+  #         batchSize: 100
+  #         startingPosition: TRIM_HORIZON
+  #         arn:
+  #           Fn::GetAtt:
+  #             - ListEventStream
+  #             - Arn
 
   # recipientDeletedEventHandler:
   #   handler: handler.recipientDeletedProcessor

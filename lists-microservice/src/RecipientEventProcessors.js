@@ -26,6 +26,45 @@ async function broadcastImportStatus({ listId, userId, importStatus }) {
   return UserNotifier.notify(userId, { type: 'LIST_IMPORT_PROCESSED', data: { listId } });
 }
 
+function eventStreamProcessor(event, context, callback) {
+  App.configureLogger(event, context);
+  App.logger().debug('eventStreamProcessor', JSON.stringify(event));
+  try {
+    const validateEvent = (event) => {
+      const { value, error } = Events.validate(event);
+      if (error) {
+        const errorMessage = `[ERROR], Invalid events detected in the stream. Event:${event}. ${error}`;
+        App.logger().error(errorMessage);
+        throw new Error(errorMessage);
+      }
+      return value;
+    };
+
+    const fetchEvents = (eventStream, eventType) => {
+      return LambdaUtils
+        .parseKinesisStreamTopicEvents(eventStream, eventType)
+        .map(validateEvent);
+    };
+
+
+    const recipientImportedEvents = fetchEvents(event, Events.listRecipientImported);
+    const recipientCreatedEvents = fetchEvents(event, Events.listRecipientCreated);
+    const recipientUpdatedEvents = fetchEvents(event, Events.listRecipientUpdated);
+    return Api.importRecipientsBatch(recipientImportedEvents, broadcastImportStatus)
+      .then(() => Api.createRecipientsBatch(recipientCreatedEvents))
+      .then(() => Api.updateRecipientsBatch(recipientUpdatedEvents))
+      .then(result => callback(null, { success: true }))
+      .catch((err) => {
+        App.logger().error(err);
+        callback(err);
+      });
+  } catch (err) {
+    App.logger().error(err);
+    callback(err);
+  }
+}
+
+
 function recipientImportedProcessor(event, context, callback) {
   App.configureLogger(event, context);
   App.logger().debug('recipientImportedHandler', JSON.stringify(event));
@@ -112,14 +151,13 @@ function syncRecipientRecordWithES(record) {
     }
     return Api.updateRecipientEs(item);
   }
-  // if (record.eventName === 'REMOVE') {
+
   const item = Recipients.cleanseRecipientAttributes(record.oldImage);
   if (!item.id) {
     App.logger().debug('Recipient skipped from the ES syncrhonization due to validation issues', JSON.stringify(record.newImage));
     return Promise.resolve({});
   }
   return Api.deleteRecipientEs(item);
-  // }
 }
 
 
@@ -151,5 +189,6 @@ export default {
   recipientImportedProcessor,
   recipientCreatedProcessor,
   recipientUpdatedProcessor,
+  eventStreamProcessor,
   syncRecipientStreamWithES
 };
