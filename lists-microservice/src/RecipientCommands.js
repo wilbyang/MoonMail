@@ -21,7 +21,7 @@ function importRecipientsCsvFromS3(event, context, callback) {
       state = importRecipientsParams;
       return importRecipientsCsvCommand(state, context);
     })
-    .then(result => callback(null, result))
+    .then(result => callback(null, { success: true }))
     .catch((err) => {
       App.logger().error(err);
       return handlerErrors(err, state, callback);
