@@ -10,9 +10,9 @@ import MapCsvStringToRecipients from './recipients/MapCsvStringToRecipients';
 function publishRecipientImportedEvents(recipientsBatch, importId, batchFirstIndex, total) {
   const eventsBatch = recipientsBatch
     .map((recipient, index) => Events.buildRecipientImportedEvent({ recipient, importId, recipientIndex: batchFirstIndex + index, total }));
-  const failed = eventsBatch.filter(validationResult => !!validationResult.error);
 
-  if (failed.length > 0) return Promise.reject(new Error('ImportError - ValidationFailed'));
+  const failed = eventsBatch.filter(validationResult => !!validationResult.error);
+  if (failed.length > 0) return Promise.reject(new Error(`ValidationFailed: ${JSON.stringify(failed)}`));
 
   const batchToWrite = eventsBatch
     .filter(validationResult => !validationResult.error)

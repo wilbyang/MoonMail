@@ -118,7 +118,7 @@ describe('Api', () => {
           const res = await Api.publishRecipientImportedEvents(recipientsBatch, importId, 0, total);
           expect(res).not.to.exist();
         } catch (err) {
-          expect(err.message).to.equal('ImportError - ValidationFailed');
+          expect(err.message).to.include('ValidationFailed');
           expect(EventLog.write).not.to.have.been.called;
         }
       });

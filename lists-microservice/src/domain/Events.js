@@ -15,7 +15,7 @@ const eventSchemas = {
       type: listRecipientImported,
       payload: Joi.object({
         recipient: Joi.object({
-          email: Joi.string().required().email(),
+          email: Joi.string().regex(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/).required(),
           listId: Joi.string().required(),
           userId: Joi.string().required(),
           // TODO: Should we enforce string types on values here?
@@ -37,7 +37,7 @@ const eventSchemas = {
         recipient: {
           listId: Joi.string().required(),
           userId: Joi.string().required(),
-          email: Joi.string().required().email(),
+          email: Joi.string().regex(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/).required(),
           subscriptionOrigin: Joi.string().valid(Object.values(RecipientModel.subscriptionOrigins)),
           isConfirmed: Joi.boolean().when('status', { is: RecipientModel.statuses.awaitingConfirmation, then: Joi.only(false).default(false), otherwise: Joi.only(true).default(true) }),
           status: Joi.string().valid(RecipientModel.statuses.subscribed, RecipientModel.statuses.awaitingConfirmation).required(),
