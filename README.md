@@ -43,7 +43,7 @@ With [MoonMail](https://moonmail.io/) you can: create & edit lists of recipients
 
 Version **0.5.x** is required to run several parts of the [MoonMail API](http://microapps.github.io/MoonMail/) such as the **api** and **events** sub-packages, for these, the root of the repository provides the required `s-project.json`, `s-resources-cf.json` and `s-templates.json`. Find more information about how to handle functions with serverless 0.5 [here](https://serverless.readme.io/v0.5.0/docs).
 
-The rest for the services require serverless **1.x** and they are self-contained, for details on how to manage them you should follow the instructions in their respective README.md
+The rest of the services require serverless **1.x** and are self-contained. For details on how to manage them, you should follow the instructions provided in their respective README.md
 
 ### Dependencies
 
@@ -68,7 +68,7 @@ Install the event processors' dependencies:
 cd events && yarn install
 ```
 
-Installing the dependencies for the rest of the services follows the same convention you just need to **cd** into it and **install** its dependencies.
+Installing the dependencies for the rest of the services follow the same convention. You just need to **cd** into it and **install** its dependencies.
     
 ### Initialize and configure the Serverless 0.5 project
 
@@ -76,7 +76,7 @@ Installing the dependencies for the rest of the services follows the same conven
 sls project init -c -n your-lower-case-project-name
 ```
     
-Configure the `s-variables-<stage>-<region>.json` files inside the `_meta` directory by providing the [required variables](required-variables.md)
+Configure the `s-variables-<stage>-<region>.json` files inside the `_meta` directory by providing the [required variables](required-variables.md).
 
 ### Deployment
 
@@ -104,29 +104,29 @@ sls endpoint deploy
 
 **Troubleshooting:** 
 
-Due to the amount of resources it might be difficult to deploy everything at once but it's totally fine to **cd** into sub-directories of **api** or **events** and perform above-mentioned actions in order to reduce the scope of deployments. Also, using the **dash deploy** subcommand might be useful when deploying independent functions. Aside from that there are some functions depending on serverless 0.5 which require NodeJS > 4.3 for those you will have to change the runtime version through the **AWS Lambda Console** because it's not supported to do so through serverless on this version.
+Due to the amount of resources it might be difficult to deploy everything at once. It's totally fine to **cd** into sub-directories of **api** or **events** and perform the above mentioned actions in order to reduce the scope of deployments. Also, using the **dash deploy** subcommand might be useful when deploying independent functions. Aside from that, there are some functions depending on serverless 0.5 which require NodeJS > 4.3. For those, you will have to change the runtime version through the **AWS Lambda Console** because it's not supported to do so through Serverless on this version.
 
 If the above doesn't solve your issues, there are a couple of things you should double check:
 
-1- Your current serverless version (different parts of the project required different versions), this is how you can do it:
+1.- Your current Serverless version (different parts of the project require different versions), this is how you can do it:
 ```
 sls --version
 ```
 
-2- You have provided all the [required variables](required-variables.md) in the `_meta` directory.  
+2.- You have provided all the [required variables](required-variables.md) in the `_meta` directory.  
 
-3- An `admin.env` file should exist in the root of the project containing the **AWS** profile to be used by the deployments (this only applies for the function and resources depending on sls@0.5), here is an example of how it should look:
+3.- An `admin.env` file should exist in the root of the project containing the **AWS** profile to be used by the deployments (this only applies for the function and resources depending on sls@0.5). Here is an example of what it should look like:
 ```
 AWS_DEV_PROFILE=moonmail-dev
 AWS_PROD_PROFILE=moonmail-prod  
 ```
 
-4- The provided profile in `admin.env` should exist in your `~/.aws/credentials`
+4.- The provided profile in `admin.env` should exist in your `~/.aws/credentials`
 
 
 #### Serverless 1.x resources
 
-To configure and deploy the these you will have to follow the instructions provided in their respective README.md
+To configure and deploy these, you will have to follow the instructions provided in their respective README.md
 
 ## Live demo
 If you have set up everything correctly you'll be able to send an email campaign using our [demo ui](https://microapps.github.io/MoonMail-UI)
