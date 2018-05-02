@@ -30,7 +30,8 @@ const getRequestBody = (webhook) => ({
         item: webhook.item,
         itemId: webhook.itemId,
         event: webhook.event,
-        userId: webhook.userId
+        userId: webhook.userId,
+        recipient: webhook.recipient
     })
 
 const failedRequestParams = (webhook, totalAttempts = 0, timer = process.env.REQUESTTIMER) => ({

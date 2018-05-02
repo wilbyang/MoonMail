@@ -1,4 +1,4 @@
-service: serverless-webhook
+service: MoonMail-v2-webhooks
 
 plugins:
   - serverless-webpack
@@ -6,32 +6,39 @@ plugins:
 
 provider:
   name: aws
-  runtime: nodejs6.10
+  runtime: nodejs8.10
+  profile: ${opt:stage}
   region: ${self:custom.config.REGION}
   environment:
-    WEBHOOKTABLENAME: ${self:custom.webhookTableName}
-    FAILEDREQUESTTABLENAME: ${self:custom.failedRequestTableName}
-    JSONSECRET: ${self:custom.jsonSecret}
+    WEBHOOKTABLENAME: ${self:custom.resourcesPrefix}-${self:custom.webhookTableName}
+    FAILEDREQUESTTABLENAME: ${self:custom.resourcesPrefix}-${self:custom.failedRequestTableName}
     REQUESTATTEMPTS: ${self:custom.requestAttempts}
     REQUESTRETRYDELAY: ${self:custom.requestRetryDelay}
     REQUESTTIMER: ${self:custom.requestTimer}
     REQUESTTIMERMULTIPLIER: ${self:custom.requestTimerMultiplier}
     MAXREQUESTATTEMPTS: ${self:custom.maxRequestAttempts}
-    TRIGGERWBFUNCTIONNAME: ${self:custom.resourcesPrefix}-triggerWebhooks
+    TRIGGERWBFUNCTIONNAME: ${self:custom.resourcesPrefix}-${self:custom.defaultTriggerWebhooksFunctionName}
+    DEBUG: ${self:custom.config.REGION}
+    USERSTABLE: ${self:custom.config.USERTABLE}
+    LISTSTABLE: ${self:custom.config.LISTTABLE}
+    PEMBUCKETNAME: ${self:custom.config.PEMBUCKETNAME}
+    PEMFILENAME: ${self:custom.config.PEMFILENAME}
   iamRoleStatements:
     - Effect: Allow
       Action:
-        - dynamodb:DescribeTable
-        - dynamodb:Query
-        - dynamodb:Scan
-        - dynamodb:GetItem
-        - dynamodb:PutItem
-        - dynamodb:UpdateItem
-        - dynamodb:DeleteItem
-      Resource: "arn:aws:dynamodb:us-east-1:*:*"
+        - dynamodb:*
+      Resource: "*"
     - Effect: Allow
       Action:
         - lambda:InvokeFunction
+      Resource: "*"
+    - Effect: "Allow"
+      Action:
+        - "kinesis:*"
+      Resource: "*"
+    - Effect: "Allow"
+      Action:
+        - "s3:*"
       Resource: "*"
 
 custom:
@@ -43,16 +50,13 @@ custom:
   resourcesPrefix: ${self:service}-${self:custom.currentStage}
 
   defaultWebHookTableName: webhooks
-  webhookTableName: ${self:custom.config.WEBHOOKTABLE, self:custom.defaultWebHookTableName}-${self:custom.currentStage}
+  webhookTableName: ${self:custom.config.WEBHOOKTABLE, self:custom.defaultWebHookTableName}
 
-  defaultPathName: webhook
+  defaultPathName: webhooks
   pathName: ${self:custom.config.PATHNAME, self:custom.defaultPathName}
 
   defaultFailedRequestTableName: failed-requests
-  failedRequestTableName: ${self:custom.config.FAILEDREQUESTTABLE, self:custom.defaultFailedRequestTableName}-${self:custom.currentStage}
-
-  defaultJsonSecret: micro-apps
-  jsonSecret: ${self:custom.config.JSONSECRET, self:custom.defaultJsonSecret}-${self:custom.currentStage}
+  failedRequestTableName: ${self:custom.config.FAILEDREQUESTTABLE, self:custom.defaultFailedRequestTableName}
 
   defaultRequestAttempts: 3
   requestAttempts: ${self:custom.config.REQUESTATTEMPTS, self:custom.defaultRequestAttempts}
@@ -70,6 +74,10 @@ custom:
   maxRequestAttempts: ${self:custom.config.MAXREQUESTATTEMPTS, self:custom.defaultMaxRequestAttempts}
 
   config: ${file(./config.${self:custom.currentStage}.json)}
+
+  defaultTriggerWebhooksFunctionName: triggerWebhooks
+
+  defaultKinesisName: event-stream
 
   serverless-offline:
     babelOptions:
@@ -120,10 +128,13 @@ functions:
     handler: src/handlerWebhookEvents.handlerWebhookEvents
     name: ${self:custom.resourcesPrefix}-handleWebhookEvents
     events:
-      - http:
-          path: ${self:custom.pathName}/handleWebhookEvents
-          method: get
-          cors: true
+      - stream:
+          type: kinesis
+          arn:
+            Fn::GetAtt:
+              - EventStream
+              - Arn
+          enabled: true
   sniffFailedRequests:
     handler: src/snifferFailedRequests.sniffFailedWebhookRequests
     name: ${self:custom.resourcesPrefix}-sniffFailedRequests
@@ -131,7 +142,7 @@ functions:
       - schedule: rate(1 minute)
   triggerWebhooks:
     handler: src/triggerWebhooks.triggerWebbhook
-    name: ${self:custom.resourcesPrefix}-triggerWebhooks
+    name: ${self:custom.resourcesPrefix}-${self:custom.defaultTriggerWebhooksFunctionName}
 
 resources:
   Resources:
@@ -180,7 +191,7 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
-        TableName: ${self:custom.webhookTableName}
+        TableName: ${self:custom.resourcesPrefix}-${self:custom.webhookTableName}
     FailedRequestsDynamoDbTable:
       Type: 'AWS::DynamoDB::Table'
       DeletionPolicy: Retain
@@ -196,4 +207,9 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
-        TableName: ${self:custom.failedRequestTableName}
+        TableName: ${self:custom.resourcesPrefix}-${self:custom.failedRequestTableName}
+    EventStream:
+      Type: "AWS::Kinesis::Stream"
+      Properties:
+        Name: ${self:custom.resourcesPrefix}-${self:custom.defaultKinesisName}
+        ShardCount: 1
