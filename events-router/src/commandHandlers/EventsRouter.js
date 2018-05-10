@@ -2,8 +2,14 @@ import R from 'ramda';
 import Promise from 'bluebird';
 import SubscriptionRepo from '../repositories/Subscription';
 import KinesisNotifier from '../notifiers/KinesisNotifier';
+import FirehoseNotifier from '../notifiers/FirehoseNotifier';
 import Event from '../domain/Event';
 import EventsDeadLetterQueue from '../lib/EventsDeadLetterQueue';
+
+const subscriptionTypeAndPublisherMapping = {
+  kinesis: KinesisNotifier,
+  firehose: FirehoseNotifier
+};
 
 const byType = R.groupBy(R.prop('type'));
 const streamEventsByType = R.pipe(
@@ -19,7 +25,10 @@ const buildEventsSubscriptionPairs = function buildEventsSubscriptionPairs(subsc
   }, []);
 };
 const publishEventsSubscriptionPairs = function publishEventsSubscriptionPairs(eventSubscriptionPairs) {
-  return Promise.map(eventSubscriptionPairs, pair => KinesisNotifier.publishBatch(...pair));
+  return Promise.map(eventSubscriptionPairs, (pair) => {
+    const [event, { subscriberType }] = pair;
+    return subscriptionTypeAndPublisherMapping[subscriberType].publishBatch(...pair);
+  });
 };
 const handleUnexpectedError = function handleUnexpectedError(error, kinesisStream) {
   const message = { stream: kinesisStream, error: error.message };
