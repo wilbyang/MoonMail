@@ -54,7 +54,8 @@
     "RECIPIENTS_TABLE": "$${recipientsTable}",
     "UNSUBSCRIBED_RECIPIENT_TOPIC_ARN": "${unsubscribedRecipientTopicARN}",
     "UNSUBSCRIBED_CALLBACK_URL": "${unsubscribedCallbackUrl}",
-    "LISTS_TABLE": "$${listsTable}"
+    "LISTS_TABLE": "$${listsTable}",
+    "EVENTS_ROUTER_STREAM_NAME": "MoonMail-v2-events-router-dev-EventsIngestionStream"
   },
   "vpc": {
     "securityGroupIds": [],
