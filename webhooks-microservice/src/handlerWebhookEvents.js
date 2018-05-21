@@ -7,13 +7,26 @@ module.exports.handlerWebhookEvents = (event, context, callback) => {
     //     { event: 'sent', item: 'campaign', itemId: 'abc', userId: '' }
     // ]
 
-    getWebhooks(event)
+    getEvents(event)
+        .then(getWebhooks)
         .then(checkWebhooks)
         .then(reduceWebhooks)
         .then(checkWebhooks)
         .then(invokeAllWebhooks)
         .then(r => callback(null))
         .catch(e => handleError(e, callback))
+}
+
+const getEvents = async (event) => {
+    let events = [];
+
+    event.Records.forEach((record) => {
+        const payload = Buffer.from(record.kinesis.data, 'base64').toString('ascii');
+        events.push(JSON.parse(payload).payload)
+    });
+    
+    console.log('Payload: ', events)
+    return events
 }
 
 const handleError = (e, callback) => {
@@ -25,27 +38,28 @@ const handleError = (e, callback) => {
     }
 }
 
-const setEventUserID = async (items, newUserId) => {
-    if (items && items.length > 0 && newUserId) {
+const setEventInfo = async (items, event) => {
+    if (items && items.length > 0 && event) {
         for (const i in items) {
-            items[i].userId = newUserId
+            if(event.recipient)
+                items[i].recipient = event.recipient
+            //if(other types of info) <- rebuild logic once new types are added
         }
         return items
-    } 
-        return items
-    
+    }
+    return items
+
 }
 
 const dbParams = (event) => {
     const itemId = event.itemId || ''
-    return `${event.event  }-${  event.item  }-${  itemId}`
+    return `${event.event}-${event.item}-${itemId}`
 }
 
-const readAllAndSetUserID = async (event) => { // switches webhook userID (creator) to event userID (the one related to the event)
-    try {
+const readAllAndSetInfo = async (event) => {
         const params = dbParams(event)
         const { Items } = await queryAllWb(params)
-        return await setEventUserID(Items, event.userId)
+        return await setEventInfo(Items, event)
     } catch (e) {
         throw e
     }
@@ -56,7 +70,7 @@ const getWebhooks = async (events) => {
         const dbPromises = []
 
         for (const i in events) {
-            const promise = readAllAndSetUserID(events[i])
+            const promise = readAllAndSetInfo(events[i])
             dbPromises.push(promise)
         }
 
@@ -71,16 +85,16 @@ const reduceWebhooks = async (webhooks) => webhooks.reduce((wb1, wb2) => [...wb1
 const checkWebhooks = async (webhooks) => {
     if (webhooks && webhooks.length > 0) {
         return webhooks
-    } 
-        throw 'NO-WEBHOOKS-FOUND'
-    
+    }
+    throw 'NO-WEBHOOKS-FOUND'
+
 }
 
 const invokerPayload = (webhook) => ({
-        webhook,
-        source: 'handler',
-        attempts: process.env.REQUESTATTEMPTS
-    })
+    webhook,
+    source: 'handler',
+    attempts: process.env.REQUESTATTEMPTS
+})
 
 const invokeAllWebhooks = async (webhooks) => { // consider recursion for big pile of webhooks
     try {

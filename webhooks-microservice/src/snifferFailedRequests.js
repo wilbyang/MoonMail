@@ -67,7 +67,7 @@ const invokerPayload = (failedRequest) => {
         webhook,
         failedRequest,
         source: 'sniffer',
-        attempts: 1
+        attempts: process.env.REQUESTATTEMPTS
     }
 }
 
