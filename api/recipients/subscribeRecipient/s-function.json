@@ -35,7 +35,8 @@
     "SERVERLESS_STAGE": "${stage}",
     "SERVERLESS_REGION": "${region}",
     "DEBUG": "true",
-    "RECIPIENTS_TABLE": "$${recipientsTable}"
+    "RECIPIENTS_TABLE": "$${recipientsTable}",
+    "EVENTS_ROUTER_STREAM_NAME": "MoonMail-v2-events-router-dev-EventsIngestionStream"
   },
   "vpc": {
     "securityGroupIds": [],
