@@ -1,11 +1,16 @@
 {
   "REGION": "us-east-1",
   "WEBHOOKTABLE": "webhooks",
-  "FAILEDREQUESTTABLE": "failed-requests-webhooks",
+  "FAILEDREQUESTTABLE": "failed-requests",
   "PATHNAME": "webhooks",
   "REQUESTATTEMPTS": 3,
   "REQUESTRETRYDELAY": 2000,
   "REQUESTTIMER": 60000,
   "REQUESTTIMERMULTIPLIER": 2,
-  "MAXREQUESTATTEMPTS": 10
+  "MAXREQUESTATTEMPTS": 10,
+  "DEBUG": false,
+  "USERTABLE": "MoonMail-v2-dev-users",
+  "LISTTABLE": "MoonMail-v2-dev-lists",
+  "PEMBUCKETNAME": "token-pem-file",
+  "PEMFILENAME": "auth.pem"
 }

@@ -57,6 +57,7 @@ const dbParams = (event) => {
 }
 
 const readAllAndSetInfo = async (event) => {
+    try{
         const params = dbParams(event)
         const { Items } = await queryAllWb(params)
         return await setEventInfo(Items, event)
