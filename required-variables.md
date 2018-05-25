@@ -27,6 +27,7 @@
   "sentEmailsRCU": 1,
   "sentEmailsWCU": 1,
   "usersRCU": 1,
+  "publicApiARN": "*",
   "defaultApiKey": "xxxxxxxxx",
   "defaultApiSecret": "xxxxxxxxxx",
   "defaultEmailAddress": "moonmail@example.com",
