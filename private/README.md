@@ -1,1 +1,1 @@
-# To be re-organized inside their corresponing microservices
+# To be re-organized inside their corresponding microservices
