@@ -10,11 +10,12 @@ custom:
   recipientsBucket: next-recipients.moonmail.${self:custom.currentStage}.${self:provider.region}
   config: ${file(./config.${self:custom.currentStage}.json)}
   ssmPath: /moonmail/events-router/${self:custom.currentStage}
+  defaultShardCount: 1
 
 provider:
   name: aws
   runtime: nodejs6.10
-  profile: ${opt:profile}
+  profile: ${opt:profile, ""}
   region: ${opt:region}
   timeout: 300
   environment:
@@ -52,7 +53,7 @@ resources:
       Properties:
         Name: ${self:custom.resourcesPrefix}-EventsIngestionStream
         RetentionPeriodHours: 168
-        ShardCount: ${self:custom.config.KINESIS_SHARDS}
+        ShardCount: ${self:custom.config.KINESIS_SHARDS, self:custom.defaultShardCount}
     EventsDeadLetterQueue:
       Type: "AWS::SQS::Queue"
       Properties:
