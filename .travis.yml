@@ -9,36 +9,30 @@ before_install: # if "install" is overridden
   - sudo apt-get update -qq
   - sudo apt-get install -y -qq yarn
   - yarn install
+  - source .ci/detect-changed-services.sh && detect_changed_services && echo $changed_services
 env:
   global:
-    - ES_VERSION=6.0.0 
+    - ES_VERSION=6.0.0
     - ES_DOWNLOAD_URL=https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${ES_VERSION}.tar.gz
-  matrix:
-    - TEST_DIR=events
-    - TEST_DIR=api
-    - TEST_DIR=private
-    - TEST_DIR=extensions
-    - TEST_DIR=template-marketplace
-    - TEST_DIR=lists-microservice
-    - TEST_DIR=emails-microservice
-    - TEST_DIR=campaigns-microservice
-    - TEST_DIR=webhooks-microservice
-    - TEST_DIR=support/events-router
+ 
+stages:
+  - test
+  - name: staging-deploy
+    if: branch = master AND type = push
+  - name: prod-deploy
+    if: branch = release AND type = push
 
-script:
-- cd $TEST_DIR && yarn install && yarn test
-- |
-  if [[ $TEST_DIR == "lists-microservice" ]]; then
-    wget ${ES_DOWNLOAD_URL}
-    tar -xzf elasticsearch-${ES_VERSION}.tar.gz
-    ./elasticsearch-${ES_VERSION}/bin/elasticsearch &
-    wget -q --waitretry=3 --retry-connrefused -T 10 -O - http://127.0.0.1:9200
-    yarn run test:integration
-    if [[ $TRAVIS_PULL_REQUEST == "false" ]]; then
-      yarn run test:system
-    fi
-  fi
-
+jobs:
+  include:
+    - stage: test
+      script: ./.ci/test.sh     
+    
+    - stage: staging-deploy
+      script: ./.ci/staging-deploy.sh
+      
+    - stage: prod-deploy
+      script: ./.ci/prod-deploy.sh 
+      
 cache:
   yarn: true
   directories:
@@ -52,4 +46,4 @@ cache:
   - lists-microservice/node_modules
   - emails-microservice/node_modules
   - campaigns-microservice/node_modules
-  - support/events-router/node_modules
+  - events-router/node_modules

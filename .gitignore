@@ -61,7 +61,7 @@ typings/
 .next
 
 # macos stuff
-.DS_store
+**/.DS_store
 
 # Serverless directories
 .serverless
@@ -73,7 +73,12 @@ playground/
 
 /.vscode/settings.json
 
-**/config.*.json
-lists-microservice/public
+lists-microservice/config.*.json
+campaigns-microservice/config.*.json
+emails-microservice/config.*.json
+template-marketplace/config.*.json
+support/screenshots-service/config.*.json
 
 *.pem
+
+admin.env
