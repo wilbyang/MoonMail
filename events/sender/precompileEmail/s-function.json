@@ -39,6 +39,8 @@
     "SEND_CAMPAIGN_TOPIC_ARN": "${sendCampaignTopicARN}",
     "SEND_EMAILS_TOPIC_ARN": "${sendEmailsTopicARN}",
     "API_HOST": "${apiHost}",
-    "UNSUBSCRIBE_API_HOST": "${unsubscribeApiHost}"
+    "UNSUBSCRIBE_API_HOST": "${unsubscribeApiHost}",
+    "RECIPIENTS_TABLE": "$${recipientsTable}",
+    "LISTS_TABLE": "$${listsTable}"
   }
 }
