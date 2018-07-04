@@ -21,9 +21,10 @@ class PrecompileEmailService {
       metadata,
       recipientId: emailParams.recipient.id,
       campaignId: emailParams.campaign.id,
-      listId: emailParams.recipient.listId
+      listId: emailParams.recipient.listId,
+      userId: emailParams.userId
     },
-    { footer: this._needsFooter(emailParams) });
+      { footer: this._needsFooter(emailParams) });
   }
 
   composeEmail() {
@@ -37,8 +38,8 @@ class PrecompileEmailService {
           const parsedSubject = values[1];
           let composedEmail = Object.assign({}, this.emailParams);
           const compressedParsedBody = compressString(parsedBody);
-          Object.assign(composedEmail.campaign, { subject: parsedSubject, body: compressedParsedBody});
-          Object.assign(composedEmail.recipient, { unsubscribeUrl: this.email.unsubscribeUrl});
+          Object.assign(composedEmail.campaign, { subject: parsedSubject, body: compressedParsedBody });
+          Object.assign(composedEmail.recipient, { unsubscribeUrl: this.email.unsubscribeUrl, resubscribeUrl: this.email.resubscribeUrl });
           logger().debug('= PrecompileEmailService.composeEmail', 'Composed email', composedEmail);
           resolve(composedEmail);
         })
@@ -52,7 +53,7 @@ class PrecompileEmailService {
   }
 
   _addTracking(body, context) {
-    const linksParser = new LinksParser({apiHost: this.apiHost, context});
+    const linksParser = new LinksParser({ apiHost: this.apiHost, context });
     return linksParser.appendRecipientIdToLinks(body)
       .then(parsedBody => linksParser.appendOpensPixel(parsedBody));
   }
@@ -82,7 +83,7 @@ class PrecompileEmailService {
     if (campaign.metadata && campaign.metadata.address) {
       const address = campaign.metadata.address;
       const addressTag = `<p style="text-align: center;"><b>Our address is:</b></br>${address.company}</br>${address.address} ${address.address2}</br>${address.zipCode} ${address.city}</br>${address.state} ${address.country}</br><p>`;
-      return {address: addressTag};
+      return { address: addressTag };
     } else {
       return {};
     }

@@ -69,7 +69,7 @@ class LinksParser {
   appendRecipientIdToLinks(body) {
     if (this.recipientId) {
       return new Promise((resolve, reject) => {
-        const $ = cheerio.load(body, {decodeEntities: false});
+        const $ = cheerio.load(body, { decodeEntities: false });
         $('a').each((i, link) => this._appendTrackingInfo(link, $));
         return resolve($.html());
       });
@@ -81,9 +81,15 @@ class LinksParser {
   _appendTrackingInfo(link, $) {
     const linkUrl = $(link).attr('href') || '';
     const uri = url.parse(linkUrl, true);
-    if (linkUrl && !this._isUnsubscribeLink(linkUrl) && this._isRedirectionLink(uri)) {
+    if (linkUrl && !this._isUnsubscribeLink(linkUrl) && !this._isReSubscribeLink(linkUrl) && this._isRedirectionLink(uri)) {
       delete uri.search;
       uri.query = Object.assign({}, uri.query, this._trackingQueryString());
+      $(link).attr('href', uri.format());
+    }
+    if (linkUrl && this._isReSubscribeLink(linkUrl)) {
+      const newList = uri.query.l
+      delete uri.search;
+      uri.query = Object.assign({}, uri.query, this._trackingQueryString(), { l: newList });
       $(link).attr('href', uri.format());
     }
   }
@@ -92,15 +98,23 @@ class LinksParser {
     return omitEmpty({ r: this.recipientId, u: this.userId, l: this.listId, s: this.segmentId });
   }
 
+  _trackingReSubQueryString() {
+    return omitEmpty({ r: this.recipientId, u: this.userId, s: this.segmentId });
+  }
+
   _shouldBeSkipped($, link) {
     const linkUrl = $(link).attr('href');
     const trackingDisabled = $(link).attr('mm-disable-tracking') === 'true';
     const isMailtoLink = /^mailto:*/.test(linkUrl);
-    return (!linkUrl || this._isUnsubscribeLink(linkUrl) || trackingDisabled || isMailtoLink);
+    return (!linkUrl || this._isUnsubscribeLink(linkUrl) || this._isReSubscribeLink(linkUrl) || trackingDisabled || isMailtoLink);
   }
 
   _isUnsubscribeLink(linkUrl) {
     return linkUrl && linkUrl.indexOf('unsubscribe_url') > -1;
+  }
+
+  _isReSubscribeLink(linkUrl) {
+    return linkUrl && linkUrl.indexOf('resubscribe') > -1;
   }
 
   _isRedirectionLink(uri) {
