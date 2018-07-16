@@ -15,14 +15,14 @@ import EventsBus from '../../../lib/events_bus';
 const liquid = new Liquid.Engine();
 
 class ListSubscribeService {
-  static subscribe(list, newRecipient, userId) {
-    return this._createRecipient(list, newRecipient, userId);
+  static subscribe(list, newRecipient, userId, user) {
+    return this._createRecipient(list, newRecipient, userId, user);
   }
 
-  static _createRecipient(list, recipient, userId) {
+  static _createRecipient(list, recipient, userId, user) {
     return this._validateUniqueRecipient(list.id, recipient.email)
       .then(() => this._doCreate(list.id, recipient, userId))
-      .then(newRecipient => this._sendVerificationEmailIfApplies(list, newRecipient, userId));
+      .then(newRecipient => this._sendVerificationEmailIfApplies(list, newRecipient, userId, user));
   }
 
   static _validateUniqueRecipient(listId, email) {
@@ -54,18 +54,18 @@ class ListSubscribeService {
     });
   }
 
-  static _sendVerificationEmailIfApplies(list, recipient, userId) {
+  static _sendVerificationEmailIfApplies(list, recipient, userId, user) {
     return this._getSender(userId, list)
       .then((sender) => {
         if (recipient.status === Recipient.statuses.awaitingConfirmation) {
-          return this._deliverVerificationEmail(recipient, sender, userId, list);
+          return this._deliverVerificationEmail(recipient, sender, userId, list, user);
         }
         return EventsBus.publish('list.recipient.subscribe', { recipient });
       });
   }
 
-  static _deliverVerificationEmail(recipient, sender, userId, list) {
-    return this._buildEmailBody(recipient, userId, list)
+  static _deliverVerificationEmail(recipient, sender, userId, list, user) {
+    return this._buildEmailBody(recipient, userId, list, sender, user)
       .then((body) => {
         const sesParams = this._toSesParams(recipient.email, this._buildFrom(sender), `Please confirm your subscription to ${list.name}`, body);
         const emailClient = this._getEmailClient(sender);
@@ -87,10 +87,25 @@ class ListSubscribeService {
     return Senders.fetchSender(userId, list.senderId);
   }
 
-  static _buildEmailBody(recipient, userId, list) {
+  static _buildEmailBody(recipient, userId, list, sender, user) {
     const verifyUrl = this._buildVerifyUrl(recipient, userId);
     const body = list.confirmationEmailBody ? list.confirmationEmailBody : this._defaultVerifyBody();
-    const metadata = { verify_url: verifyUrl, list_name: list.name };
+    if (!recipient.metadata) recipient.metadata = {}
+    const address = user.address
+    let addressTag = ``
+    if (address) {
+      addressTag = `<p style="text-align: center;"><b>Our address is:</b><br>${address.company || ''}<br>${address.address || ''} ${address.address2 || ''}<br>${address.zipCode || ''} ${address.city || ''}<br>${address.state || ''} ${address.country || ''}<br><p>`;
+    }
+    const metadata = {
+      verify_url: verifyUrl,
+      list_name: list.name,
+      recipient_email: recipient.email,
+      name: recipient.metadata.name,
+      surname: recipient.metadata.surname,
+      from_email: sender.emailAddress,
+      from_name: sender.fromName,
+      from_address: addressTag
+    };
     return this._renderBody(body, metadata);
   }
 

@@ -2,6 +2,7 @@ import base64url from 'base64-url';
 import omitEmpty from 'omit-empty';
 import request from 'request-promise';
 import { List } from 'moonmail-models';
+import { User } from '../../../lib/models/user';
 import qs from 'qs';
 import { ListSubscribeService } from '../lib/list_subscribe_service';
 import { debug } from '../../../lib/index';
@@ -10,27 +11,68 @@ import { ApiErrors } from '../../../lib/errors';
 export function respond(event, cb) {
   debug('= subscribeToList.action', JSON.stringify(event));
   const params = getParameters(event);
-  if (params.listId && params.recipient && params.encodedUserId) {
-    const userId = base64url.decode(params.encodedUserId);
-    return List.get(userId, params.listId)
-      .then((list) => {
-        const newRecipient = Object.assign({}, params.recipient, { userId });
-        delete newRecipient.u;
-        return discoverFieldsFromRequestMetadata(JSON.parse(event.headers))
-          .then(systemMetadata => Object.assign({}, newRecipient, { systemMetadata }))
-          .then(recipientWithSystemMetadata => ListSubscribeService.subscribe(list, recipientWithSystemMetadata, userId))
-          .then(() => handleResponse(null, { listName: list.name }, event, cb))
-          .catch((err) => {
-            if (err.name === 'RecipientAlreadyExists') {
-              return handleResponse({ email: 'E-mail address already exists!' }, null, event, cb);
-            } else {
-              return handleResponse(err, null, event, cb);
-            }
-          });
-      });
-  } else {
-    return handleResponse(new Error('Missing params'), null, event, cb);
+
+  checkParams(params)
+    .then(decodeUserId)
+    .then(getList)
+    .then(getUser)    
+    .then(assignNewRecipient)
+    .then(handleMetaData)
+    .then(subscribeToList)
+    .then(({ list }) => handleResponse(null, { listName: list.name }, event, cb))
+    .catch((err) => handleResponse(err, null, event, cb))
+}
+
+const checkParams = async (params) => {
+  debug('= subscribeToList.checkParams', JSON.stringify(params))
+  if (!params.listId || !params.recipient || !params.encodedUserId) {
+    throw 'Missing params'
   }
+
+  return params
+}
+
+const decodeUserId = async (params) => {
+  debug('= subscribeToList.decodeUserId', JSON.stringify(params))
+  const userId = base64url.decode(params.encodedUserId)
+
+  return { params, userId }
+}
+
+const getList = async ({ params, userId }) => {
+  debug('= subscribeToList.getList', JSON.stringify(userId))
+  const list = await List.get(userId, params.listId)
+
+  return { params, userId, list }
+}
+
+const getUser = async ({ params, userId, list }) => {
+  const user = await User.get(userId)
+
+  return { params, userId, list, user }
+}
+
+const assignNewRecipient = async ({ params, userId, list, user }) => {
+  debug('= subscribeToList.assignNewRecipient', JSON.stringify(list))
+  const newRecipient = Object.assign({}, params.recipient, { userId });
+  delete newRecipient.u;
+
+  return { params, userId, list, newRecipient, user }
+}
+
+const handleMetaData = async ({ params, userId, list, newRecipient, user }) => {
+  debug('= subscribeToList.handleMetaData', JSON.stringify(newRecipient))
+  const systemMetadata = await discoverFieldsFromRequestMetadata(JSON.parse(params.headers))
+  const recipientWithSystemMetadata = Object.assign({}, newRecipient, { systemMetadata })
+
+  return { userId, list, recipientWithSystemMetadata, user }
+}
+
+const subscribeToList = async ({ userId, list, recipientWithSystemMetadata, user }) => {
+  debug('= subscribeToList.subscribeToList', JSON.stringify(recipientWithSystemMetadata))
+  await ListSubscribeService.subscribe(list, recipientWithSystemMetadata, userId, user)
+
+  return { list }
 }
 
 function findDetectedDevice(metadata) {
@@ -79,10 +121,12 @@ function getParameters(event) {
 function getFormParameters(event) {
   const recipient = qs.parse(event.recipient);
   const encodedUserId = recipient.u;
-  return { recipient, encodedUserId, listId: event.listId };
+  return { recipient, encodedUserId, listId: event.listId, headers: event.headers };
 }
 
 function handleResponse(error, success, event, cb) {
+  debug('= subscribeToList.handleResponse', JSON.stringify(error), JSON.stringify(success))
+  if (error && error.name === 'RecipientAlreadyExists') { error = { email: 'E-mail address already exists!' } }
   if (event.json) {
     return ajaxResponse(error, success, cb);
   } else {
