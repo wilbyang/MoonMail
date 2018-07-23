@@ -91,21 +91,22 @@ class ListSubscribeService {
     const verifyUrl = this._buildVerifyUrl(recipient, userId);
     const body = list.confirmationEmailBody ? list.confirmationEmailBody : this._defaultVerifyBody();
     if (!recipient.metadata) recipient.metadata = {}
+    if (!recipient.systemMetadata) recipient.systemMetadata = {}
     const address = user.address
     let addressTag = ``
     if (address) {
       addressTag = `<p style="text-align: center;"><b>Our address is:</b><br>${address.company || ''}<br>${address.address || ''} ${address.address2 || ''}<br>${address.zipCode || ''} ${address.city || ''}<br>${address.state || ''} ${address.country || ''}<br><p>`;
     }
-    const metadata = {
+    const customMetadata = {
       verify_url: verifyUrl,
       list_name: list.name,
       recipient_email: recipient.email,
-      name: recipient.metadata.name,
-      surname: recipient.metadata.surname,
       from_email: sender.emailAddress,
       from_name: sender.fromName,
       from_address: addressTag
     };
+
+    const metadata = Object.assign(customMetadata, recipient.metadata, recipient.systemMetadata)
     return this._renderBody(body, metadata);
   }
 
