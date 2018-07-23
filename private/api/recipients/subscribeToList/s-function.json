@@ -53,6 +53,7 @@
     "DEFAULT_EMAIL_ADDRESS": "${defaultEmailAddress}",
     "DEFAULT_FROM_NAME": "${defaultFromName}",
     "API_HOST": "${apiHost}",
+    "UNSUBSCRIBE_HOST": "${unsubscribeHost}",
     "SUCCESS_PAGE": "${confirmSubscriptionSuccessPage}",
     "ERROR_PAGE": "${confirmSubscriptionErrorPage}",
     "FREE_SENDERS_CONFIG": "${freeSendersConfig}",
