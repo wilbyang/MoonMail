@@ -133,7 +133,7 @@ class ListSubscribeService {
   }
 
   static get apiHost() {
-    return process.env.API_HOST;
+    return process.env.UNSUBSCRIBE_HOST;
   }
 
   static _generateVerificationCode() {
