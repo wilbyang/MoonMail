@@ -15,6 +15,7 @@ class PrecompileEmailService {
     const metadata = Object.assign({}, recipientMetadata, campaignMetadata);
     this.email = new Email({
       fromEmail: emailParams.sender.emailAddress,
+      fromName: emailParams.sender.fromName,
       to: emailParams.recipient.email,
       body: uncompressedBody,
       subject: emailParams.campaign.subject,
@@ -82,8 +83,9 @@ class PrecompileEmailService {
   _buildCampaignMetadata(campaign = {}) {
     if (campaign.metadata && campaign.metadata.address) {
       const address = campaign.metadata.address;
+      const subject = campaign.subject || ''
       const addressTag = `<p style="text-align: center;"><b>Our address is:</b></br>${address.company}</br>${address.address} ${address.address2}</br>${address.zipCode} ${address.city}</br>${address.state} ${address.country}</br><p>`;
-      return { address: addressTag };
+      return { address: addressTag, subject };
     } else {
       return {};
     }

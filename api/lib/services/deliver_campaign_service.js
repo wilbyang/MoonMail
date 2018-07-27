@@ -6,7 +6,6 @@ import { debug } from '../logger';
 import { compressString } from '../utils';
 import FunctionsClient from '../functions_client';
 
-
 class DeliverCampaignService {
   constructor(snsClient, { campaign, campaignId, user } = {}) {
     this.snsClient = snsClient;
@@ -111,12 +110,41 @@ class DeliverCampaignService {
   _checkCampaign(campaign) {
     debug('= DeliverCampaignService._checkCampaign', JSON.stringify(campaign));
     return new Promise((resolve, reject) => {
-      if (Campaign.isValidToBeSent(campaign)) {
+      delete campaign.listId
+      const campaignFooter = this._checkCampaignFooter(campaign.body)
+      if (Campaign.isValidToBeSent(campaign) && campaignFooter.isValid) {
         resolve(campaign);
       } else {
-        reject('Campaign not ready to be sent');
+        campaignFooter.error.length == 0 ?
+          reject('Campaign not ready to be sent') :
+          reject('Your campaign is either missing a footer or one of the following tags: ' + campaignFooter.error.toString().replace(',', ' - '))
       }
     });
+  }
+
+  _isFreeUser(userPlan) {
+    const freePlanRegex = /free/;
+    return (!userPlan) || (userPlan.match(freePlanRegex)) || (userPlan === 'staff');
+  }
+
+  _checkCampaignFooter(body = '') {
+    debug('= DeliverCampaignService._checkCampaignFooter', JSON.stringify(body));
+    let reply = { isValid: true, error: [] }
+
+    if (this._isFreeUser(this.userPlan)) return reply
+
+    if (body.indexOf('{{footer}}') != -1) return reply
+
+    if (body.indexOf('unsubscribe_url') == -1) reply.error.push('unsubscribe_url')
+    if (body.indexOf('list_address') == -1) reply.error.push('list_address')
+    if (body.indexOf('list_description') == -1) reply.error.push('list_description')
+    if (body.indexOf('list_company') == -1) reply.error.push('list_company')
+    if (body.indexOf('list_url') == -1) reply.error.push('list_url')
+
+    if (reply.error.length == 0) return reply
+
+    reply.isValid = false
+    return reply
   }
 
   _buildCampaignMessage(campaign, campaignMetadata) {
@@ -149,6 +177,7 @@ class DeliverCampaignService {
       }));
     });
   }
+
   _publishToSns(canonicalMessage) {
     return new Promise((resolve, reject) => {
       debug('= DeliverCampaignService._publishToSns', 'Sending canonical message', JSON.stringify(canonicalMessage));

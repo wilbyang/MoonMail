@@ -4,35 +4,55 @@ import * as Liquid from 'liquid-node';
 import * as url from 'url';
 import { debug } from './index';
 import { List } from 'moonmail-models'
+import formatAddress from 'address-format';
 
 const liquid = new Liquid.Engine();
 
 class Email {
-  constructor({ fromEmail, to, body, subject, metadata, recipientId, listId, campaignId, userId } = {}, options = { footer: true }) {
+  constructor({ fromEmail, fromName, to, body, subject, metadata, recipientId, listId, campaignId, userId } = {}, options = { footer: true }) {
     this.from = fromEmail;
+    this.fromName = fromName;
     this.to = to;
     this.body = body;
     this.subject = subject;
     this.metadata = metadata;
     this.listId = listId;
-    this.userId = userId
+    this.userId = userId;
     this.recipientId = recipientId;
     this.campaignId = campaignId;
     this.apiHost = process.env.API_HOST;
     this.unsubscribeApiHost = process.env.UNSUBSCRIBE_API_HOST;
     this.options = options;
     this.opensPath = 'links/open';
+    this.list = {}
   }
 
   async renderBody() {
     debug('= Email.renderBody', 'Rendering body with template', this.body, 'and metadata', this.metadata);
     const unsubscribeUrl = this._buildUnsubscribeUrl();
     const resubscribeUrl = await this._buildReSubscribeUrl();
-    const extraFields = { recipient_email: this.to, from_email: this.from, unsubscribe_url: unsubscribeUrl, resubscribe_url: resubscribeUrl };
+    const list = await List.get(this.userId, this.listId)
+    this.list = list
+
+    const contact = list.contact || {}
+
+    const extraFields = {
+      subject: this.subject,
+      recipient_email: this.to || '',
+      from_email: this.from || '',
+      unsubscribe_url: unsubscribeUrl || '',
+      resubscribe_url: resubscribeUrl || '',
+      list_address: this._address(contact) || '',
+      list_description: contact.description || '',
+      list_name: list.name || '',
+      list_company: contact.company || '',
+      list_url: contact.websiteUrl || '',
+      footer: this._paidFooter(contact, unsubscribeUrl, this.to)
+    };
     const metadata = Object.assign({}, this.metadata, extraFields);
     return liquid.parseAndRender(this.body, metadata)
       .then(parsedBody => {
-        return this._appendFooter(parsedBody)
+        return this._appendFooter(parsedBody, this.list.contact)
       });
   }
 
@@ -72,10 +92,10 @@ class Email {
     return omitEmpty({ r: this.recipientId, u: this.userId, l: this.listId, s: this.segmentId });
   }
 
-  _appendFooter(body) {
+  _appendFooter(body, contact) {
     return new Promise((resolve) => {
       if (this.options.footer) {
-        const footer = this._buildFooter(this._buildUnsubscribeUrl(), this.metadata);
+        const footer = this._buildFooter(contact, this._buildUnsubscribeUrl(), this.to);
         resolve(`${body} ${footer}`);
       } else {
         resolve(body);
@@ -95,7 +115,7 @@ class Email {
   }
 
   async _buildReSubscribeUrl() {
-    if(this.body.indexOf('resubscribe_url') == -1) { return '' }
+    if (this.body.indexOf('resubscribe_url') == -1) { return '' }
     const list = await this._createReSubscribeList()
     const resubscribePath = `lists/${this.listId}/recipients/${this.recipientId}/resubscribe`;
     const resubscribeUrl = {
@@ -113,9 +133,9 @@ class Email {
     const newList = Object.assign({}, existingList)
     newList.id = newListId
     const existingNewList = await List.get(this.userId, newListId)
-    if(existingNewList.id){ return existingNewList }
+    if (existingNewList.id) { return existingNewList }
     newList.name = newList.name + ' RESUBSCRIBE'
-    newList.importStatus = { }
+    newList.importStatus = {}
     newList.awaitingConfirmation = 0
     newList.bouncedCount = 0
     newList.subscribedCount = 0
@@ -125,31 +145,87 @@ class Email {
     return newList
   }
 
-  _buildFooter(unsubscribeUrl, metadata = {}) {
-    return `<table border="0" cellpadding="0" cellspacing="0" width="100%">
-        <tbody>
-          <tr>
-            <td align="center" valign="top" style="padding-top:20px;padding-bottom:20px">
-              <table border="0" cellpadding="0" cellspacing="0" style="border-collapse:collapse">
-                <tbody>
-                  <tr>
-                    <td align="center" valign="top" style="color:#666;font-family:'Helvetica Neue',Arial,sans-serif;font-size:13px;line-height:23px;padding-right:20px;padding-bottom:5px;padding-left:20px;text-align:center">
-                      This email was sent to<span>&nbsp;</span>
-                      <a href="mailto:${this.to}" style="color:rgb(64,64,64)!important" target="_blank">${this.to}</a><span>&nbsp;|&nbsp;</span>
-                      <a href="${unsubscribeUrl}" style="color:rgb(64,64,64)!important" target="_blank">Unsubscribe from this list</a>
-                      <br />
-                      ${metadata.address}
-                      <a href="https://moonmail.io/?utm_source=newsletter&utm_medium=moonmail-user&utm_campaign=user-campaigns" target="_blank">
-                        <img src="https://s3-eu-west-1.amazonaws.com/static.moonmail.prod.eu-west-1/moonmail-logo.png" border="0" alt="Email Marketing Powered by MoonMail" title="MoonMail Email Marketing" width="130" height="28" />
-                      </a>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </td>
-          </tr>
-        </tbody>
-      </table>`;
+  _buildFooter(contact, unsubscribeUrl, recipientEmail) {
+    return `<div style="margin: 20px auto;min-width: 320px;max-width: 500px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: transparent;">
+    <!--[if mso]>
+    <table width="100%" cellpadding="0" cellspacing="0" border="0">
+      <tr>
+        <td style="padding-right: 10px; padding-left: 10px; padding-top: 10px; padding-bottom: 10px;"><![endif]-->
+    <div style="line-height: 21px; font-size: 14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:center;margin: 0; padding-right: 10px; padding-left: 10px; padding-top: 10px; padding-bottom: 10px;">
+      <p>${contact.description || ''}</p>
+      <p>
+        <a href="${unsubscribeUrl || ''}"
+          style="color:rgb(64,64,64)!important"
+          target="_blank"
+          rel="noopener noreferrer">Unsubscribe</a> ${recipientEmail || ''} from this list.
+      </p>
+      <p>
+        Our mailing address is:<br />
+        ${this._address(contact)}
+      </p>
+      <p>
+        Copyright (C) ${ new Date().getFullYear()} <a href="${contact.company || ''}"
+                                                  style="color:rgb(64,64,64)!important"
+                                                  target="_blank"
+                                                  rel="noopener noreferrer">${contact.company || ''}</a>. All rights reserved.
+      </p>
+      <p>
+        <a href="https://moonmail.io/?utm_source=newsletter&utm_medium=moonmail-user&utm_campaign=user-campaigns"
+          target="_blank"
+          rel="noopener noreferrer">
+          <img src="https://static.moonmail.io/moonmail-logo.png"
+              border="0"
+              alt="Email Marketing Powered by MoonMail"
+              title="MoonMail Email Marketing"
+              width="130"
+              height="28" />
+        </a>
+      </p>
+      <!--[if mso]></td></tr></table><![endif]-->
+    </div>`;
+  }
+
+  _paidFooter(contact = {}, unsubscribeUrl, recipientEmail, ) {
+    if (!this.options.footer) {
+      return `<div style="margin: 20px auto;min-width: 320px;max-width: 500px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: transparent;">
+      <!--[if mso]>
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td style="padding-right: 10px; padding-left: 10px; padding-top: 10px; padding-bottom: 10px;"><![endif]-->
+      <div style="line-height: 21px; font-size: 14px;color:#555555;font-family:Arial, 'Helvetica Neue', Helvetica, sans-serif;text-align:center;margin: 0; padding-right: 10px; padding-left: 10px; padding-top: 10px; padding-bottom: 10px;">
+        <p>${contact.description || ''}</p>
+        <p>
+          <a href="${unsubscribeUrl || ''}"
+            style="color:rgb(64,64,64)!important"
+            target="_blank"
+            rel="noopener noreferrer">Unsubscribe</a> ${recipientEmail || ''} from this list.
+        </p>
+        <p>
+          Our mailing address is:<br />
+          ${this._address(contact)}
+        </p>
+        <p>
+          Copyright (C) ${ new Date().getFullYear()} <a href="${contact.websiteUrl || ''}"
+                                                    style="color:rgb(64,64,64)!important"
+                                                    target="_blank"
+                                                    rel="noopener noreferrer">${contact.company || ''}</a>. All rights reserved.
+        </p>
+        <!--[if mso]></td></tr></table><![endif]-->
+      </div>`
+    } else {
+      return ''
+    }
+  }
+
+  _address(contact) {
+    return `${formatAddress({
+      address: contact.address || '',
+      address2: contact.address2 || '',
+      city: contact.city || '',
+      subdivision: contact.state || '',
+      postalCode: contact.zipCode || '',
+      countryCode: contact.country || ''
+    }).join('<br data-mce-bogus="1">')}`
   }
 
 }
