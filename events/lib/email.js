@@ -9,7 +9,7 @@ import formatAddress from 'address-format';
 const liquid = new Liquid.Engine();
 
 class Email {
-  constructor({ fromEmail, fromName, to, body, subject, metadata, recipientId, listId, campaignId, userId } = {}, options = { footer: true }) {
+  constructor({ fromEmail, fromName, to, body, subject, metadata, recipientId, listId, campaignId, userId, userPlan } = {}, options = { footer: true }) {
     this.from = fromEmail;
     this.fromName = fromName;
     this.to = to;
@@ -24,7 +24,8 @@ class Email {
     this.unsubscribeApiHost = process.env.UNSUBSCRIBE_API_HOST;
     this.options = options;
     this.opensPath = 'links/open';
-    this.list = {}
+    this.list = {},
+    this.userPlan = userPlan
   }
 
   async renderBody() {
@@ -164,7 +165,7 @@ class Email {
         ${this._address(contact)}
       </p>
       <p>
-        Copyright (C) ${ new Date().getFullYear()} <a href="${contact.company || ''}"
+        Copyright (C) ${ new Date().getFullYear()} <a href="${contact.websiteUrl || ''}"
                                                   style="color:rgb(64,64,64)!important"
                                                   target="_blank"
                                                   rel="noopener noreferrer">${contact.company || ''}</a>. All rights reserved.
@@ -186,6 +187,8 @@ class Email {
   }
 
   _paidFooter(contact = {}, unsubscribeUrl, recipientEmail, ) {
+    if(this._isFreeUser(this.userPlan)) return ''
+
     if (!this.options.footer) {
       return `<div style="margin: 20px auto;min-width: 320px;max-width: 500px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: transparent;">
       <!--[if mso]>
@@ -226,6 +229,11 @@ class Email {
       postalCode: contact.zipCode || '',
       countryCode: contact.country || ''
     }).join('<br data-mce-bogus="1">')}`
+  }
+
+  _isFreeUser(userPlan) {
+    const freePlanRegex = /free/;
+    return (!userPlan) || (userPlan.match(freePlanRegex)) || (userPlan === 'staff');
   }
 
 }
