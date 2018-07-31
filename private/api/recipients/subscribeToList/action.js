@@ -15,7 +15,7 @@ export function respond(event, cb) {
   checkParams(params)
     .then(decodeUserId)
     .then(getList)
-    .then(getUser)    
+    .then(getUser)
     .then(assignNewRecipient)
     .then(handleMetaData)
     .then(subscribeToList)
@@ -97,22 +97,20 @@ function discoverFieldsFromRequestMetadata(requestMetadata) {
     userAgent: requestMetadata['User-Agent']
   });
   if (updatedMetadata.userAgent.match(/Zapier/)) return Promise.resolve({});
-  return Promise.resolve(updatedMetadata)
-  // return request(`https://freegeoip.net/json/${cfIpAddress}`)
-  //   .then(result => JSON.parse(result))
-  //   .then(geoLocationData => omitEmpty(Object.assign({}, updatedMetadata, {
-  //       countryName: geoLocationData.country_name,
-  //       regionCode: geoLocationData.region_code,
-  //       regionName: geoLocationData.region_name,
-  //       city: geoLocationData.city,
-  //       zipCode: geoLocationData.zip_code,
-  //       timeZone: geoLocationData.time_zone,
-  //       location: {
-  //         lat: geoLocationData.latitude,
-  //         lon: geoLocationData.longitude
-  //       },
-  //       metroCode: geoLocationData.metro_code
-  //   }))).catch(error => Promise.resolve({})); // Avoid breaking the request if freegeoip fails
+  return request(`http://pro.ip-api.com/json/${cfIpAddress}?key=${process.env.IP_API_KEY}`)
+    .then(result => JSON.parse(result))
+    .then(geoLocationData => omitEmpty(Object.assign({}, updatedMetadata, {
+      countryName: geoLocationData.country,
+      regionCode: geoLocationData.region,
+      regionName: geoLocationData.regionName,
+      city: geoLocationData.city,
+      zipCode: geoLocationData.zip,
+      timeZone: geoLocationData.timezone,
+      location: {
+        lat: geoLocationData.lat,
+        lon: geoLocationData.lon
+      }
+    }))).catch(error => { console.log(error); Promise.resolve({}) }); // Avoid breaking the request if freegeoip fails
 }
 
 function getParameters(event) {
