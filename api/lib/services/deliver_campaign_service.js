@@ -117,7 +117,7 @@ class DeliverCampaignService {
       } else {
         campaignFooter.error.length == 0 ?
           reject('Campaign not ready to be sent') :
-          reject('Your campaign is either missing a footer or one of the following tags: ' + campaignFooter.error.toString().replace(',', ' - '))
+          reject('Your campaign is either missing a footer or one of the following tags: ' + campaignFooter.error.toString().replace(new RegExp(',', 'g'), ' - '))
       }
     });
   }
