@@ -43,9 +43,11 @@
     "moment-round": "^1.0.1",
     "moonmail-models": "microapps/moonmail-models",
     "omit-empty": "^0.4.1",
+    "q-encoding": "^1.0.0",
     "ramda": "^0.25.0",
     "request": "^2.74.0",
     "request-promise": "^4.1.1",
+    "utf8": "^3.0.0",
     "winston": "^2.3.1"
   }
 }
