@@ -12,14 +12,15 @@ const s3bucket = new S3({ params: { Bucket: bucketName } });
 
 export default class ExportListService {
 
-  static export(listId, userId) {
-    return new ExportListService(listId, userId).export();
+  static export(listId, userId, fields) {
+    return new ExportListService(listId, userId, fields).export();
   }
 
-  constructor(listId, userId) {
+  constructor(listId, userId, fields) {
     this.listId = listId;
     this.userId = userId;
-    this.csvFile = csvWriter();
+    this.fields = fields || undefined
+    this.csvFile = csvWriter({ headers: fields });
     this.csvPath = '/tmp/out.csv';
     this.csvFile.pipe(fs.createWriteStream(this.csvPath));
     this.s3ObjectKey = `${cuid()}-${listId}.csv`;
@@ -125,7 +126,12 @@ export default class ExportListService {
 
   _writeRecipient(recipient = {}) {
     return new Promise((resolve) => {
-      return this.csvFile.write(Object.assign({}, { email: recipient.email }, recipient.metadata, { status: recipient.status }), () => {
+      if (recipient.systemMetadata && recipient.systemMetadata.location) {
+        recipient.systemMetadata.lat = recipient.systemMetadata.location.lat
+        recipient.systemMetadata.lon = recipient.systemMetadata.location.lon
+        delete recipient.systemMetadata.location
+      }
+      return this.csvFile.write(Object.assign({}, { email: recipient.email }, recipient.metadata, { status: recipient.status }, recipient.systemMetadata), () => {
         return resolve(true);
       });
     });

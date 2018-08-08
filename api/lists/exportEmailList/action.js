@@ -15,7 +15,7 @@ export function respond(event, cb) {
     if (event.listId) {
       List.get(decoded.sub, event.listId)
         .then(list => checkNoExportPending(list))
-        .then(() => invokeExportLambda(decoded.sub, event.listId))
+        .then(() => invokeExportLambda(decoded.sub, event.listId, event.fields))
         .then(() => cb(null, 'Export started'))
         .catch(e => cb(ApiErrors.response(e)));
     } else {
@@ -33,11 +33,11 @@ function checkNoExportPending(list) {
   });
 }
 
-function invokeExportLambda(userId, listId) {
+function invokeExportLambda(userId, listId, fields) {
   const params = {
     FunctionName: process.env.EXPORT_FUNCTION_NAME,
     InvocationType: 'Event',
-    Payload: JSON.stringify({userId, listId})
+    Payload: JSON.stringify({userId, listId, fields})
   };
   return lambda.invoke(params).promise();
 }
