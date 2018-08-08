@@ -1,6 +1,8 @@
 import juice from 'juice';
 import * as Liquid from 'liquid-node';
 import { logger } from '../index';
+import qencode from 'q-encoding';
+import utf8 from 'utf8';
 
 const liquid = new Liquid.Engine();
 
@@ -44,8 +46,12 @@ class SendTestEmailService {
     return liquid.parseAndRender(body, this.metadata);
   }
 
+  _mime(string) {
+    return '=?UTF-8?Q?' + qencode.encode(utf8.encode(string)) + '?=';
+  }
+
   _buildFrom() {
-    if (this.sender.fromName) return `${this.sender.fromName} <${this.sender.emailAddress}>`;
+    if (this.sender.fromName) return `${this._mime(this.sender.fromName)} <${this.sender.emailAddress}>`;
     return this.sender.emailAddress || process.env.DEFAULT_EMAIL_ADDRESS;
   }
 
