@@ -98,7 +98,8 @@ async function fetchUndeliverableRecipients({ listId }) {
   if (!result.items) return { items: [], total: 0 };
   recipientsResult = result;
   while (result.total > start + batchSize) {
-    result = await RecipientESModel.undeliverableRecipients({ listId, from: start + batchSize, size: batchSize });
+    start += start + batchSize;
+    result = await RecipientESModel.undeliverableRecipients({ listId, from: start, size: batchSize });
     recipientsResult.items.push(result.items);
     recipientsResult.total = result.total;
   }
