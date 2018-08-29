@@ -92,7 +92,7 @@ function processCampaignActivity(events) {
 
 async function fetchUndeliverableRecipients({ listId }) {
   const batchSize = 250;
-  const start = 0;
+  let start = 0;
   let recipientsResult = {};
   let result = await RecipientESModel.undeliverableRecipients({ listId, from: 0, size: batchSize });
   if (!result.items) return { items: [], total: 0 };
