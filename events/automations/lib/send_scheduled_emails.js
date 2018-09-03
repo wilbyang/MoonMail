@@ -1,5 +1,5 @@
 import Promise from 'bluebird';
-import { ScheduledEmail } from 'moonmail-models';
+import { ScheduledEmail } from '../../lib/moonmail-models/src/models/scheduled_email';
 import moment from 'moment';
 import SendAutomationScheduledEmails from './send_automation_scheduled_emails';
 import { logger } from '../../lib/index';
