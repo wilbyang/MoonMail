@@ -32,7 +32,8 @@
     "SCHEDULED_EMAILS_TABLE": "$${scheduledEmailsTable}",
     "FOOTPRINT_STATUS_INDEX_NAME": "$${automationsFootprintStatusIndex}",
     "FETCH_SENDER_FN_NAME": "$${fetchSenderFunctionName}",
-    "UNSUBSCRIBE_API_HOST": "${unsubscribeApiHost}"
+    "UNSUBSCRIBE_API_HOST": "${unsubscribeApiHost}",
+    "LISTS_TABLE": "$${listsTable}"
   },
   "vpc": {
     "securityGroupIds": [],
