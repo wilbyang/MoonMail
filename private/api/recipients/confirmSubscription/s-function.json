@@ -59,7 +59,7 @@
     "ERROR_PAGE": "${confirmSubscriptionErrorPage}",
     "EVENTS_BUS_TOPIC_ARN": "${eventsBusTopicARN}",
     "LOG_LEVEL": "info",
-    "EVENTS_ROUTER_STREAM_NAME": "MoonMail-v2-events-router-prod-EventsIngestionStream"
+    "EVENTS_ROUTER_STREAM_NAME": "${eventsRouterStreamName}"
   },
   "vpc": {
     "securityGroupIds": [],
