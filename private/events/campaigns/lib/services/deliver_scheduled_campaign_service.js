@@ -96,6 +96,7 @@ class DeliverScheduledCampaignService {
   _checkCampaign(campaign) {
     debug('= DeliverScheduledCampaignService._checkCampaign', JSON.stringify(campaign));
     return new Promise((resolve, reject) => {
+      delete campaign.listId;
       if (Campaign.isValidToBeSent(campaign)) {
         resolve(campaign);
       } else {
