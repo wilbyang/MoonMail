@@ -24,7 +24,6 @@ With [MoonMail](https://moonmail.io/) you can: create & edit lists of recipients
 * Schedule campaigns to be sent in the future
 * Extend the recipient fields with extra values like: gender, country... [(Liquid powered)](https://shopify.github.io/liquid/)
 * Update the recipient status with any of the following: Unsubscribed, Bounced, Complaint-Spam, Suppresion-list
-* Create Automations
 * Filter lists by Segments
 * [React powered frontend / UI to send campaigns](https://microapps.github.io/MoonMail-UI/)
 * Apply [liquid](https://shopify.github.io/liquid/) syntax within the campaigns
