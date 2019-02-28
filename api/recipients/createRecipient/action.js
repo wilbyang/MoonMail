@@ -23,19 +23,6 @@ export const createRecipient = async event => {
   return newRecipient;
 }
 
-// export function respond(event, cb) {
-//   debug('= createRecipient.action', JSON.stringify(event));
-//   decrypt(event.authToken)
-//     .then((decoded) => checkRecipient({ decoded, event }))
-//     .then(createNewRecipient)
-//     .then(saveRecipientAndUpdateList)
-//     .then(({ newRecipient }) => cb(null, newRecipient))
-//     .catch((e) => {
-//       debug(e);
-//       return cb(ApiErrors.response(e));
-//     });
-// }
-
 const checkRecipient = async (event) => {
   if (!event.listId || !event.recipient || !event.recipient.email) throw new Error('No recipient specified')
   const recipientId = base64url.encode(event.recipient.email);
