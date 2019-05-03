@@ -36,7 +36,9 @@ class AttachListRecipientsService {
           if (result.nextPage) {
             next.page = result.nextPage;
           }
-          return this._publishRecipients(result.items);
+          const blackList = process.env.RECIPIENTS_BLACK_LIST;
+          const items = result.items.filter(v => !blackList.includes(v.email))
+          return this._publishRecipients(items);
         })
         .then(() => resolve(next));
     });

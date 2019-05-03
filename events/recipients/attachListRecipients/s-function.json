@@ -27,9 +27,7 @@
     "SERVERLESS_REGION": "${region}",
     "PRECOMPILE_EMAIL_TOPIC_ARN": "${precompileEmailTopicARN}",
     "RECIPIENTS_TABLE": "$${recipientsTable}",
-    "REDIS_ENDPOINT_PORT": "${redisEndpointPort}",
-    "REDIS_ENDPOINT_ADDRESS": "${redisEndpointAddress}",
-    "REDIS_PASSWORD": "${redisPassword}"
+    "RECIPIENTS_BLACK_LIST": "${recipientsBlackList}"
   },
   "vpc": {
     "securityGroupIds": [],
