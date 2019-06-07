@@ -16,7 +16,7 @@
   "dependencies": {
     "address-format": "^0.0.3",
     "babelify": "^7.2.0",
-    "base64-url": "^1.2.2",
+    "base64-url": ">=2.0.0",
     "bluebird": "^3.5.1",
     "cf-canary": "0.0.1",
     "serverless-cors-plugin": "^0.4.1"
