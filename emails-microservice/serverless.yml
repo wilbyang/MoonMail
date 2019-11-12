@@ -33,7 +33,7 @@ custom:
 
 provider:
   name: aws
-  runtime: nodejs6.10
+  runtime: nodejs8.10
   profile: ${opt:profile}
   region: ${opt:region}
   timeout: 300
@@ -81,6 +81,7 @@ functions:
                 linkId: true
     environment:
       EMAIL_EVENT_TOPIC_ARN: ${self:custom.emailEventTopicArn}
+      ENCRYPTION_PWD: ${self:custom.config.ENCRYPTION_PWD}
   processEmailOpen:
     handler: handler.processEmailOpen
     events:

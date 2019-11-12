@@ -54,7 +54,7 @@ export function processLinkClick(event, context, callback) {
       addHttpsIfNoProtocol
     )(event);
   } catch (error) {
-    return Promise.resolve(ApiGatewayUtils.redirectTo({ url: 'https://moonmail.io', callback }))
+    return Promise.resolve(ApiGatewayUtils.redirectTo({ url: 'https://moonmail.io', callback }));
   }
   const linkClick = httpRequestToEmailEvent(event);
   return Api.processLinkClick(linkClick)
