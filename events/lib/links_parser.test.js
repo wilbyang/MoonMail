@@ -40,7 +40,8 @@ describe('LinksParser', () => {
   let links;
 
   before(() => {
-    links = new LinksParser({ apiHost, context });
+    process.env.ENCRYPTION_PWD = '12345';
+    links = new LinksParser({ apiHost, context, clicksHost: apiHost});
   });
 
   describe('#opensTrackUrl()', () => {
@@ -74,7 +75,7 @@ describe('LinksParser', () => {
   describe('#clicksTrackUrl()', () => {
     it('returns the URL to track clicks', (done) => {
       const encodedLinkUrl = encodeURIComponent(linkUrls[0]);
-      expect(links.clicksTrackUrl(linkId, linkUrls[0])).to.equal(`${clicksTrackingUrl}?url=${encodedLinkUrl}`);
+      expect(links.clicksTrackUrl(linkId, linkUrls[0])).to.equal(`${clicksTrackingUrl}?ctx=cq7I2VeDbMn%2FfY5a%2BFpaNuWrCWYZ5RzJIXiP2kh8w5s%3D`);
       done();
     });
   });
@@ -87,9 +88,7 @@ describe('LinksParser', () => {
         parsedLinks.each((i, parsedLink) => {
           const parsedUrl = $(parsedLink).attr('href');
           if (parsedUrl !== unsubscribeUrl) {
-            const encodedLinkUrl = encodeURIComponent(linkUrls[i]);
             expect(parsedUrl).to.contain(apiHost);
-            expect(parsedUrl).to.contain(encodedLinkUrl);
           }
         });
         done();
@@ -120,17 +119,6 @@ describe('LinksParser', () => {
         expect(linksData).to.containOneLike({ url: linkUrls[0], text: linksText[0] });
         expect(linksData).to.containOneLike({ url: linkUrls[1], text: linksText[1] });
         expect(linksData).not.to.containOneLike({ url: unsubscribeUrl, text: unsubscribeText });
-        done();
-      }).catch(done);
-    });
-
-    it('should maintain liquid tags', done => {
-      const urlsWithTags = ['https://moonmail.io/?q={{some_tag}}&r={{other_tag}}', '{{some_url}}'];
-      const withTagsLinks = urlsWithTags.map(url => `<a href="${url}">some text</a>`);
-      const withTagsBody = `Two links ${withTagsLinks[0]} and ${withTagsLinks[1]}`;
-      const expectedUrls = [encodeURIComponent('https://moonmail.io/?q=') + '{{some_tag}}' + encodeURIComponent('&r=') + '{{other_tag}}', '{{some_url}}'];
-      links.parseLinks(withTagsBody).then((result) => {
-        expectedUrls.forEach(url => expect(result.parsedBody).to.contain(url));
         done();
       }).catch(done);
     });
