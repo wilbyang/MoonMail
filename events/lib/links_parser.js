@@ -4,12 +4,13 @@ import * as url from 'url';
 import * as cheerio from 'cheerio';
 import cuid from 'cuid';
 import omitEmpty from 'omit-empty';
+import crypto from 'crypto';
 import { logger } from './index';
 
 class LinksParser {
   constructor({ apiHost, campaignId, context = {}, clicksHost } = {}) {
     this.apiHost = apiHost;
-    this.clicksHost = clicksHost
+    this.clicksHost = clicksHost;
     this.campaignId = campaignId || (context.campaign || {}).id;
     this.segmentId = (context.campaign || {}).segmentId;
     this.recipientId = (context.recipient || {}).id;
@@ -29,6 +30,13 @@ class LinksParser {
       opensUrlObj.query = this._trackingQueryString();
       return url.format(opensUrlObj);
     }
+  }
+
+  _encrypt(text) {
+    const cipher = crypto.createCipher("aes-128-cbc", process.env.ENCRYPTION_PWD);
+    let crypted = cipher.update(text, 'utf8', 'base64');
+    crypted += cipher.final('base64');
+    return crypted;
   }
 
   appendOpensPixel(body) {
@@ -122,15 +130,19 @@ class LinksParser {
     return uri.protocol === 'https:' && (this.apiHost.includes(uri.hostname) || this.clicksHost.includes(uri.hostname));
   }
 
+  _normalizeUrl(url) {
+    return url.replace(/%7B%7B/g, '{{').replace(/%7D%7D/g, '}}');
+  }
+
   clicksTrackUrl(linkId, linkUrl) {
     if (this.clicksHost) {
       const clicksUrlObj = {
         protocol: 'https',
         hostname: this.clicksHost,
         pathname: `${this.clicksPath}/${this.campaignId}/${linkId}`,
-        query: { url: linkUrl }
+        query: { ctx: this._encrypt(encodeURIComponent(linkUrl)) }
       };
-      return url.format(clicksUrlObj).replace(/%7B%7B/g, '{{').replace(/%7D%7D/g, '}}');
+      return this._normalizeUrl(url.format(clicksUrlObj));
     }
   }
 }

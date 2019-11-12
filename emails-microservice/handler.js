@@ -2,6 +2,7 @@ import R from 'ramda';
 import base64url from 'base64-url';
 import Api from './src/Api';
 import ApiGatewayUtils from './src/lib/utils/ApiGatewayUtils';
+import crypto from 'crypto';
 
 const renameKeys = R.curry((keysMap, obj) =>
   R.reduce((acc, key) => R.assoc(keysMap[key] || key, obj[key], acc), {}, R.keys(obj)));
@@ -12,6 +13,14 @@ const addHttpsIfNoProtocol = function addHttpsToUrl(url) {
   }
   return uri;
 };
+
+const decrypt = function(text) {
+  const  decipher = crypto.createDecipher("aes-128-cbc", process.env.ENCRYPTION_PWD);
+  let dec = decipher.update(text,'base64','utf8');
+  dec += decipher.final('utf8');
+  return dec;
+};
+
 const httpRequestToEmailEvent = (request) => {
   const { headers } = request;
   return R.pipe(
@@ -36,11 +45,17 @@ export function processSesNotification(snsEvent, context, callback) {
 }
 
 export function processLinkClick(event, context, callback) {
-  const url = R.pipe(
-    R.pathOr('https://moonmail.io', ['queryStringParameters', 'url']),
-    decodeURIComponent,
-    addHttpsIfNoProtocol
-  )(event);
+  let url;
+  try {
+    url = R.pipe(
+      R.pathOr(undefined, ['queryStringParameters', 'ctx']),
+      decrypt,
+      decodeURIComponent,
+      addHttpsIfNoProtocol
+    )(event);
+  } catch (error) {
+    return Promise.resolve(ApiGatewayUtils.redirectTo({ url: 'https://moonmail.io', callback }))
+  }
   const linkClick = httpRequestToEmailEvent(event);
   return Api.processLinkClick(linkClick)
     .then(() => ApiGatewayUtils.redirectTo({ url, callback }))
