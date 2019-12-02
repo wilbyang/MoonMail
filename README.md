@@ -129,7 +129,7 @@ AWS_PROD_PROFILE=moonmail-prod
 To configure and deploy these, you will have to follow the instructions provided in their respective README.md
 
 ## Live demo
-If you have set up everything correctly you'll be able to send an email campaign using our [demo ui](https://microapps.github.io/MoonMail-UI)
+If you have set up everything correctly you'll be able to send an email campaign using our [demo ui](https://moonmail.github.io/MoonMail-UI/)
     
 ## Questions?
 Please post your questions on [StackOverflow and tag them with: moonmail](http://stackoverflow.com/questions/tagged/moonmail?sort=votes&pageSize=50). 
