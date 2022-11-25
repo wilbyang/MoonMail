@@ -54,7 +54,7 @@
     "lodash": "^4.16.4",
     "mailcomposer": "^3.10.0",
     "moment": "^2.15.1",
-    "moonmail-models": "github:microapps/moonmail-models",
+    "moonmail-models": "github.com/rick-romero/moonmail-models",
     "nock": "^9.0.2",
     "omit-empty": "^0.4.1",
     "papaparse": "^4.3.6",

@@ -77,7 +77,7 @@
     "json-schema-traverse": "^0.3.1",
     "lodash": "^4.17.4",
     "moment": "^2.15.1",
-    "moonmail-models": "github:microapps/moonmail-models",
+    "moonmail-models": "github.com/rick-romero/moonmail-models",
     "nodent": "^3.1.0",
     "omit-empty": "^0.4.1",
     "papaparse": "^4.3.6",
